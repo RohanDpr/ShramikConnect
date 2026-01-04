@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Signup | BlueCollar Jobs</title>
+    <link rel="stylesheet" href="{% static 'css/worker/signup_worker.css' %}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light-theme">
+    <!-- Settings Icon -->
+    <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+            <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                stroke="currentColor" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- Settings Dropdown -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true" aria-labelledby="settingsIcon">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">
+                    <span data-i18n="light">Light</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <span data-i18n="dark">Dark</span>
+                </button>
+                <button class="theme-option" data-theme="system">
+                    <span data-i18n="system">System</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Popup -->
+    <div class="popup-overlay" id="termsPopup">
+        <div class="popup-container">
+            <div class="popup-header">
+                <h2 data-i18n="terms_conditions">Terms & Conditions</h2>
+                <button class="popup-close" id="closePopupBtn" disabled>
+    <span data-i18n="close">Close</span> (<span id="countdown" class="countdown-number">10</span>s)
+</button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="terms-section">
+                    <h3 data-i18n="important_terms">Important Terms & Conditions</h3>
+                    <ul>
+                        <li data-i18n="term1">By creating an account, you agree to our terms of service</li>
+                        <li data-i18n="term2">You must be at least 18 years old</li>
+                        <li data-i18n="term3">You're responsible for account security</li>
+                        <li data-i18n="term4">We may send job alerts based on your profile</li>
+                        <li data-i18n="term5">Provide accurate and complete information</li>
+                        <li data-i18n="term6">We can terminate accounts violating policies</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3 data-i18n="privacy_policy">Privacy Policy Highlights</h3>
+                    <ul>
+                        <li data-i18n="privacy1">We collect info for better job matches</li>
+                        <li data-i18n="privacy2">Your data is encrypted and secure</li>
+                        <li data-i18n="privacy3">We don't share info without consent</li>
+                        <li data-i18n="privacy4">Request data deletion anytime</li>
+                        <li data-i18n="privacy5">Cookies enhance browsing experience</li>
+                    </ul>
+                </div>
+                
+                <div class="popup-links">
+                    <a href="term_and_condition.html" class="popup-link" target="_blank" data-i18n="full_terms">Read Full Terms & Conditions</a>
+                    <a href="privacy_policy.html" class="popup-link" target="_blank" data-i18n="full_privacy">Read Full Privacy Policy</a>
+                </div>
+            </div>
+            
+            <div class="popup-footer">
+                <p class="timer-info" data-i18n="timer_info">Close button enabled when timer ends</p>
+                <div class="timer-display">
+    <i class="fas fa-clock"></i>
+    <span data-i18n="timer">Timer: <span id="timerDisplay" class="countdown-number">10</span>s remaining</span>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title" data-i18n="worker_signup">Worker Signup</h1>
+            <p class="page-subtitle" data-i18n="signup_subtitle">Create your account in 5 easy steps</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label" data-i18n="step_personal">Personal</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label" data-i18n="step_security">Security</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label" data-i18n="step_identity">Identity</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label" data-i18n="step_preview">Preview</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-label" data-i18n="step_terms">Terms</div>
+                </div>
+            </div>
+            <div class="progress-line">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container" id="formContainer">
+            <!-- Step 1: Personal Information -->
+            <div class="form-step active" id="step1">
+                <div class="step-header">
+                    <h2 data-i18n="personal_info">Personal Information</h2>
+                    <p class="step-subtitle" data-i18n="personal_info_subtitle">Enter your basic details to get started</p>
+                </div>
+
+                <!-- Profile Photo -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-preview" id="profilePreview">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="photo-options">
+                        <button type="button" class="photo-btn" id="capturePhotoBtn" data-i18n="take_photo">
+                            <i class="fas fa-camera"></i>
+                            <span>Take Photo</span>
+                        </button>
+                        <button type="button" class="photo-btn" id="uploadPhotoBtn" data-i18n="upload_photo">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload Photo</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Personal Details Form -->
+                <form id="personalForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" data-i18n="first_name">
+                                <i class="fas fa-user"></i>
+                                <span>First Name *</span>
+                            </label>
+                            <input type="text" id="firstName" placeholder="Enter first name" data-i18n-placeholder="enter_first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" data-i18n="last_name">
+                                <i class="fas fa-user"></i>
+                                <span>Last Name *</span>
+                            </label>
+                            <input type="text" id="lastName" placeholder="Enter last name" data-i18n-placeholder="enter_last_name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob" data-i18n="date_of_birth">
+                            <i class="fas fa-calendar"></i>
+                            <span>Date of Birth *</span>
+                        </label>
+                        <input type="date" id="dob" required>
+                        <div class="age-display" id="ageDisplay">
+                            <i class="fas fa-birthday-cake"></i>
+                            <span id="ageText" data-i18n="select_date">Select date to calculate age</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="gender">
+                            <i class="fas fa-venus-mars"></i>
+                            <span>Gender *</span>
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="male" required>
+                                <span class="radio-custom"></span>
+                                <span class="radio-label" data-i18n="male">Male</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="female">
+                                <span class="radio-custom"></span>
+                                <span class="radio-label" data-i18n="female">Female</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="gender" value="other">
+                                <span class="radio-custom"></span>
+                                <span class="radio-label" data-i18n="other">Other</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="next-btn" id="nextStep1" data-i18n="next">
+                            <span>Next</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: Security -->
+            <div class="form-step" id="step2">
+                <div class="step-header">
+                    <h2 data-i18n="security_details">Security Details</h2>
+                    <p class="step-subtitle" data-i18n="security_subtitle">Verify your email, mobile and set password</p>
+                </div>
+
+                <!-- Email Verification -->
+                <div class="verification-section">
+                    <h3 data-i18n="email_verification">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email Verification</span>
+                    </h3>
+                    
+                    <div class="input-with-button" id="emailInputSection">
+                        <input type="email" id="emailInput" placeholder="Enter your email" data-i18n-placeholder="enter_email" required>
+                        <button type="button" class="get-otp-btn" id="getEmailOtpBtn" disabled data-i18n="get_otp">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Get OTP</span>
+                        </button>
+                    </div>
+
+                    <div class="verification-details" id="emailVerificationDetails">
+                        <div class="email-display" id="emailDisplay"></div>
+                        <div class="otp-section" id="emailOtpSection">
+                            <div class="otp-input-container">
+                                <input type="text" id="emailOtpInput" maxlength="6" placeholder="XXXXXX" data-i18n-placeholder="otp_placeholder">
+                                <button type="button" class="verify-btn" id="verifyEmailOtpBtn" disabled data-i18n="verify_otp">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Verify</span>
+                                </button>
+                            </div>
+                            <div class="otp-resend">
+                                <button type="button" class="resend-btn" id="resendEmailOtpBtn" disabled>
+                                    <i class="fas fa-redo"></i>
+                                    <span id="emailResendText" data-i18n="resend_otp_60s">Resend OTP (60s)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="verification-status" id="emailStatus">
+                        <i class="fas fa-circle"></i>
+                        <span data-i18n="email_not_verified">Email not verified</span>
+                    </div>
+                </div>
+
+                <!-- Mobile Verification -->
+                <div class="verification-section">
+                    <h3 data-i18n="mobile_verification">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Mobile Verification</span>
+                    </h3>
+                    
+                    <div class="input-with-button" id="mobileInputSection">
+                        <input type="tel" id="mobileInput" placeholder="Enter your mobile number" data-i18n-placeholder="enter_mobile" required>
+                        <button type="button" class="get-otp-btn" id="getMobileOtpBtn" disabled data-i18n="get_otp">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Get OTP</span>
+                        </button>
+                    </div>
+
+                    <div class="verification-details" id="mobileVerificationDetails">
+                        <div class="mobile-display" id="mobileDisplay"></div>
+                        <div class="otp-section" id="mobileOtpSection">
+                            <div class="otp-input-container">
+                                <input type="text" id="mobileOtpInput" maxlength="6" placeholder="XXXXXX" data-i18n-placeholder="otp_placeholder">
+                                <button type="button" class="verify-btn" id="verifyMobileOtpBtn" disabled data-i18n="verify_otp">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Verify</span>
+                                </button>
+                            </div>
+                            <div class="otp-resend">
+                                <button type="button" class="resend-btn" id="resendMobileOtpBtn" disabled>
+                                    <i class="fas fa-redo"></i>
+                                    <span id="mobileResendText" data-i18n="resend_otp_60s">Resend OTP (60s)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="verification-status" id="mobileStatus">
+                        <i class="fas fa-circle"></i>
+                        <span data-i18n="mobile_not_verified">Mobile not verified</span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="verification-section">
+                    <h3 data-i18n="set_password">
+                        <i class="fas fa-lock"></i>
+                        <span>Set Password</span>
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="password" data-i18n="password">
+                            <i class="fas fa-key"></i>
+                            <span>Password *</span>
+                        </label>
+                        <div class="password-input">
+                            <input type="password" id="password" placeholder="Minimum 8 characters" data-i18n-placeholder="password_placeholder" required>
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <span class="strength-text" id="strengthText" data-i18n="password_strength">Password Strength</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" data-i18n="confirm_password">
+                            <i class="fas fa-lock"></i>
+                            <span>Confirm Password *</span>
+                        </label>
+                        <div class="password-input">
+                            <input type="password" id="confirmPassword" placeholder="Re-enter password" data-i18n-placeholder="confirm_password_placeholder" required>
+                            <button type="button" class="toggle-password" id="toggleConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-match" id="passwordMatch">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="passwords_match">Passwords match</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="back-btn" id="backStep2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back">Back</span>
+                    </button>
+                    <button type="button" class="next-btn" id="nextStep2" disabled data-i18n="next">
+                        <span>Next</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Identity & Documents -->
+            <div class="form-step" id="step3">
+                <div class="step-header">
+                    <h2 data-i18n="identity_documents">Identity & Documents</h2>
+                    <p class="step-subtitle" data-i18n="identity_subtitle">Provide your profession, address and documents</p>
+                </div>
+
+                <!-- Profession -->
+                <div class="form-group">
+                    <label for="profession" data-i18n="profession">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Profession *</span>
+                    </label>
+                    <select id="profession" required>
+                        <option value="" data-i18n="select_profession">Select your profession</option>
+                        <option value="plumber" data-i18n="plumber">Plumber</option>
+                        <option value="electrician" data-i18n="electrician">Electrician</option>
+                        <option value="carpenter" data-i18n="carpenter">Carpenter</option>
+                        <option value="painter" data-i18n="painter">Painter</option>
+                        <option value="mason" data-i18n="mason">Mason</option>
+                        <option value="welder" data-i18n="welder">Welder</option>
+                        <option value="driver" data-i18n="driver">Driver</option>
+                        <option value="cleaner" data-i18n="cleaner">Cleaner</option>
+                        <option value="gardener" data-i18n="gardener">Gardener</option>
+                        <option value="security_guard" data-i18n="security_guard">Security Guard</option>
+                        <option value="cook" data-i18n="cook">Cook</option>
+                        <option value="housekeeper" data-i18n="housekeeper">Housekeeper</option>
+                        <option value="delivery_boy" data-i18n="delivery_boy">Delivery Boy</option>
+                        <option value="mechanic" data-i18n="mechanic">Mechanic</option>
+                        <option value="construction_worker" data-i18n="construction_worker">Construction Worker</option>
+                        <option value="other" data-i18n="other_profession">Other</option>
+                    </select>
+                    
+                    <div class="other-profession" id="otherProfessionSection">
+                        <input type="text" id="otherProfession" placeholder="Please specify your profession" data-i18n-placeholder="specify_profession">
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label data-i18n="address">
+                        <i class="fas fa-home"></i>
+                        <span>Full Address *</span>
+                    </label>
+                    <div class="address-fields">
+                        <input type="text" id="street" placeholder="Street" data-i18n-placeholder="street" required>
+                        <input type="text" id="city" placeholder="City" data-i18n-placeholder="city" required>
+                        <input type="text" id="state" placeholder="State" data-i18n-placeholder="state" required>
+                        <input type="text" id="pincode" placeholder="Pincode" data-i18n-placeholder="pincode" required>
+                    </div>
+                </div>
+
+                <!-- Preferred Work Area -->
+                <div class="form-group">
+                    <label for="workArea" data-i18n="preferred_work_area">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Preferred Work Area *</span>
+                    </label>
+                    <input type="text" id="workArea" placeholder='in [City], [Area1, Area2...]' data-i18n-placeholder="work_area_placeholder" required>
+                    <div class="input-hint">
+                        <i class="fas fa-info-circle"></i>
+                        <span data-i18n="work_area_hint">Example: "in Akola, Gita Nagar, Harihar Peth"</span>
+                    </div>
+                </div>
+
+                <!-- Document Upload -->
+                <div class="form-group">
+                    <label data-i18n="document_upload">
+                        <i class="fas fa-id-card"></i>
+                        <span>Document Upload *</span>
+                    </label>
+                    
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="documentType" value="aadhar" required>
+                            <span class="radio-custom"></span>
+                            <span class="radio-label" data-i18n="aadhar_card">Aadhar Card</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="documentType" value="pan">
+                            <span class="radio-custom"></span>
+                            <span class="radio-label" data-i18n="pan_card">Pan Card</span>
+                        </label>
+                    </div>
+
+                    <div class="document-options">
+                        <button type="button" class="document-btn" id="captureDocumentBtn" data-i18n="take_photo">
+                            <i class="fas fa-camera"></i>
+                            <span>Take Photo</span>
+                        </button>
+                        <button type="button" class="document-btn" id="uploadDocumentBtn" data-i18n="upload_file">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload File</span>
+                        </button>
+                    </div>
+
+                    <div class="document-preview" id="documentPreview">
+                        <div class="no-document" data-i18n="no_document">No document uploaded</div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="back-btn" id="backStep3">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back">Back</span>
+                    </button>
+                    <button type="button" class="next-btn" id="nextStep3" disabled data-i18n="next">
+                        <span>Next</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Preview -->
+            <div class="form-step" id="step4">
+                <div class="step-header">
+                    <h2 data-i18n="preview_details">Preview Details</h2>
+                    <p class="step-subtitle" data-i18n="preview_subtitle">Review all your information before submission</p>
+                </div>
+
+                <div class="preview-section">
+                    <!-- Profile Photo -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="profile_photo">Profile Photo</div>
+                        <div class="preview-value">
+                            <div class="preview-photo" id="previewProfilePhoto">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="personal_info">Personal Information</div>
+                        <div class="preview-value">
+                            <div id="previewPersonalInfo">Not provided</div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="email">Email</div>
+                        <div class="preview-value">
+                            <div class="preview-email-section">
+                                <span id="previewEmail">Not provided</span>
+                                <span class="verification-badge" id="previewEmailBadge">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span data-i18n="not_verified">Not Verified</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="mobile">Mobile</div>
+                        <div class="preview-value">
+                            <div class="preview-mobile-section">
+                                <span id="previewMobile">Not provided</span>
+                                <span class="verification-badge" id="previewMobileBadge">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span data-i18n="not_verified">Not Verified</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="password">Password</div>
+                        <div class="preview-value">
+                            <span id="previewPassword">••••••••</span>
+                        </div>
+                    </div>
+
+                    <!-- Profession -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="profession">Profession</div>
+                        <div class="preview-value">
+                            <span id="previewProfession">Not provided</span>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="address">Address</div>
+                        <div class="preview-value">
+                            <span id="previewAddress">Not provided</span>
+                        </div>
+                    </div>
+
+                    <!-- Work Area -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="preferred_work_area">Preferred Work Area</div>
+                        <div class="preview-value">
+                            <span id="previewWorkArea">Not provided</span>
+                        </div>
+                    </div>
+
+                    <!-- Document -->
+                    <div class="preview-item">
+                        <div class="preview-label" data-i18n="document">Document</div>
+                        <div class="preview-value">
+                            <span id="previewDocument">Not uploaded</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="back-btn" id="backStep4">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back">Back</span>
+                    </button>
+                    <button type="button" class="next-btn" id="nextStep4" data-i18n="next">
+                        <span>Next</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Terms & Create Account -->
+            <div class="form-step" id="step5">
+                <div class="step-header">
+                    <h2 data-i18n="terms_account">Terms & Account Creation</h2>
+                    <p class="step-subtitle" data-i18n="terms_subtitle">Final step to create your account</p>
+                </div>
+                
+<!-- Agreement Checkbox -->
+<div class="checkbox-group" id="checkboxGroup">
+    <input type="checkbox" id="termsCheckbox">
+    <label for="termsCheckbox" class="checkbox-label">
+        <!-- ✅ Plain text और links को अलग-अलग spans में रखें -->
+        <span class="checkbox-text" data-i18n="agree_terms_prefix">I agree to the </span>
+        <a href="term_and_condition.html" class="terms-link" target="_blank" data-i18n="terms_conditions">Terms & Conditions</a>
+        <span class="checkbox-text" data-i18n="agree_terms_middle"> and </span>
+        <a href="privacy_policy.html" class="terms-link" target="_blank" data-i18n="privacy_policy">Privacy Policy</a>
+    </label>
+</div>
+
+                <!-- Requirements Checklist -->
+                <div class="requirements-section">
+                    <h4 data-i18n="requirements_checklist">Requirements Checklist</h4>
+                    <div class="requirements-list">
+                        <div class="requirement-item" id="reqAge">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="req_age">Age must be 18 or above</span>
+                        </div>
+                        <div class="requirement-item" id="reqEmail">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="req_email">Email must be verified</span>
+                        </div>
+                        <div class="requirement-item" id="reqMobile">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="req_mobile">Mobile must be verified</span>
+                        </div>
+                        <div class="requirement-item" id="reqDocument">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="req_document">Document must be uploaded</span>
+                        </div>
+                        <div class="requirement-item" id="reqFields">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="req_fields">All fields must be filled</span>
+                        </div>
+                        <div class="requirement-item" id="reqTerms">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="req_terms">Must agree to Terms & Conditions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="back-btn" id="backStep5">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back">Back</span>
+                    </button>
+                    <button type="button" class="create-btn" id="createAccountBtn" disabled data-i18n="create_account">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Link -->
+        <div class="link-box">
+            <div class="link-icon">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </div>
+            <div class="link-content">
+                <h3 class="link-title" data-i18n="already_have_account">Already have an account?</h3>
+                <a href="/login_worker/" class="link-action" data-i18n="login_here">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/worker/signup_worker.js' %}"></script>
+</body>
+</html>

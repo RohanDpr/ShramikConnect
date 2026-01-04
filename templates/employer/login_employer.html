@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Login | Find Your Next Talent</title>
+    <link rel="stylesheet" href="{% static 'css/employer/login_employer.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light-theme">
+    <!-- Settings Icon (EXACT AS GIVEN - NO CHANGES) -->
+    <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+            <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                stroke="currentColor" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- Settings Dropdown (EXACT AS GIVEN - NO CHANGES) -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true" aria-labelledby="settingsIcon">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">
+                    <span data-i18n="light">Light</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <span data-i18n="dark">Dark</span>
+                </button>
+                <button class="theme-option" data-theme="system">
+                    <span data-i18n="system">System</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Popup -->
+    <div class="popup-overlay" id="termsPopup">
+        <div class="popup-container">
+            <div class="popup-header">
+                <h2>Terms & Conditions</h2>
+                <button class="popup-close" id="closePopupBtn" disabled>
+                    Close (<span id="countdown">10</span>s)
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="terms-section">
+                    <h3>Important Terms & Conditions</h3>
+                    <ul>
+                        <li>By logging in, you agree to our terms of service</li>
+                        <li>You must be a registered business/organization</li>
+                        <li>You're responsible for account security</li>
+                        <li>We may send candidate alerts based on your needs</li>
+                        <li>Provide accurate business information</li>
+                        <li>We can terminate accounts violating policies</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3>Privacy Policy Highlights</h3>
+                    <ul>
+                        <li>We collect info for better candidate matches</li>
+                        <li>Your business data is encrypted and secure</li>
+                        <li>We don't share info without consent</li>
+                        <li>Request data deletion anytime</li>
+                        <li>Cookies enhance browsing experience</li>
+                    </ul>
+                </div>
+                
+                <div class="popup-links">
+                    <a href="t&c.html" class="popup-link" target="_blank">Read Full Terms & Conditions</a>
+                    <a href="pp.html" class="popup-link" target="_blank">Read Full Privacy Policy</a>
+                </div>
+            </div>
+            
+            <div class="popup-footer">
+                <p class="timer-info">Close button enabled when timer ends</p>
+                <div class="timer-display">
+                    <i class="fas fa-clock"></i>
+                    <span>Timer: <span id="timerDisplay">10</span>s remaining</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Login Container -->
+    <main class="login-container">
+        <div class="login-card">
+           <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo-wrapper">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h1 class="logo-title">Employer Login</h1>
+                <p class="logo-subtitle">Login to access thousands of potential candidates</p>
+            </div>
+
+            <!-- Login Form -->
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="userInput" class="form-label">Company Email / Username</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-building input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="userInput" 
+                            class="form-input"
+                            placeholder="Enter company email or username"
+                            required
+                        >
+                    </div>
+                    <div class="input-error" id="userError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="form-input"
+                            placeholder="Password (min 8 chars)"
+                            required
+                            minlength="8"
+                        >
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <i class="fas fa-eye-slash password-icon"></i>
+                        </button>
+                    </div>
+                    <div class="input-error" id="passwordError"></div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input 
+                        type="checkbox" 
+                        id="termsCheckbox" 
+                        class="form-checkbox"
+                        disabled
+                    >
+                    <label for="termsCheckbox" class="checkbox-label">
+                        I agree to the <a href="t&c.html" class="terms-link" target="_blank">Terms & Conditions</a> 
+                        and <a href="pp.html" class="terms-link" target="_blank">Privacy Policy</a>
+                    </label>
+                    <div class="input-error" id="termsError"></div>
+                </div>
+
+                <button type="submit" class="login-button" id="loginButton" disabled>
+                    <span class="button-text">Login</span>
+                    <i class="fas fa-arrow-right button-icon"></i>
+                </button>
+
+            </form>
+
+            <!-- Additional Links -->
+            <div class="links-container">
+                <div class="link-box">
+                    <div class="link-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="link-content">
+                        <h3 class="link-title">Trouble in Login</h3>
+                        <a href="#" class="link-action">Get Help</a>
+                    </div>
+                </div>
+
+                <div class="link-box">
+                    <div class="link-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="link-content">
+                        <h3 class="link-title">Forgot Password</h3>
+                        <a href="/choose_password_employer/" class="link-action">Get or Reset Password</a>
+                    </div>
+                </div>
+
+                <div class="link-box">
+                    <div class="link-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="link-content">
+                        <h3 class="link-title">New Employer</h3>
+                        <a href="/signup_employer/" class="link-action">Register Company</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/employer/login_employer.js' %}"></script>
+</body>
+</html>

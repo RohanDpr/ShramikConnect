@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard | ShramikConnect</title>
+    <link rel="stylesheet" href="{% static 'css/employer/home_page_employer.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="light-theme">
+    <!-- ============================================
+         NOTIFICATION CONTAINER (Only for logout)
+         ============================================ -->
+    <div class="notification-wrapper" id="notificationWrapper"></div>
+
+    <!-- ============================================
+         SIDEBAR (Hamburger Menu with Settings Icon Inside)
+         ============================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </div>
+            <h2 data-i18n="menu">Menu</h2>
+        </div>
+        
+        <div class="sidebar-content">
+            <!-- Profile Section with Edit Button -->
+            <div class="sidebar-profile">
+                <div class="profile-photo">
+                    <img src="assets/ShramikConnect_logo.jpg" alt="Profile" onerror="this.src='https://ui-avatars.com/api/?name=Employer&background=01A060&color=fff&size=100'">
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileName">Employer Name</h3>
+                    <p id="profileEmail" class="email-text">employer@example.com</p>
+                    <button class="profile-edit-btn" id="profileEditBtn" data-i18n="edit_profile">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit Profile</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Settings Icon Inside Sidebar -->
+            <div class="sidebar-settings-icon" id="sidebarSettingsIcon" aria-label="Settings" tabindex="0" role="button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                        stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span data-i18n="settings">Settings</span>
+            </div>
+            
+            <!-- Menu Items -->
+            <div class="sidebar-menu">
+                <a href="help.html" class="menu-item-box">
+                    <i class="fas fa-question-circle"></i>
+                    <span data-i18n="help_contact">Help & Contact</span>
+                </a>
+                <a href="about.html" class="menu-item-box">
+                    <i class="fas fa-info-circle"></i>
+                    <span data-i18n="about_us">About Us</span>
+                </a>
+                <a href="term_and_condition.html" class="menu-item-box">
+                    <i class="fas fa-file-contract"></i>
+                    <span data-i18n="terms_conditions">Terms & Conditions</span>
+                </a>
+                <a href="privacy_policy.html" class="menu-item-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <span data-i18n="privacy_policy">Privacy Policy</span>
+                </a>
+                <button class="menu-item-box logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span data-i18n="logout">Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN (Opens from Sidebar)
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">
+                    <span data-i18n="light">Light</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <span data-i18n="dark">Dark</span>
+                </button>
+                <button class="theme-option" data-theme="system">
+                    <span data-i18n="system">System</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MAIN NAVBAR
+         ============================================ -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo" id="logoContainer">
+                <img src="{% static 'images/logo/Logo only.png' %}" alt="ShramikConnect" class="logo-img" onerror="this.style.display='none'">
+                <h1>
+                    <span class="logo-shramik">Shramik</span><span class="logo-connect">Connect</span>
+                </h1>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <a href="#" class="nav-link active" data-i18n="home">
+                <i class="fas fa-home"></i>
+                <span class="nav-text" data-i18n="home">Home</span>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="help.html" class="nav-link" data-i18n="help">
+                <i class="fas fa-question-circle"></i>
+                <span class="nav-text" data-i18n="help">Help</span>
+            </a>
+            <a href="about.html" class="nav-link" data-i18n="about">
+                <i class="fas fa-info-circle"></i>
+                <span class="nav-text" data-i18n="about">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         MAIN CONTENT AREA
+         ============================================ -->
+    
+    
+    <!-- ============================================
+     WELCOME DASHBOARD SECTION
+     ============================================ -->
+    
+
+<main class="main-content" id="mainContent">
+    
+    <!-- ============================================
+         WELCOME DASHBOARD SECTION (EXISTING - AS IT IS)
+         ============================================ -->
+    <section class="welcome-dashboard">
+        <!-- Welcome Header -->
+        <div class="welcome-header">
+            <h1 class="welcome-title">
+                <span data-i18n="welcome">Welcome</span>, 
+                <span class="employer-name" id="employerNameDisplay"></span>!
+            </h1>
+            <p class="welcome-slogan" data-i18n="welcome_slogan">
+                Find Perfect Worker According to your location, budget, timings and requirements
+            </p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="statistics-grid">
+            <!-- Card 1: Workers Hired -->
+            <div class="stat-card workers-hired">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-title" data-i18n="workers_hired">Workers Hired</h3>
+                    <div class="stat-value" id="workersHiredValue">0</div>
+                    <div class="stat-label" data-i18n="till_now">Till Now</div>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+
+            <!-- Card 2: Jobs Posted -->
+            <div class="stat-card jobs-posted">
+                <div class="stat-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-title" data-i18n="jobs_posted">Jobs Posted</h3>
+                    <div class="stat-value" id="jobsPostedValue">0</div>
+                    <div class="stat-label" data-i18n="till_now">Till Now</div>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            </div>
+
+            <!-- Card 3: Average Rating -->
+            <div class="stat-card average-rating">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-title" data-i18n="avg_rating">Average Rating</h3>
+                    <div class="rating-display">
+                        <div class="stars-container" id="ratingStars"></div>
+                        <div class="rating-value" id="ratingValue">0.0</div>
+                    </div>
+                    <div class="stat-label" data-i18n="given_to_workers">Given to Workers</div>
+                </div>
+                <div class="stat-badge">
+                    <i class="fas fa-award"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+ 
+</main>
+
+
+    
+    <!-- ============================================
+         SCRIPTS
+         ============================================ -->
+    <script src="{% static 'js/employer/home_page_employer.js' %}"></script>
+</body>
+</html>

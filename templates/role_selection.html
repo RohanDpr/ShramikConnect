@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShramikConnect - Choose Your Role</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/role_selection.css' %}">
+</head>
+
+<body>
+    <!-- Settings Icon -->
+    <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+            <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                stroke="currentColor" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- Settings Dropdown -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true" aria-labelledby="settingsIcon">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">
+                    <span data-i18n="light">Light</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <span data-i18n="dark">Dark</span>
+                </button>
+                <button class="theme-option" data-theme="system">
+                    <span data-i18n="system">System</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Title -->
+            <div class="page-title-section">
+                <h1 class="page-title" data-i18n="choose_role">Choose Your Role</h1>
+                <p class="page-subtitle" data-i18n="select_how">Select how you want to use ShramikConnect</p>
+            </div>
+
+            <!-- Role Selection Cards -->
+            <div class="role-cards">
+                <!-- Kaam Dhundho Card (Find Work) -->
+                <div class="role-card kaam-dhundho">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-user" style="color: #4362C9;"></i>
+                    </div>
+                    <h2 class="card-title" data-i18n="kaam_dhundho">Kaam Dhundho</h2>
+                    <p class="card-description" data-i18n="worker_description">
+                        Looking for work opportunities? Join as a worker to find jobs that match your skills and
+                        experience. Connect directly with employers and grow your career.
+                    </p>
+                    <div class="card-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="feature1_worker">Find jobs matching your skills</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="feature2_worker">Connect directly with employers</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="feature3_worker">Build your professional profile</span>
+                        </div>
+                    </div>
+                    <a href="/login_worker/">
+                    <button class="card-button kaam-dhundho-btn">
+                        <span data-i18n="login_worker">Login as Worker</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    </a>
+                </div>
+
+                <!-- Kaam Karao Card (Hire Workers) -->
+                <div class="role-card kaam-karao">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-user" style="color: #01A060;"></i>
+                    </div>
+                    <h2 class="card-title" data-i18n="kaam_karao">Kaam Karao</h2>
+                    <p class="card-description" data-i18n="employer_description">
+                        Need skilled workers? Join as an employer to find the right talent for your projects. Post jobs,
+                        review profiles, and hire efficiently.
+                    </p>
+                    <div class="card-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="feature1_employer">Post jobs and find skilled workers</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="feature2_employer">Review detailed worker profiles</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-i18n="feature3_employer">Hire efficiently with our platform</span>
+                        </div>
+                    </div>
+                    <a href="/login_employer/">
+                    <button class="card-button kaam-karao-btn">
+                        <span data-i18n="login_employer">Login as Employer</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="additional-info">
+                <div class="info-card">
+                    <i class="fas fa-question-circle"></i>
+                    <h3 data-i18n="not_sure">Not Sure Which to Choose?</h3>
+                    <p data-i18n="help_text">If you're looking for work opportunities, select "Kaam Dhundho". If you
+                        need to hire workers for your projects, select "Kaam Karao".</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-text">
+                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                    </div>
+                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                </div>
+
+                <div class="footer-links">
+                    <a href="#" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                    <a href="#" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                    <a href="#" class="footer-link" data-i18n="help">Help & Contact</a>
+                    <a href="#" class="footer-link" data-i18n="about">About Us</a>
+
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/role_selection.js' %}"></script>
+</body>
+
+</html>
