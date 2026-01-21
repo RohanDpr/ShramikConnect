@@ -35,7 +35,9 @@ def signup_worker(request):
         work_area = request.POST.get('work_area')
         document = request.FILES.get('document')
         # Process the signup form data here
-        worker = Worker(f_name=fname, l_name=lname)
+        worker = Worker(f_name=fname, l_name=lname, p_photo=p_photo, dob=dob, age=age, gender=gender,
+                        email=email, mobile=mobile, password=password, profession=profession, other_professions=other_professions,
+                        street=street, city=city, state=state, pincode=pincode, work_area=work_area, document=document)
         worker.save()
 
     return render(request, 'worker/signup_worker.html')
