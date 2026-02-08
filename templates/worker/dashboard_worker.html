@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Dashboard | ShramikConnect</title>
+    <link rel="stylesheet" href="{% static 'css/worker/dashboard_worker.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{% static 'images/logo/Logo only.png' %}">
+</head>
+<body class="light-theme">
+    <!-- Notification Container -->
+    <div class="notification-wrapper" id="notificationWrapper"></div>
+
+    <!-- Sidebar (Hamburger Menu) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </div>
+            <h2 data-i18n="menu">Menu</h2>
+        </div>
+        
+        <div class="sidebar-content">
+            <!-- Profile Section -->
+            <div class="sidebar-profile">
+                <div class="profile-photo">
+                    <img src="assets/worker-profile.jpg" alt="Profile" id="profileImage">
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileName">Ramesh Kumar</h3>
+                    <p class="email-text" data-i18n="electrician">Electrician</p>
+                    <button class="profile-edit-btn" id="profileEditBtn">
+                        <i class="fas fa-edit"></i>
+                        <span data-i18n="edit_profile">Edit Profile</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Settings Icon -->
+            <div class="sidebar-settings-icon" id="sidebarSettingsIcon" aria-label="Settings" tabindex="0" role="button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                        stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span data-i18n="settings">Settings</span>
+            </div>
+            
+            <!-- Menu Items -->
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item-box" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span data-i18n="dashboard">Dashboard</span>
+                </a>
+                <a href="#" class="menu-item-box" data-section="find-jobs">
+                    <i class="fas fa-search"></i>
+                    <span data-i18n="find_jobs">Find Jobs</span>
+                </a>
+                <a href="#" class="menu-item-box" data-section="applied-jobs">
+                    <i class="fas fa-file-alt"></i>
+                    <span data-i18n="applied_jobs">Applied Jobs</span>
+                </a>
+                <a href="#" class="menu-item-box" data-section="active-jobs">
+                    <i class="fas fa-briefcase"></i>
+                    <span data-i18n="active_jobs">Active Jobs</span>
+                </a>
+                <a href="#" class="menu-item-box" data-section="work-history">
+                    <i class="fas fa-history"></i>
+                    <span data-i18n="work_history">Work History</span>
+                </a>
+                <a href="#" class="menu-item-box" data-section="ai-assistant">
+                    <i class="fas fa-robot"></i>
+                    <span data-i18n="ai_assistant">AI Assistant</span>
+                </a>
+                <button class="menu-item-box logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span data-i18n="logout">Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Dropdown -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">
+                    <span data-i18n="light">Light</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                    <span data-i18n="dark">Dark</span>
+                </button>
+                <button class="theme-option" data-theme="system">
+                    <span data-i18n="system">System</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Navigation Strip -->
+    <div class="global-nav-strip" id="globalNavStrip">
+        <button class="nav-strip-btn" data-section="dashboard" data-i18n="dashboard">Dashboard</button>
+        <button class="nav-strip-btn" data-section="find-jobs" data-i18n="find_jobs">Find Jobs</button>
+        <button class="nav-strip-btn" data-section="applied-jobs" data-i18n="applied_jobs">Applied Jobs</button>
+        <button class="nav-strip-btn" data-section="active-jobs" data-i18n="active_jobs">Active Jobs</button>
+        <button class="nav-strip-btn" data-section="work-history" data-i18n="work_history">Work History</button>
+        <button class="nav-strip-btn" data-section="ai-assistant" data-i18n="ai_assistant">AI Assistant</button>
+        <button class="nav-strip-btn logout-btn" id="stripLogoutBtn" data-i18n="logout">Logout</button>
+    </div>
+
+    <!-- Confirmation Modal for Work Completion -->
+    <div class="popup-overlay" id="confirmationModal">
+        <div class="popup-container confirmation-modal">
+            <div class="popup-header">
+                <h2 data-i18n="confirm_work_completion">Confirm Work Completion</h2>
+                <button class="popup-close" id="closeConfirmationModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="confirmation-content">
+                    <div class="confirmation-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3 data-i18n="confirm_work_completion_question">Are you sure work is completed?</h3>
+                    <p data-i18n="confirm_work_completion_description">This will notify the employer and move the job to your work history.</p>
+                    <div class="confirmation-actions">
+                        <button class="confirmation-btn confirm-btn" id="confirmYesBtn">
+                            <i class="fas fa-check"></i> <span data-i18n="yes_complete">Yes, Complete</span>
+                        </button>
+                        <button class="confirmation-btn cancel-btn" id="confirmNoBtn">
+                            <i class="fas fa-times"></i> <span data-i18n="no_cancel">No, Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Job Application Modal -->
+    <div class="popup-overlay" id="applyJobModal">
+        <div class="popup-container">
+            <div class="popup-header">
+                <h2 data-i18n="apply_for_job">Apply for Job</h2>
+                <button class="popup-close" id="closeApplyModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="job-preview" id="jobPreviewContent">
+                    <!-- Job preview will be populated by JavaScript -->
+                </div>
+                
+                <div class="application-form">
+                    <h3 data-i18n="application_details">Application Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="expectedPrice" class="form-label" data-i18n="expected_price">Expected Price (₹)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-rupee-sign input-icon"></i>
+                            <input 
+                                type="number" 
+                                id="expectedPrice" 
+                                class="form-input"
+                                placeholder="Enter your expected price"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="availability" class="form-label" data-i18n="availability">Availability</label>
+                        <div class="availability-container">
+                            <div class="availability-dropdown-wrapper">
+                                <div class="custom-dropdown" id="availabilityDropdown">
+                                    <button class="dropdown-toggle" type="button" id="availabilityToggle">
+                                        <span class="availability-text" id="availabilityText">
+                                            <i class="fas fa-calendar availability-icon"></i>
+                                            <span class="availability-label" data-i18n="select_availability">Select availability</span>
+                                        </span>
+                                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                                    </button>
+                                    <div class="dropdown-menu" id="availabilityMenu">
+                                        <div class="dropdown-item" data-value="immediate">
+                                            <i class="fas fa-bolt"></i>
+                                            <span data-i18n="immediate">Immediate</span>
+                                        </div>
+                                        <div class="dropdown-item" data-value="tomorrow">
+                                            <i class="fas fa-sun"></i>
+                                            <span data-i18n="tomorrow">Tomorrow</span>
+                                        </div>
+                                        <div class="dropdown-item" data-value="within_3_days">
+                                            <i class="fas fa-calendar-day"></i>
+                                            <span data-i18n="within_3_days">Within 3 Days</span>
+                                        </div>
+                                        <div class="dropdown-item" data-value="within_1_week">
+                                            <i class="fas fa-calendar-week"></i>
+                                            <span data-i18n="within_1_week">Within 1 Week</span>
+                                        </div>
+                                        <div class="dropdown-item" data-value="custom_date">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span data-i18n="custom_date">Custom Date</span>
+                                        </div>
+                                        <div class="custom-date-container" id="customDateContainer" style="display: none;">
+                                            <div class="custom-date-input">
+                                                <i class="fas fa-calendar input-icon"></i>
+                                                <input type="date" id="customDateInput" class="form-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="availability" value="">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="coverMessage" class="form-label" data-i18n="cover_message">Cover Message (Optional)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-comment input-icon"></i>
+                            <textarea 
+                                id="coverMessage" 
+                                class="form-input textarea"
+                                data-i18n-placeholder="add_message_for_employer"
+                                placeholder="Add a message for the employer..."
+                                rows="3"
+                            ></textarea>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="submit-job-btn" id="submitApplicationBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span data-i18n="submit_application">Submit Application</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div class="popup-overlay" id="chatModal">
+        <div class="popup-container chat-modal">
+            <div class="popup-header">
+                <h2 data-i18n="chat_with_employer">Chat with <span id="chatEmployerName"></span></h2>
+                <button class="popup-close" id="closeChatModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Chat messages will be populated by JavaScript -->
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="chat-attachments">
+                        <button class="attachment-btn" id="fileUploadBtn" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileInput" style="display: none;" accept="*/*">
+                        <button class="attachment-btn" id="voiceMessageBtn" title="Voice message">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fas fa-comment input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            class="form-input"
+                            data-i18n-placeholder="type_your_message"
+                            placeholder="Type your message..."
+                        >
+                    </div>
+                    <button class="chat-send-btn" id="chatSendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div class="popup-overlay" id="jobDetailsModal">
+        <div class="popup-container job-details-modal">
+            <div class="popup-header">
+                <h2 data-i18n="job_details">Job Details</h2>
+                <button class="popup-close" id="closeJobDetailsModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="job-details-content" id="jobDetailsContent">
+                    <!-- Job details will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work History Details Modal -->
+    <div class="popup-overlay" id="workHistoryModal">
+        <div class="popup-container work-history-modal">
+            <div class="popup-header">
+                <h2 data-i18n="work_details">Work Details</h2>
+                <button class="popup-close" id="closeWorkHistoryModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="work-history-content" id="workHistoryContent">
+                    <!-- Work history details will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Modal -->
+    <div class="popup-overlay" id="aiAssistantModal">
+        <div class="popup-container ai-modal">
+            <div class="popup-header">
+                <h2 data-i18n="ai_assistant">AI Assistant</h2>
+                <button class="popup-close" id="closeAIModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-content">
+                <div class="ai-chat-container">
+                    <div class="ai-chat-header">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3>ShramikConnect AI</h3>
+                            <p data-i18n="ai_ready_worker">Ready to help you find the best jobs</p>
+                        </div>
+                    </div>
+                    <div class="ai-chat-messages" id="aiModalMessages">
+                        <div class="ai-message">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <p data-i18n="ai_welcome_worker">Hello! I'm your AI assistant. I can help you find the best jobs based on your skills and preferences.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-chat-input">
+                        <div class="chat-attachments">
+                            <button class="attachment-btn" id="aiFileUploadBtn" title="Attach file">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <input type="file" id="aiFileInput" style="display: none;" accept="*/*">
+                        </div>
+                        <div class="input-with-icon">
+                            <i class="fas fa-comment input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="aiModalInput" 
+                                class="form-input"
+                                data-i18n-placeholder="type_your_message_here"
+                                placeholder="Type your message here..."
+                            >
+                        </div>
+                        <button class="ai-send-btn" id="aiModalSendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="{% static 'images/logo/Logo only.png' %}" alt="ShramikConnect Logo">
+                </div>
+                <h1>
+                    <span class="logo-shramik" data-i18n="shramik">Shramik</span><span class="logo-connect" data-i18n="connect">Connect</span>
+                </h1>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <a href="#" class="nav-link active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span class="nav-text" data-i18n="home">Home</span>
+            </a>
+            <a href="help.html" class="nav-link">
+                <i class="fas fa-question-circle"></i>
+                <span class="nav-text" data-i18n="help">Help</span>
+            </a>
+            <a href="about.html" class="nav-link">
+                <i class="fas fa-info-circle"></i>
+                <span class="nav-text" data-i18n="about">About</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Quick Redirection Strip -->
+    <div class="quick-redirect-strip" id="quickRedirectStrip">
+        <button class="redirect-strip-btn" data-section="find-jobs" data-i18n="find_jobs">Find Jobs</button>
+        <button class="redirect-strip-btn" data-section="applied-jobs" data-i18n="applied_jobs">Applied Jobs</button>
+        <button class="redirect-strip-btn" data-section="work-history" data-i18n="work_history">Work History</button>
+        <button class="redirect-strip-btn" data-section="ai-assistant" data-i18n="ai_assistant">AI Assistant</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="mainContent">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <!-- Welcome Header -->
+            <div class="welcome-header">
+                <h1 class="welcome-title">
+                    <span data-i18n="welcome">Welcome</span>, <span class="worker-name" id="workerNameDisplay">Ramesh Kumar</span>!
+                </h1>
+                <p class="welcome-slogan" data-i18n="dashboard_slogan_worker">
+                    Find jobs based on your skills and manage your work easily
+                </p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="statistics-grid">
+                <!-- Card 1: Jobs Applied -->
+                <div class="stat-card clickable" id="statCardApplied">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title" data-i18n="jobs_applied">Jobs Applied</h3>
+                        <div class="stat-value" id="totalApplied">0</div>
+                        <div class="stat-label" data-i18n="till_now">Till Now</div>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2: Active Jobs -->
+                <div class="stat-card clickable" id="statCardActive">
+                    <div class="stat-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title" data-i18n="active_jobs">Active Jobs</h3>
+                        <div class="stat-value" id="activeJobs">0</div>
+                        <div class="stat-label" data-i18n="currently">Currently</div>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3: Total Earnings -->
+                <div class="stat-card clickable" id="statCardEarnings">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title">Total Earnings</h3>
+                        <div class="stat-value" id="totalEarnings">₹0</div>
+                        <div class="stat-label">From Completed Jobs</div>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                </div>
+
+                <!-- Card 4: Completed Jobs -->
+                <div class="stat-card clickable" id="statCardCompleted">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title">Completed Jobs</h3>
+                        <div class="stat-value" id="completedJobs">0</div>
+                        <div class="stat-label">Successfully Delivered</div>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-award"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions - 2 cards per row -->
+            <div class="quick-actions">
+                <h3 data-i18n="quick_actions">Quick Actions</h3>
+                <div class="actions-grid">
+                    <button class="action-btn" id="quickActionFindJobs">
+                        <i class="fas fa-search"></i>
+                        <span data-i18n="find_jobs">Find Jobs</span>
+                    </button>
+                    <button class="action-btn" id="quickActionAppliedJobs">
+                        <i class="fas fa-file-alt"></i>
+                        <span data-i18n="applied_jobs">Applied Jobs</span>
+                    </button>
+                    <button class="action-btn" id="quickActionActiveJobs">
+                        <i class="fas fa-briefcase"></i>
+                        <span data-i18n="active_jobs">Active Jobs</span>
+                    </button>
+                    <button class="action-btn" id="quickActionAI">
+                        <i class="fas fa-robot"></i>
+                        <span data-i18n="ai_assistant">AI Assistant</span>
+                    </button>
+                    <button class="action-btn" id="quickActionHistory">
+                        <i class="fas fa-history"></i>
+                        <span data-i18n="work_history">Work History</span>
+                    </button>
+                    <button class="action-btn logout-action-btn" id="quickActionLogout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="logout">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Find Jobs Section -->
+        <section id="find-jobs" class="content-section">
+            <div class="section-header with-filters">
+                <h2 class="section-title" data-i18n="find_jobs">Find Jobs</h2>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="jobSearch" 
+                            class="form-input search-input"
+                            data-i18n-placeholder="search_jobs_placeholder"
+                            placeholder="Search by skill, job title or location"
+                        >
+                    </div>
+                </div>
+                
+                <!-- Filter Strip - Horizontal -->
+                <div class="filter-strip-horizontal">
+                    <!-- Skill Filter -->
+                    <div class="filter-group" id="skillFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="skill">
+                            <i class="fas fa-tools"></i>
+                            <span data-i18n="skill">Skill</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options skill-options" id="skillOptions">
+                            <!-- Skills will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Filter -->
+                    <div class="filter-group" id="paymentFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="payment">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span data-i18n="payment">Payment</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="paymentOptions">
+                            <button class="filter-nested-btn" data-sort="payment-asc" data-i18n="payment_low_high">
+                                <i class="fas fa-sort-numeric-down"></i> <span>Low → High</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="payment-desc" data-i18n="payment_high_low">
+                                <i class="fas fa-sort-numeric-down-alt"></i> <span>High → Low</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Location Filter -->
+                    <div class="filter-group" id="locationFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span data-i18n="location">Location</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="locationOptions">
+                            <button class="filter-nested-btn" data-sort="location-asc" data-i18n="location_near_far">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Near → Far</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="location-desc" data-i18n="location_far_near">
+                                <i class="fas fa-sort-amount-down"></i> <span>Far → Near</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clear All Filters -->
+                    <button class="filter-clear-btn" id="clearAllFilters">
+                        <i class="fas fa-times-circle"></i>
+                        <span data-i18n="clear_all">Clear All</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="jobs-grid" id="findJobsContainer">
+                <!-- Job cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Applied Jobs Section -->
+        <section id="applied-jobs" class="content-section">
+            <div class="section-header with-filters">
+                <h2 class="section-title" data-i18n="applied_jobs">Applied Jobs</h2>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="appliedSearch" 
+                            class="form-input search-input"
+                            data-i18n-placeholder="search_applied_jobs"
+                            placeholder="Search applied jobs..."
+                        >
+                    </div>
+                </div>
+                
+                <!-- Filter Strip - Horizontal -->
+                <div class="filter-strip-horizontal">
+                    <!-- Status Filter -->
+                    <div class="filter-group" id="statusFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="status">
+                            <i class="fas fa-info-circle"></i>
+                            <span data-i18n="status">Status</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="statusOptions">
+                            <button class="filter-nested-btn" data-filter="status-applied" data-i18n="status_applied">
+                                <i class="fas fa-paper-plane"></i> <span>Applied</span>
+                            </button>
+                            <button class="filter-nested-btn" data-filter="status-accepted" data-i18n="status_accepted">
+                                <i class="fas fa-check"></i> <span>Accepted</span>
+                            </button>
+                            <button class="filter-nested-btn" data-filter="status-rejected" data-i18n="status_rejected">
+                                <i class="fas fa-times"></i> <span>Rejected</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Date Filter -->
+                    <div class="filter-group" id="dateFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span data-i18n="date">Date</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="dateOptions">
+                            <button class="filter-nested-btn" data-sort="date-desc" data-i18n="date_new_old">
+                                <i class="fas fa-sort-amount-down"></i> <span>New → Old</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="date-asc" data-i18n="date_old_new">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Old → New</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clear All Filters -->
+                    <button class="filter-clear-btn" id="clearAppliedFilters">
+                        <i class="fas fa-times-circle"></i>
+                        <span data-i18n="clear_all">Clear All</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="applied-jobs-list" id="appliedJobsContainer">
+                <!-- Applied job cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Active Jobs Section -->
+        <section id="active-jobs" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="active_jobs">Active Jobs</h2>
+            </div>
+            <div class="active-jobs-grid" id="activeJobsContainer">
+                <!-- Active job cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Work History Section -->
+        <section id="work-history" class="content-section">
+            <div class="section-header with-filters">
+                <h2 class="section-title" data-i18n="work_history">Work History</h2>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="historySearch" 
+                            class="form-input search-input"
+                            data-i18n-placeholder="search_work_history"
+                            placeholder="Search work history..."
+                        >
+                    </div>
+                </div>
+                
+                <!-- Filter Strip - Horizontal -->
+                <div class="filter-strip-horizontal">
+                    <!-- Date Filter -->
+                    <div class="filter-group" id="historyDateFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span data-i18n="date">Date</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="historyDateOptions">
+                            <button class="filter-nested-btn" data-sort="date-desc" data-i18n="date_new_old">
+                                <i class="fas fa-sort-amount-down"></i> <span>New → Old</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="date-asc" data-i18n="date_old_new">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Old → New</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Filter -->
+                    <div class="filter-group" id="historyPaymentFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="payment">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span data-i18n="payment">Payment</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="historyPaymentOptions">
+                            <button class="filter-nested-btn" data-sort="payment-desc" data-i18n="payment_high_low">
+                                <i class="fas fa-sort-numeric-down-alt"></i> <span>High → Low</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="payment-asc" data-i18n="payment_low_high">
+                                <i class="fas fa-sort-numeric-down"></i> <span>Low → High</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clear All Filters -->
+                    <button class="filter-clear-btn" id="clearHistoryFilters">
+                        <i class="fas fa-times-circle"></i>
+                        <span data-i18n="clear_all">Clear All</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="history-table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="employer_name">Employer Name</th>
+                            <th data-i18n="job_title">Job Title</th>
+                            <th data-i18n="completion_date">Completion Date</th>
+                            <th data-i18n="payment_earned">Payment Earned</th>
+                            <th data-i18n="rating">Rating</th>
+                            <th data-i18n="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workHistoryContainer">
+                        <!-- Work history rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- AI Assistant Section -->
+        <section id="ai-assistant" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="ai_assistant">AI Assistant</h2>
+                <p class="section-subtitle" data-i18n="ai_subtitle_worker">Get help finding the best jobs for your skills</p>
+            </div>
+            
+            <div class="ai-container">
+                <div class="ai-chat-container">
+                    <div class="ai-chat-header">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3>ShramikConnect AI</h3>
+                            <p data-i18n="ai_ready_worker">Ready to help you find the best jobs</p>
+                        </div>
+                    </div>
+                    <div class="ai-chat-messages" id="aiChatMessages">
+                        <div class="ai-message">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <p data-i18n="ai_welcome_full_worker">Hello! I'm your AI assistant. I can help you find the best jobs based on your skills and preferences. Try asking me: "Best jobs for my skills" or "High paying jobs near me".</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-chat-input">
+                        <div class="chat-attachments">
+                            <button class="attachment-btn" id="aiPageFileUploadBtn" title="Attach file">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <input type="file" id="aiPageFileInput" style="display: none;" accept="*/*">
+                        </div>
+                        <div class="input-with-icon">
+                            <i class="fas fa-comment input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="aiInput" 
+                                class="form-input"
+                                data-i18n-placeholder="type_your_message_here"
+                                placeholder="Type your message here..."
+                            >
+                        </div>
+                        <button class="ai-send-btn" id="aiSendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-text">
+                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                    </div>
+                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                </div>
+
+                <div class="footer-links">
+                    <a href="#" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                    <a href="#" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                    <a href="help.html" class="footer-link" data-i18n="help">Help & Contact</a>
+                    <a href="about.html" class="footer-link" data-i18n="about">About Us</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/worker/dashboard_worker.js' %}"></script>
+</body>
+</html>

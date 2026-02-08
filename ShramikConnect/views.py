@@ -8,6 +8,9 @@ def index(request):
 def role_selection(request):
     return render(request, 'role_selection.html')
 
+def help_and_contact(request):
+    return render(request, 'help_and_contact.html')
+
 def login_worker(request):
     return render(request, 'worker/login_worker.html')
 
@@ -63,5 +66,8 @@ def change_password_employer(request):
 def get_password_employer(request):
     return render(request, 'employer/get_password_employer.html')
 
-def home_page_employer(request):
-    return render(request, 'employer/home_page_employer.html')
+def dashboard_employer(request):
+    return render(request, 'employer/dashboard_employer.html')
+
+def dashboard_worker(request):
+    return render(request, 'worker/dashboard_worker.html')

@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index),
     path('role_selection/', views.role_selection),
+    path('help_and_contact/', views.help_and_contact),
     path('login_worker/', views.login_worker),
     path('login_employer/', views.login_employer),
     path('signup_worker/', views.signup_worker),
@@ -32,5 +33,7 @@ urlpatterns = [
     path('choose_password_employer/', views.choose_password_employer),
     path('change_password_employer/', views.change_password_employer),
     path('get_password_employer/', views.get_password_employer),
-    path('home_page_employer/', views.home_page_employer),
+    path('dashboard_employer/', views.dashboard_employer),
+    path('dashboard_worker/', views.dashboard_worker),
+    
 ]
