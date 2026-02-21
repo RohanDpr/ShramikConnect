@@ -15,20 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from ShramikConnect import views
 from django.http import HttpResponse
 from django.conf import settings
 import os
-from django.contrib.sitemaps.views import sitemap
-from django.contrib.sitemaps import Sitemap
-from django.urls import reverse
 
 def google_verify(request):
     file_path = os.path.join(settings.BASE_DIR, "google765667aa04e8106b.html")
     with open(file_path, "r") as f:
         return HttpResponse(f.read(), content_type="text/html")
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,22 +45,4 @@ urlpatterns = [
     path('dashboard_employer/', views.dashboard_employer),
     path('dashboard_worker/', views.dashboard_worker),
     
-]
-
-class StaticViewSitemap(Sitemap):
-    priority = 0.5
-    changefreq = 'weekly'
-
-    def items(self):
-        return ['home']  # apne url name ke hisaab se
-
-    def location(self, item):
-        return reverse(item)
-
-sitemaps = {
-    'static': StaticViewSitemap,
-}
-
-urlpatterns += [
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
 ]
