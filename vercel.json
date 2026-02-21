@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "ShramikConnect/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "ShramikConnect/wsgi.py"
+    }
+  ]
+}
