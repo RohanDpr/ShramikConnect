@@ -17,9 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ShramikConnect import views
+from django.http import HttpResponse
+from django.conf import settings
+import os
+
+def google_verify(request):
+    file_path = os.path.join(settings.BASE_DIR, "google765667aa04e8106b.html")
+    with open(file_path, "r") as f:
+        return HttpResponse(f.read(), content_type="text/html")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("google765667aa04e8106b.html", google_verify),
     path('', views.index),
     path('role_selection/', views.role_selection),
     path('help_and_contact/', views.help_and_contact),
