@@ -349,6 +349,10 @@ async function handleLogin(event) {
         
         // Success - in real app, redirect to dashboard
         showSuccessMessage();
+        // Redirect to worker dashboard after a short delay so the user sees the success message
+        setTimeout(() => {
+            window.location.href = '/dashboard_worker/';
+        }, 1000);
         
     } catch (error) {
         // Error handling

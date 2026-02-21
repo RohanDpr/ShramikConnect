@@ -652,22 +652,104 @@ function refreshTranslatedContent() {
 // THEME MANAGEMENT
 // ============================================
 
-function applyTheme(theme) {
-    currentTheme = theme;
-    let themeToApply = theme;
+/**
+ * Get the referrer domain and page to determine theme inheritance
+ */
+function getReferrerTheme() {
+    const referrer = document.referrer;
     
-    if (theme === 'system') {
-        themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // If no referrer (direct access), return null (use default)
+    if (!referrer) {
+        return null;
     }
     
-    document.body.classList.remove('light-theme', 'dark-theme');
+    try {
+        const referrerUrl = new URL(referrer);
+        const referrerPath = referrerUrl.pathname;
+        
+        // Check if coming from worker pages (blue theme)
+        if (referrerPath.includes('worker') || 
+            referrerPath.includes('Worker') || 
+            referrerPath.includes('WORKER')) {
+            return 'worker';
+        }
+        
+        // Check if coming from employer pages (green theme)
+        if (referrerPath.includes('employee') || 
+            referrerPath.includes('Employee') || 
+            referrerPath.includes('EMPLOYEE') ||
+            referrerPath.includes('employer') ||
+            referrerPath.includes('Employer')) {
+            return 'employer';
+        }
+        
+        return null;
+    } catch (e) {
+        console.log('Error parsing referrer:', e);
+        return null;
+    }
+}
+
+/**
+ * Apply theme based on referrer and saved preferences
+ */
+function applyTheme(theme) {
+    currentTheme = theme;
+    
+    let themeToApply = theme;
+    let themeType = 'default'; // 'default', 'worker', or 'employer'
+    
+    // Check if we're inheriting theme from referrer
+    if (theme === 'light' || theme === 'dark') {
+        const referrerTheme = getReferrerTheme();
+        
+        if (referrerTheme === 'worker') {
+            themeType = 'worker';
+            // Worker uses blue theme (keep current light/dark)
+        } else if (referrerTheme === 'employer') {
+            themeType = 'employer';
+            // Employer uses green theme (keep current light/dark)
+        }
+    }
+    
+    // If theme is 'system', check system preference
+    if (theme === 'system') {
+        themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        
+        // Check referrer for system theme
+        const referrerTheme = getReferrerTheme();
+        if (referrerTheme === 'worker') {
+            themeType = 'worker';
+        } else if (referrerTheme === 'employer') {
+            themeType = 'employer';
+        }
+    }
+    
+    // Remove existing theme classes
+    document.body.classList.remove('light-theme', 'dark-theme', 'worker-theme', 'employer-theme');
+    
+    // Add theme classes
     document.body.classList.add(`${themeToApply}-theme`);
     
+    // Add referrer-based theme class if applicable
+    if (themeType === 'worker') {
+        document.body.classList.add('worker-theme');
+    } else if (themeType === 'employer') {
+        document.body.classList.add('employer-theme');
+    }
+    
+    // Update theme buttons
     themeOptions.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.theme === theme);
     });
     
+    // Store theme preference
     localStorage.setItem('helpTheme', theme);
+    
+    // Also store the referrer theme type for persistence
+    if (themeType !== 'default') {
+        localStorage.setItem('helpThemeType', themeType);
+    }
 }
 
 function handleThemeChange(theme) {
@@ -1611,16 +1693,18 @@ function init() {
     const savedLanguage = localStorage.getItem('helpLanguage') || 'en';
     const savedTheme = localStorage.getItem('helpTheme') || 'light';
     
-    // Apply language and theme
+    // Apply language
     handleLanguageChange(savedLanguage);
+    
+    // Apply theme (this will handle referrer-based inheritance)
     applyTheme(savedTheme);
     
     // Setup navigation
     setupNavigation();
     
     // Create dynamic content - ONLY ONCE
-    createHelpCards();  // ✅ यहाँ सिर्फ एक बार call करें
-    createFAQ();        // ✅ यहाँ सिर्फ एक बार call करें
+    createHelpCards();
+    createFAQ();
     
     // Setup forms and services
     setupForm();

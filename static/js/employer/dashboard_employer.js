@@ -1454,15 +1454,6 @@ DOM.menuItems.forEach(item => {
         }
     });
 });
-    
-    // Nav link clicks - FIX: Handle help/about sections
-    DOM.navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const section = link.dataset.section;
-            setActiveSection(section);
-        });
-    });
 
 // Global navigation strip - Update AI Assistant handling
 DOM.navStripBtns.forEach(btn => {
@@ -1786,18 +1777,11 @@ function setActiveSection(sectionId) {
         }
     });
     
-    // Update nav links - FIX: Home always active
+    // Update nav links
     DOM.navLinks.forEach(link => {
-        if (link.dataset.section === 'dashboard') {
-            // Always keep Home active when in any content section
-            const isContentSection = sectionId !== 'help' && sectionId !== 'about';
-            link.classList.toggle('active', isContentSection);
-        } else {
-            // Other nav links (Help, About) work normally
-            link.classList.remove('active');
-            if (link.dataset.section === sectionId) {
-                link.classList.add('active');
-            }
+        link.classList.remove('active');
+        if (link.dataset.section === sectionId) {
+            link.classList.add('active');
         }
     });
     
@@ -1818,7 +1802,7 @@ function setActiveSection(sectionId) {
     });
     
     // Show/hide global navigation strip
-    if (sectionId === 'dashboard' || sectionId === 'help' || sectionId === 'about') {
+    if (sectionId === 'dashboard') {
         DOM.globalNavStrip.classList.remove('active');
     } else {
         DOM.globalNavStrip.classList.add('active');

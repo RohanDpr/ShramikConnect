@@ -115,7 +115,8 @@ function setupEventListeners() {
 }
 
 document.getElementById("loginButton").addEventListener("click", function () {
-    window.location.href = "/home_page_employer/";
+    // Previously redirected immediately to /home_page_employer/ on click.
+    // Removed immediate redirect so form validation and async login flow run.
 });
 
 
@@ -364,6 +365,10 @@ async function handleLogin(event) {
         
         // Success - in real app, redirect to employer dashboard
         showSuccessMessage();
+        // Redirect to employer dashboard after a short delay so the user sees the success message
+        setTimeout(() => {
+            window.location.href = '/dashboard_employer/';
+        }, 1000);
         
     } catch (error) {
         // Error handling
