@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Help & Contact | ShramikConnect</title>
     <link rel="stylesheet" href="{% static 'css/help_and_contact.css' %}">
-    <!-- Font Awesome -->
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
+    <!-- Google Fonts for clean typography -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="light-theme">
+<body>
     <!-- ============================================
-         SIDEBAR (Hamburger Menu WITHOUT Profile Icon)
+         SIDEBAR (Hamburger Menu)
+         - Contains navigation links and settings icon
+         - Slides in from left when hamburger clicked
          ============================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
@@ -25,7 +27,7 @@
         </div>
         
         <div class="sidebar-content">
-            <!-- Settings Icon Inside Sidebar -->
+            <!-- Settings Icon Inside Sidebar (Professional) -->
             <div class="sidebar-settings-icon" id="sidebarSettingsIcon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
@@ -48,7 +50,7 @@
                 </a>
                 <a href="about.html" class="menu-item-box">
                     <i class="fas fa-info-circle"></i>
-                    <span data-i18n="about">About</span>
+                    <span data-i18n="about">About</span>  <!-- Changed from "About Us" to "About" -->
                 </a>
                 <a href="term_and_condition.html" class="menu-item-box">
                     <i class="fas fa-file-contract"></i>
@@ -64,6 +66,9 @@
 
     <!-- ============================================
          SETTINGS DROPDOWN
+         - Professional settings panel
+         - Language and theme options
+         - Opens from settings icon
          ============================================ -->
     <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
         <div class="settings-section">
@@ -78,21 +83,17 @@
         <div class="settings-section">
             <h3 class="settings-heading" data-i18n="theme">Theme</h3>
             <div class="theme-switcher">
-                <button class="theme-option active" data-theme="light">
-                    <span data-i18n="light">Light</span>
-                </button>
-                <button class="theme-option" data-theme="dark">
-                    <span data-i18n="dark">Dark</span>
-                </button>
-                <button class="theme-option" data-theme="system">
-                    <span data-i18n="system">System</span>
-                </button>
+                <button class="theme-option" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
             </div>
         </div>
     </div>
 
     <!-- ============================================
          MAIN NAVBAR
+         - Fixed top navigation bar
+         - Contains hamburger menu, logo, and nav links
          ============================================ -->
     <nav class="navbar">
         <div class="nav-left">
@@ -119,16 +120,21 @@
             </a>
             <a href="about.html" class="nav-link" data-i18n="about">
                 <i class="fas fa-info-circle"></i>
-                <span class="nav-text" data-i18n="about">About</span>
+                <span class="nav-text" data-i18n="about">About</span>  <!-- Changed from "About Us" to "About" -->
             </a>
         </div>
     </nav>
 
     <!-- ============================================
-         MAIN CONTENT
+         MAIN CONTENT AREA
+         - Contains all page sections
          ============================================ -->
     <main class="main-content" id="mainContent">
-        <!-- SECTION 1: ENHANCED WELCOME SECTION -->
+        <!-- ============================================
+             SECTION 1: ENHANCED WELCOME SECTION
+             - Hero section with welcome message
+             - Live Chat and AI Assistant options
+             ============================================ -->
         <section class="welcome-section" id="welcomeSection">
             <div class="container">
                 <div class="welcome-content">
@@ -158,8 +164,10 @@
                         </div>
                     </div>
                     
+                    <!-- Chat Options - Fixed side by side -->
                     <div class="welcome-graphics">
                         <div class="chat-options-container welcome-chat-options">
+                            <!-- Live Chat Option -->
                             <div class="chat-option primary-chat" id="liveChatBtn">
                                 <div class="chat-icon-wrapper">
                                     <i class="fas fa-comments"></i>
@@ -172,6 +180,7 @@
                                 <span class="chat-badge" data-i18n="online">Online</span>
                             </div>
                             
+                            <!-- AI Assistant Option -->
                             <div class="chat-option secondary-chat" id="chatbotBtn">
                                 <div class="chat-icon-wrapper">
                                     <i class="fas fa-robot"></i>
@@ -188,7 +197,11 @@
             </div>
         </section>
 
-        <!-- SECTION 2: QUICK HELP CARDS -->
+        <!-- ============================================
+             SECTION 2: QUICK HELP CARDS
+             - 12 help topic cards
+             - Generated dynamically by JavaScript
+             ============================================ -->
         <section class="help-cards-section" id="helpCards">
             <div class="container">
                 <div class="section-header">
@@ -202,7 +215,11 @@
             </div>
         </section>
 
-        <!-- SECTION 3: ENHANCED REPORT PROBLEM FORM -->
+        <!-- ============================================
+             SECTION 3: ENHANCED REPORT PROBLEM FORM
+             - Contact form for reporting issues
+             - File upload and location features
+             ============================================ -->
         <section class="report-section" id="reportSection">
             <div class="container">
                 <div class="section-header">
@@ -218,7 +235,7 @@
                         </div>
                         
                         <div class="form-grid">
-                            <!-- Personal Info -->
+                            <!-- Personal Information Section -->
                             <div class="form-section">
                                 <h4 class="form-section-title" data-i18n="personal_info">Personal Information</h4>
                                 <div class="form-group">
@@ -253,7 +270,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Issue Details -->
+                            <!-- Issue Details Section -->
                             <div class="form-section">
                                 <h4 class="form-section-title" data-i18n="issue_details">Issue Details</h4>
                                 <div class="form-group">
@@ -290,7 +307,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Attachments & Location -->
+                            <!-- Additional Information Section -->
                             <div class="form-section">
                                 <h4 class="form-section-title" data-i18n="additional_info">Additional Information</h4>
                                 
@@ -307,7 +324,7 @@
                                     <div class="file-previews" id="filePreviews"></div>
                                 </div>
                                 
-                                <!-- Location -->
+                                <!-- Location Input -->
                                 <div class="form-group">
                                     <label data-i18n="location">Location (Optional)</label>
                                     <div class="location-container">
@@ -324,7 +341,7 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Urgency -->
+                                <!-- Urgency Level Selection -->
                                 <div class="form-group">
                                     <label data-i18n="urgency_level">Urgency Level</label>
                                     <div class="urgency-levels">
@@ -354,7 +371,7 @@
                             </div>
                         </div>
                         
-                        <!-- Form Actions -->
+                        <!-- Form Actions (Submit/Reset) -->
                         <div class="form-actions">
                             <div class="form-tips">
                                 <i class="fas fa-lightbulb"></i>
@@ -376,7 +393,12 @@
             </div>
         </section>
 
-        <!-- SECTION 4: ENHANCED FAQ SECTION -->
+        <!-- ============================================
+             SECTION 4: ENHANCED FAQ SECTION
+             - Frequently Asked Questions
+             - Search functionality
+             - Chat options
+             ============================================ -->
         <section class="faq-section" id="faqSection">
             <div class="container">
                 <div class="section-header">
@@ -384,10 +406,11 @@
                     <p data-i18n="faq_subtitle">Find quick answers to common questions below</p>
                 </div>
                 
+                <!-- FAQ Search Bar -->
                 <div class="faq-search-container">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="faqSearch" placeholder="Type to search questions..." data-i18n-placeholder="search_faq">
+                        <input type="search" id="faqSearch" placeholder="Type to search questions..." data-i18n-placeholder="search_faq">
                         <button class="search-clear" id="searchClear" aria-label="Clear search">
                             <i class="fas fa-times"></i>
                         </button>
@@ -397,10 +420,12 @@
                     </div>
                 </div>
                 
+                <!-- FAQ Items Container -->
                 <div class="faq-container" id="faqContainer">
                     <!-- FAQ generated by JavaScript -->
                 </div>
                 
+                <!-- FAQ Footer with Chat Options -->
                 <div class="faq-footer">
                     <div class="chat-options-faq">
                         <h3 data-i18n="still_questions">Still have questions?</h3>
@@ -425,71 +450,77 @@
     </main>
 
     <!-- ============================================
-         FOOTER
+         FOOTER SECTION
+         - Brand information
+         - Quick links
+         - Social media links
          ============================================ -->
-   <!-- Footer -->
-<footer class="footer">
-    <div class="footer-wave">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
-            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
-            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
-        </svg>
-    </div>
-    
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="brand-text" id="brandText">
-                    <span class="shramik">Shramik</span><span class="connect">Connect</span>
-                </div>
-                <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
-                <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
-            </div>
-            
-            <div class="footer-links">
-                <div class="links-column">
-                    <h3 class="column-title">Platform</h3>
-                    <a href="#" class="footer-link">For Workers</a>
-                    <a href="#" class="footer-link">For Employers</a>
-                </div>
-                
-                <div class="links-column">
-                    <h3 class="column-title">Company</h3>
-                    <a href="about.html" class="footer-link" data-i18n="about">About Us</a>
-                    <a href="#" class="footer-link">How It Works</a>
-                </div>
-                
-                <div class="links-column">
-                    <h3 class="column-title">Support</h3>
-                    <a href="help_and_contact_page.html" class="footer-link" data-i18n="help_contact">Help & Contact</a>
-                    <a href="privacy_policy.html" class="footer-link" data-i18n="privacy">Privacy Policy</a>
-                    <a href="term_and_condition.html" class="footer-link" data-i18n="terms">Terms & Conditions</a>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="footer-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+            </svg>
         </div>
         
-        <div class="footer-bottom">
-            <div class="social-links">
-                <a href="#" class="social-link" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-link" aria-label="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-link" aria-label="X (Twitter)">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="social-link" aria-label="Email">
-                    <i class="fas fa-envelope"></i>
-                </a>
+        <div class="container">
+            <div class="footer-content">
+                <!-- Brand Section -->
+                <div class="footer-brand">
+                    <div class="brand-text" id="brandText">
+                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                    </div>
+                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                    <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
+                </div>
+                
+                <!-- Footer Links -->
+                <div class="footer-links">
+                    <div class="links-column">
+                        <h3 class="column-title">Platform</h3>
+                        <a href="#" class="footer-link">For Workers</a>
+                        <a href="#" class="footer-link">For Employers</a>
+                    </div>
+                    
+                    <div class="links-column">
+                        <h3 class="column-title">Company</h3>
+                        <a href="about.html" class="footer-link" data-i18n="about">About</a>  <!-- Changed from "About Us" to "About" -->
+                        <a href="#" class="footer-link">How It Works</a>
+                    </div>
+                    
+                    <div class="links-column">
+                        <h3 class="column-title">Support</h3>
+                        <a href="help_and_contact_page.html" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                        <a href="privacy_policy.html" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                        <a href="term_and_condition.html" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Media Links -->
+            <div class="footer-bottom">
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="X (Twitter)">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <!-- ============================================
-         SCRIPTS
+         JAVASCRIPT
+         - Main functionality file
          ============================================ -->
     <script src="{% static 'js/help_and_contact.js' %}"></script>
 </body>
