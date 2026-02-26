@@ -32,20 +32,27 @@
         </div>
         
         <div class="sidebar-content">
-            <!-- Profile Section -->
+            <!-- Profile Section - DYNAMIC -->
             <div class="sidebar-profile">
-                <div class="profile-photo">
-                    <img src="assets/ShramikConnect_Logo.jpg" alt="Profile" id="profileImage">
-                </div>
-                <div class="profile-info">
-                    <h3 id="profileName">Rajesh Sharma</h3>
-                    <p class="email-text" data-i18n="construction_company">Construction Company</p>
-                    <button class="profile-edit-btn" id="profileEditBtn">
-                        <i class="fas fa-edit"></i>
-                        <span data-i18n="edit_profile">Edit Profile</span>
-                    </button>
-                </div>
+    <div class="profile-photo">
+        {% if employer.profile_photo and employer.profile_photo.name %}
+            <img src="{{ employer.profile_photo.url }}" alt="{{ employer.get_full_name }}" id="profileImage">
+        {% else %}
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #01A060, #4362C9); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                {{ employer.first_name|first|default:"E" }}{{ employer.last_name|first|default:"" }}
             </div>
+        {% endif %}
+    </div>
+    <div class="profile-info">
+        <h3 id="profileName">{{ employer.get_full_name }}</h3>
+        <p class="email-text" id="profileEmail">{{ employer.email }}</p>
+        <p class="email-text" data-i18n="construction_company">{{ employer.company_name|default:"Construction Company" }}</p>
+        <button class="profile-edit-btn" id="profileEditBtn">
+            <i class="fas fa-edit"></i>
+            <span data-i18n="edit_profile">Edit Profile</span>
+        </button>
+    </div>
+</div>
             
             <!-- Settings Icon -->
             <div class="sidebar-settings-icon" id="sidebarSettingsIcon" aria-label="Settings" tabindex="0" role="button">
@@ -160,6 +167,7 @@
                                     id="employerName" 
                                     class="form-input"
                                     placeholder="e.g., Rajesh Sharma"
+                                    value="{{ employer.get_full_name }}"
                                     required
                                 >
                             </div>
@@ -173,6 +181,7 @@
                                     id="workAddress" 
                                     class="form-input"
                                     placeholder="Full address"
+                                    value="{{ employer.work_location_address }}"
                                     required
                                 >
                             </div>
@@ -182,8 +191,8 @@
                     <div class="form-group">
                         <label class="form-label" data-i18n="work_location">Work Location on Map</label>
                         <div id="map" style="height: 200px; border-radius: 8px; margin-top: 5px;"></div>
-                        <input type="hidden" id="latitude">
-                        <input type="hidden" id="longitude">
+                        <input type="hidden" id="latitude" value="{{ employer.work_latitude|default:'19.0760' }}">
+                        <input type="hidden" id="longitude" value="{{ employer.work_longitude|default:'72.8777' }}">
                     </div>
                     
                     <div class="form-group">
@@ -230,38 +239,38 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-    <label for="requiredSkills" class="form-label" data-i18n="required_skills">Required Skills</label>
-    <div class="input-with-icon">
-        <i class="fas fa-tools input-icon"></i>
-        <select 
-            id="requiredSkills" 
-            class="form-input"
-            multiple
-            size="5"
-            style="height: auto; min-height: 120px; padding-top: 10px; padding-bottom: 10px;"
-            required
-        >
-            <option value="Electrician">Electrician</option>
-            <option value="Plumber">Plumber</option>
-            <option value="Carpenter">Carpenter</option>
-            <option value="Painter">Painter</option>
-            <option value="Welder">Welder</option>
-            <option value="Mason">Mason</option>
-            <option value="Helper">Helper</option>
-            <option value="Driver">Driver</option>
-            <option value="Cleaner">Cleaner</option>
-            <option value="Gardener">Gardener</option>
-            <option value="Mechanic">Mechanic</option>
-            <option value="AC Technician">AC Technician</option>
-            <option value="Tile Worker">Tile Worker</option>
-            <option value="Fabricator">Fabricator</option>
-            <option value="Construction Worker">Construction Worker</option>
-        </select>
-        <small style="display: block; margin-top: 5px; color: #666; font-size: 12px;">
-            <i class="fas fa-info-circle"></i> Hold Ctrl (Windows) or Command (Mac) to select multiple skills
-        </small>
-    </div>
-</div>
+                            <label for="requiredSkills" class="form-label" data-i18n="required_skills">Required Skills</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-tools input-icon"></i>
+                                <select 
+                                    id="requiredSkills" 
+                                    class="form-input"
+                                    multiple
+                                    size="5"
+                                    style="height: auto; min-height: 120px; padding-top: 10px; padding-bottom: 10px;"
+                                    required
+                                >
+                                    <option value="Electrician">Electrician</option>
+                                    <option value="Plumber">Plumber</option>
+                                    <option value="Carpenter">Carpenter</option>
+                                    <option value="Painter">Painter</option>
+                                    <option value="Welder">Welder</option>
+                                    <option value="Mason">Mason</option>
+                                    <option value="Helper">Helper</option>
+                                    <option value="Driver">Driver</option>
+                                    <option value="Cleaner">Cleaner</option>
+                                    <option value="Gardener">Gardener</option>
+                                    <option value="Mechanic">Mechanic</option>
+                                    <option value="AC Technician">AC Technician</option>
+                                    <option value="Tile Worker">Tile Worker</option>
+                                    <option value="Fabricator">Fabricator</option>
+                                    <option value="Construction Worker">Construction Worker</option>
+                                </select>
+                                <small style="display: block; margin-top: 5px; color: #666; font-size: 12px;">
+                                    <i class="fas fa-info-circle"></i> Hold Ctrl (Windows) or Command (Mac) to select multiple skills
+                                </small>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="jobLocation" class="form-label" data-i18n="location">Location</label>
                             <div class="input-with-icon">
@@ -271,6 +280,7 @@
                                     id="jobLocation" 
                                     class="form-input"
                                     placeholder="e.g., Mumbai, Andheri"
+                                    value="{{ employer.city }}, {{ employer.state }}"
                                     required
                                 >
                             </div>
@@ -639,17 +649,17 @@
     <main class="main-content" id="mainContent">
         <!-- Dashboard Section -->
         <section id="dashboard" class="content-section active">
-            <!-- Welcome Header -->
+            <!-- Welcome Header - DYNAMIC -->
             <div class="welcome-header">
                 <h1 class="welcome-title">
-                    <span data-i18n="welcome">Welcome</span>, <span class="employer-name" id="employerNameDisplay">Rajesh Sharma</span>!
+                    <span data-i18n="welcome">Welcome</span>, <span class="employer-name" id="employerNameDisplay">{{ employer.first_name }} {{ employer.last_name }}</span>!
                 </h1>
                 <p class="welcome-slogan" data-i18n="dashboard_slogan">
                     Manage your job posts, workers, and hiring process
                 </p>
             </div>
 
-            <!-- Statistics Cards -->
+            <!-- Statistics Cards - DYNAMIC -->
             <div class="statistics-grid">
                 <!-- Card 1: Total Jobs Posted -->
                 <div class="stat-card clickable" onclick="setActiveSection('job-posts')">
@@ -658,7 +668,7 @@
                     </div>
                     <div class="stat-content">
                         <h3 class="stat-title" data-i18n="total_jobs_posted">Total Jobs Posted</h3>
-                        <div class="stat-value" id="totalJobs">12</div>
+                        <div class="stat-value" id="totalJobs">{{ total_jobs|default:"0" }}</div>
                         <div class="stat-label" data-i18n="till_now">Till Now</div>
                     </div>
                     <div class="stat-badge">
@@ -673,7 +683,7 @@
                     </div>
                     <div class="stat-content">
                         <h3 class="stat-title" data-i18n="total_workers_hired">Total Workers Hired</h3>
-                        <div class="stat-value" id="totalHired">8</div>
+                        <div class="stat-value" id="totalHired">{{ total_hired|default:"0" }}</div>
                         <div class="stat-label" data-i18n="till_now">Till Now</div>
                     </div>
                     <div class="stat-badge">
@@ -692,7 +702,7 @@
                             <div class="stars-container" id="ratingStars">
                                 <!-- Stars will be populated by JavaScript -->
                             </div>
-                            <div class="rating-value" id="avgRating">4.2</div>
+                            <div class="rating-value" id="avgRating">{{ avg_rating|default:"0.0" }}</div>
                         </div>
                         <div class="stat-label" data-i18n="given_by_workers">Given by Workers</div>
                     </div>
@@ -749,124 +759,123 @@
             </div>
         </section>
 
-      <!-- Accepted Workers Section -->
-<section id="accepted-workers" class="content-section">
-    <div class="section-header with-filters">
-        <h2 class="section-title" data-i18n="accepted_workers">Accepted Workers</h2>
-        
-        <!-- SEARCH BAR - Separate from filter strip -->
-        <div class="search-container">
-            <div class="input-with-icon">
-                <i class="fas fa-search input-icon"></i>
-                <input 
-                    type="text" 
-                    id="workerSearch" 
-                    class="form-input search-input"
-                    placeholder="Search workers..."
-                >
-            </div>
-        </div>
-        
-        
-        <!-- FILTER STRIP - Horizontal only -->
-        <div class="filter-strip-horizontal">
-            <!-- Distance Filter -->
-            <div class="filter-group" id="distanceFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="distance">
-                    <i class="fas fa-route"></i>
-                    <span data-i18n="distance">Distance</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="distanceOptions">
-                    <button class="filter-nested-btn" data-sort="distance-asc" data-i18n="distance_near_far">
-                        <i class="fas fa-sort-amount-down-alt"></i> <span>Near → Far</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="distance-desc" data-i18n="distance_far_near">
-                        <i class="fas fa-sort-amount-down"></i> <span>Far → Near</span>
+        <!-- Accepted Workers Section -->
+        <section id="accepted-workers" class="content-section">
+            <div class="section-header with-filters">
+                <h2 class="section-title" data-i18n="accepted_workers">Accepted Workers</h2>
+                
+                <!-- SEARCH BAR -->
+                <div class="search-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="workerSearch" 
+                            class="form-input search-input"
+                            placeholder="Search workers..."
+                        >
+                    </div>
+                </div>
+                
+                <!-- FILTER STRIP -->
+                <div class="filter-strip-horizontal">
+                    <!-- Distance Filter -->
+                    <div class="filter-group" id="distanceFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="distance">
+                            <i class="fas fa-route"></i>
+                            <span data-i18n="distance">Distance</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="distanceOptions">
+                            <button class="filter-nested-btn" data-sort="distance-asc" data-i18n="distance_near_far">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Near → Far</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="distance-desc" data-i18n="distance_far_near">
+                                <i class="fas fa-sort-amount-down"></i> <span>Far → Near</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Name Filter -->
+                    <div class="filter-group" id="nameFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="name">
+                            <i class="fas fa-user"></i>
+                            <span data-i18n="name">Name</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="nameOptions">
+                            <button class="filter-nested-btn" data-sort="name-asc" data-i18n="name_a_z">
+                                <i class="fas fa-sort-alpha-down"></i> <span>A → Z</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="name-desc" data-i18n="name_z_a">
+                                <i class="fas fa-sort-alpha-down-alt"></i> <span>Z → A</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Filter -->
+                    <div class="filter-group" id="priceFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="price">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span data-i18n="price">Price</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="priceOptions">
+                            <button class="filter-nested-btn" data-sort="price-asc" data-i18n="price_low_high">
+                                <i class="fas fa-sort-numeric-down"></i> <span>Low → High</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="price-desc" data-i18n="price_high_low">
+                                <i class="fas fa-sort-numeric-down-alt"></i> <span>High → Low</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Rating Filter -->
+                    <div class="filter-group" id="ratingFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="rating">
+                            <i class="fas fa-star"></i>
+                            <span data-i18n="rating">Rating</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="ratingOptions">
+                            <button class="filter-nested-btn" data-sort="rating-desc" data-i18n="rating_high_low">
+                                <i class="fas fa-sort-amount-down"></i> <span>High → Low</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="rating-asc" data-i18n="rating_low_high">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Low → High</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Filter -->
+                    <div class="filter-group" id="timeFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="time">
+                            <i class="fas fa-clock"></i>
+                            <span data-i18n="acceptance_time">Acceptance Time</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="timeOptions">
+                            <button class="filter-nested-btn" data-sort="time-asc" data-i18n="acceptance_first_last">
+                                <i class="fas fa-sort-amount-down"></i> <span>First → Last</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="time-desc" data-i18n="acceptance_last_first">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Last → First</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clear All Filters -->
+                    <button class="filter-clear-btn" id="clearAllFilters">
+                        <i class="fas fa-times-circle"></i>
+                        <span data-i18n="clear_all">Clear All</span>
                     </button>
                 </div>
             </div>
-            
-            <!-- Name Filter -->
-            <div class="filter-group" id="nameFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="name">
-                    <i class="fas fa-user"></i>
-                    <span data-i18n="name">Name</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="nameOptions">
-                    <button class="filter-nested-btn" data-sort="name-asc" data-i18n="name_a_z">
-                        <i class="fas fa-sort-alpha-down"></i> <span>A → Z</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="name-desc" data-i18n="name_z_a">
-                        <i class="fas fa-sort-alpha-down-alt"></i> <span>Z → A</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Price Filter -->
-            <div class="filter-group" id="priceFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="price">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <span data-i18n="price">Price</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="priceOptions">
-                    <button class="filter-nested-btn" data-sort="price-asc" data-i18n="price_low_high">
-                        <i class="fas fa-sort-numeric-down"></i> <span>Low → High</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="price-desc" data-i18n="price_high_low">
-                        <i class="fas fa-sort-numeric-down-alt"></i> <span>High → Low</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Rating Filter -->
-            <div class="filter-group" id="ratingFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="rating">
-                    <i class="fas fa-star"></i>
-                    <span data-i18n="rating">Rating</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="ratingOptions">
-                    <button class="filter-nested-btn" data-sort="rating-desc" data-i18n="rating_high_low">
-                        <i class="fas fa-sort-amount-down"></i> <span>High → Low</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="rating-asc" data-i18n="rating_low_high">
-                        <i class="fas fa-sort-amount-down-alt"></i> <span>Low → High</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Time Filter -->
-            <div class="filter-group" id="timeFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="time">
-                    <i class="fas fa-clock"></i>
-                    <span data-i18n="acceptance_time">Acceptance Time</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="timeOptions">
-                    <button class="filter-nested-btn" data-sort="time-asc" data-i18n="acceptance_first_last">
-                        <i class="fas fa-sort-amount-down"></i> <span>First → Last</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="time-desc" data-i18n="acceptance_last_first">
-                        <i class="fas fa-sort-amount-down-alt"></i> <span>Last → First</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Clear All Filters -->
-            <button class="filter-clear-btn" id="clearAllFilters">
-                <i class="fas fa-times-circle"></i>
-                <span data-i18n="clear_all">Clear All</span>
-            </button>
-        </div>
-    </div>
 
-    <div class="workers-grid" id="acceptedWorkersContainer">
-        <!-- Worker cards will be populated by JavaScript -->
-    </div>
-</section>
+            <div class="workers-grid" id="acceptedWorkersContainer">
+                <!-- Worker cards will be populated by JavaScript -->
+            </div>
+        </section>
         
         <!-- Hired Workers Section -->
         <section id="hired-workers" class="content-section">
@@ -878,104 +887,103 @@
             </div>
         </section>
 
- <!-- Work History Section -->
-<section id="work-history" class="content-section">
-    <div class="section-header with-filters">
-        <h2 class="section-title" data-i18n="work_history">Work History</h2>
-        
-        <!-- SEARCH BAR - Separate from filter strip -->
-        <div class="search-container">
-            <div class="input-with-icon">
-                <i class="fas fa-search input-icon"></i>
-                <input 
-                    type="text" 
-                    id="historySearch" 
-                    class="form-input search-input"
-                    placeholder="Search work history..."
-                >
-            </div>
-        </div>
-        
-        
-        <!-- FILTER STRIP - Horizontal only -->
-        <div class="filter-strip-horizontal">
-            <!-- Date Filter -->
-            <div class="filter-group" id="dateFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="date">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span data-i18n="date">Date</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="dateOptions">
-                    <button class="filter-nested-btn" data-sort="date-desc" data-i18n="date_new_old">
-                        <i class="fas fa-sort-amount-down"></i> <span>New → Old</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="date-asc" data-i18n="date_old_new">
-                        <i class="fas fa-sort-amount-down-alt"></i> <span>Old → New</span>
+        <!-- Work History Section -->
+        <section id="work-history" class="content-section">
+            <div class="section-header with-filters">
+                <h2 class="section-title" data-i18n="work_history">Work History</h2>
+                
+                <!-- SEARCH BAR -->
+                <div class="search-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="historySearch" 
+                            class="form-input search-input"
+                            placeholder="Search work history..."
+                        >
+                    </div>
+                </div>
+                
+                <!-- FILTER STRIP -->
+                <div class="filter-strip-horizontal">
+                    <!-- Date Filter -->
+                    <div class="filter-group" id="dateFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span data-i18n="date">Date</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="dateOptions">
+                            <button class="filter-nested-btn" data-sort="date-desc" data-i18n="date_new_old">
+                                <i class="fas fa-sort-amount-down"></i> <span>New → Old</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="date-asc" data-i18n="date_old_new">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Old → New</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Rating Filter -->
+                    <div class="filter-group" id="historyRatingFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="rating">
+                            <i class="fas fa-star"></i>
+                            <span data-i18n="rating">Rating</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="historyRatingOptions">
+                            <button class="filter-nested-btn" data-sort="rating-desc" data-i18n="rating_high_low">
+                                <i class="fas fa-sort-amount-down"></i> <span>High → Low</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="rating-asc" data-i18n="rating_low_high">
+                                <i class="fas fa-sort-amount-down-alt"></i> <span>Low → High</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Filter -->
+                    <div class="filter-group" id="historyPriceFilterGroup">
+                        <button class="filter-parent-btn" data-filter-type="price">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span data-i18n="price">Price</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-nested-options" id="historyPriceOptions">
+                            <button class="filter-nested-btn" data-sort="price-desc" data-i18n="price_high_low">
+                                <i class="fas fa-sort-numeric-down-alt"></i> <span>High → Low</span>
+                            </button>
+                            <button class="filter-nested-btn" data-sort="price-asc" data-i18n="price_low_high">
+                                <i class="fas fa-sort-numeric-down"></i> <span>Low → High</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Clear All Filters -->
+                    <button class="filter-clear-btn" id="clearHistoryFilters">
+                        <i class="fas fa-times-circle"></i>
+                        <span data-i18n="clear_all">Clear All</span>
                     </button>
                 </div>
             </div>
-            
-            <!-- Rating Filter -->
-            <div class="filter-group" id="historyRatingFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="rating">
-                    <i class="fas fa-star"></i>
-                    <span data-i18n="rating">Rating</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="historyRatingOptions">
-                    <button class="filter-nested-btn" data-sort="rating-desc" data-i18n="rating_high_low">
-                        <i class="fas fa-sort-amount-down"></i> <span>High → Low</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="rating-asc" data-i18n="rating_low_high">
-                        <i class="fas fa-sort-amount-down-alt"></i> <span>Low → High</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Price Filter -->
-            <div class="filter-group" id="historyPriceFilterGroup">
-                <button class="filter-parent-btn" data-filter-type="price">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <span data-i18n="price">Price</span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="filter-nested-options" id="historyPriceOptions">
-                    <button class="filter-nested-btn" data-sort="price-desc" data-i18n="price_high_low">
-                        <i class="fas fa-sort-numeric-down-alt"></i> <span>High → Low</span>
-                    </button>
-                    <button class="filter-nested-btn" data-sort="price-asc" data-i18n="price_low_high">
-                        <i class="fas fa-sort-numeric-down"></i> <span>Low → High</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Clear All Filters -->
-            <button class="filter-clear-btn" id="clearHistoryFilters">
-                <i class="fas fa-times-circle"></i>
-                <span data-i18n="clear_all">Clear All</span>
-            </button>
-        </div>
-    </div>
 
-    <div class="history-table-container">
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th data-i18n="worker_name">Worker Name</th>
-                    <th data-i18n="job_title">Job Title</th>
-                    <th data-i18n="completion_date">Completion Date</th>
-                    <th data-i18n="rating_given">Rating Given</th>
-                    <th data-i18n="payment">Payment</th>
-                    <th data-i18n="actions">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="workHistoryContainer">
-                <!-- Work history rows will be populated by JavaScript -->
-            </tbody>
-        </table>
-    </div>
-</section>
+            <div class="history-table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="worker_name">Worker Name</th>
+                            <th data-i18n="job_title">Job Title</th>
+                            <th data-i18n="completion_date">Completion Date</th>
+                            <th data-i18n="rating_given">Rating Given</th>
+                            <th data-i18n="payment">Payment</th>
+                            <th data-i18n="actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workHistoryContainer">
+                        <!-- Work history rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
         
         <!-- AI Assistant Section -->
         <section id="ai-assistant" class="content-section">
@@ -1043,30 +1051,52 @@
             </div>
         </section>
         
-        
     <!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="brand-text">
-                    <span class="shramik">Shramik</span><span class="connect">Connect</span>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-text">
+                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                    </div>
+                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
                 </div>
-                <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
-            </div>
 
-            <div class="footer-links">
-                <a href="#" class="footer-link" data-i18n="privacy">Privacy Policy</a>
-                <a href="#" class="footer-link" data-i18n="terms">Terms & Conditions</a>
-                <a href="#" class="footer-link" data-i18n="help">Help & Contact</a>
-                <a href="#" class="footer-link" data-i18n="about">About Us</a>
+                <div class="footer-links">
+                    <a href="#" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                    <a href="#" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                    <a href="#" class="footer-link" data-i18n="help">Help & Contact</a>
+                    <a href="#" class="footer-link" data-i18n="about">About Us</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
+
+    <!-- Hidden data for JavaScript -->
+    <script>
+    // Pass Django context to JavaScript with safe fallbacks
+    window.employerData = {
+        id: {% if employer.id %}{{ employer.id }}{% else %}null{% endif %},
+        firstName: "{% if employer.first_name %}{{ employer.first_name }}{% endif %}",
+        lastName: "{% if employer.last_name %}{{ employer.last_name }}{% endif %}",
+        email: "{% if employer.email %}{{ employer.email }}{% endif %}",
+        mobile: "{% if employer.mobile %}{{ employer.mobile }}{% endif %}",
+        profilePhoto: "{% if employer.profile_photo and employer.profile_photo.url %}{{ employer.profile_photo.url }}{% endif %}",
+        companyName: "{% if employer.company_name %}{{ employer.company_name }}{% endif %}"
+    };
+    
+    window.initialData = {
+        jobs: {{ jobs|default:'[]'|safe }},
+        acceptedWorkers: {{ accepted_workers|default:'[]'|safe }},
+        hiredWorkers: {{ hired_workers|default:'[]'|safe }},
+        workHistory: {{ work_history|default:'[]'|safe }}
+    };
+    
+    console.log('Employer Data:', window.employerData);
+</script>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

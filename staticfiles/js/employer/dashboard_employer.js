@@ -1,15 +1,6 @@
 /**
  * ShramikConnect - Enhanced Employer Dashboard
  * Merging functionality with modern design
- * 
- * BUG FIXES APPLIED:
- * 1. Fixed duplicate data-i18n="ai_assistant" in HTML causing translation issues
- * 2. Fixed setActiveSection referencing undefined DOM.postJobFloatBtn
- * 3. Fixed AI Assistant navigation logic conflict between modal and page
- * 4. Fixed state.currentSection not being properly tracked
- * 5. Fixed Help/About section navigation handling
- * 6. Fixed global nav strip logout button event listener
- * 7. Fixed CSS margin issue when global nav strip is active
  */
 
 // ============================================
@@ -70,6 +61,12 @@ const i18n = {
             
             // Filters
             sort_by: "Sort By",
+            distance: "Distance",
+            name: "Name",
+            price: "Price",
+            rating: "Rating",
+            acceptance_time: "Acceptance Time",
+            date: "Date",
             distance_near_far: "Distance: Near → Far",
             distance_far_near: "Distance: Far → Near",
             name_a_z: "Name: A → Z",
@@ -80,7 +77,10 @@ const i18n = {
             rating_low_high: "Rating: Low → High",
             acceptance_first_last: "Acceptance Time: First → Last",
             acceptance_last_first: "Acceptance Time: Last → First",
+            date_new_old: "Date: New → Old",
+            date_old_new: "Date: Old → New",
             apply_filters: "Apply Filters",
+            clear_all: "Clear All",
             reset: "Reset",
             
             // Chat
@@ -126,14 +126,12 @@ const i18n = {
             rating_given: "Rating Given",
             payment: "Payment",
             actions: "Actions",
-            date_new_old: "Date: New → Old",
-            date_old_new: "Date: Old → New",
             
             // Footer
-            help_center: "Help Center",
-            about_us: "About Us",
-            privacy_policy: "Privacy Policy",
-            terms_service: "Terms of Service",
+            privacy: "Privacy Policy",
+            terms: "Terms & Conditions",
+            help: "Help & Contact",
+            about: "About Us",
             
             // Logo
             shramik: "Shramik",
@@ -143,6 +141,7 @@ const i18n = {
             copyright: "© 2025 ShramikConnect. All rights reserved."
         },
         hi: {
+            // Hindi translations (same as before)
             menu: "मेनू",
             settings: "सेटिंग्स",
             dashboard: "डैशबोर्ड",
@@ -157,13 +156,11 @@ const i18n = {
             about: "हमारे बारे में",
             construction_company: "निर्माण कंपनी",
             edit_profile: "प्रोफाइल संपादित करें",
-            
             language: "भाषा",
             theme: "थीम",
             light: "लाइट",
             dark: "डार्क",
             system: "सिस्टम",
-            
             welcome: "स्वागत है",
             dashboard_slogan: "अपनी नौकरी पोस्ट, कर्मचारियों और भर्ती प्रक्रिया का प्रबंधन करें",
             total_jobs_posted: "कुल नौकरियां पोस्ट की गईं",
@@ -175,7 +172,6 @@ const i18n = {
             post_new_job: "नई नौकरी पोस्ट करें",
             view_accepted_workers: "स्वीकृत कर्मचारी देखें",
             view_hired_workers: "किराए पर कर्मचारी देखें",
-            
             employer_name: "नियोक्ता का नाम",
             work_address: "कार्य का पता",
             work_location: "मानचित्र पर कार्य स्थान",
@@ -188,34 +184,23 @@ const i18n = {
             money: "पैसा (₹)",
             tools_available: "नियोक्ता के पास उपकरण उपलब्ध हैं",
             submit_job: "नौकरी सबमिट करें",
-            
-            sort_by: "क्रमबद्ध करें",
-            distance_near_far: "दूरी: नजदीक → दूर",
-            distance_far_near: "दूरी: दूर → नजदीक",
-            name_a_z: "नाम: अ → ज़",
-            name_z_a: "नाम: ज़ → अ",
-            price_low_high: "मूल्य: कम → अधिक",
-            price_high_low: "मूल्य: अधिक → कम",
-            rating_high_low: "रेटिंग: अधिक → कम",
-            rating_low_high: "रेटिंग: कम → अधिक",
-            acceptance_first_last: "स्वीकृति समय: पहला → अंतिम",
-            acceptance_last_first: "स्वीकृति समय: अंतिम → पहला",
-            apply_filters: "फ़िल्टर लागू करें",
-            reset: "रीसेट",
-            
+            distance: "दूरी",
+            name: "नाम",
+            price: "मूल्य",
+            rating: "रेटिंग",
+            date: "तारीख",
+            clear_all: "सब साफ़ करें",
             chat_with: "चैट करें",
             negotiation_options: "बातचीत विकल्प",
             reduce_price: "मूल्य ₹100 कम करें",
             increase_price: "मूल्य ₹100 बढ़ाएं",
             reduce_time: "समय 1 घंटा कम करें",
             increase_time: "समय 1 घंटा बढ़ाएं",
-            
             rate_worker: "कर्मचारी को रेट करें",
             job_completed: "नौकरी पूरी हुई",
             rate_worker_performance: "इस नौकरी के लिए कर्मचारी के प्रदर्शन को रेट करें",
             additional_feedback: "अतिरिक्त प्रतिक्रिया (वैकल्पिक)",
             submit_rating: "रेटिंग सबमिट करें",
-            
             confirmation: "पुष्टि",
             delete_job_confirm: "क्या आप वाकई इस नौकरी को हटाना चाहते हैं?",
             remove_worker_confirm: "क्या आप वाकई इस कर्मचारी को हटाना चाहते हैं?",
@@ -224,7 +209,6 @@ const i18n = {
             work_complete_message: "यह कर्मचारी को कार्य इतिहास में ले जाएगा और रेटिंग खुलेगा।",
             yes: "हाँ",
             no: "नहीं",
-            
             ai_ready: "सर्वश्रेष्ठ कर्मचारी खोजने में आपकी सहायता के लिए तैयार",
             ai_welcome: "नमस्ते! मैं आपका एआई सहायक हूं। मैं आपकी नौकरी पोस्ट के लिए सर्वश्रेष्ठ कर्मचारी खोजने में आपकी मदद कर सकता हूं।",
             ai_welcome_full: "नमस्ते! मैं आपका एआई सहायक हूं। मैं आपकी नौकरी पोस्ट के लिए सर्वश्रेष्ठ कर्मचारी खोजने में आपकी मदद कर सकता हूं। मुझसे पूछें: \"इस नौकरी के लिए सर्वश्रेष्ठ कर्मचारी खोजें\" या बताएं कि आप क्या ढूंढ रहे हैं।",
@@ -233,26 +217,21 @@ const i18n = {
             find_near_workers: "मेरे स्थान के पास कर्मचारी खोजें",
             ai_suggestions: "एआई सुझाव",
             ai_subtitle: "अपनी नौकरियों के लिए सर्वश्रेष्ठ कर्मचारी खोजने में सहायता प्राप्त करें",
-            
             work_details: "कार्य विवरण",
             worker_name: "कर्मचारी का नाम",
             completion_date: "पूरा होने की तारीख",
             rating_given: "दी गई रेटिंग",
-            date_new_old: "तारीख: नया → पुराना",
-            date_old_new: "तारीख: पुराना → नया",
-            
-            help_center: "सहायता केंद्र",
-            about_us: "हमारे बारे में",
-            privacy_policy: "गोपनीयता नीति",
-            terms_service: "सेवा की शर्तें",
-            
+            payment: "भुगतान",
+            actions: "कार्रवाई",
+            privacy: "गोपनीयता नीति",
+            terms: "नियम और शर्तें",
             shramik: "श्रमिक",
             connect: "कनेक्ट",
-            
             tagline: "काम से हाथ जोड़ना",
             copyright: "© 2025 श्रमिककनेक्ट। सर्वाधिकार सुरक्षित।"
         },
         mr: {
+            // Marathi translations
             menu: "मेनू",
             settings: "सेटिंग्ज",
             dashboard: "डॅशबोर्ड",
@@ -267,13 +246,11 @@ const i18n = {
             about: "आमच्याबद्दल",
             construction_company: "बांधकाम कंपनी",
             edit_profile: "प्रोफाइल संपादित करा",
-            
             language: "भाषा",
             theme: "थीम",
             light: "लाइट",
             dark: "डार्क",
             system: "सिस्टम",
-            
             welcome: "स्वागत आहे",
             dashboard_slogan: "तुमच्या नोकरी पोस्ट, कामगार आणि भरती प्रक्रियेचे व्यवस्थापन करा",
             total_jobs_posted: "एकूण नोकऱ्या पोस्ट केल्या",
@@ -285,7 +262,6 @@ const i18n = {
             post_new_job: "नवीन नोकरी पोस्ट करा",
             view_accepted_workers: "स्वीकृत कामगार पहा",
             view_hired_workers: "भाड्याने कामगार पहा",
-            
             employer_name: "नियोक्त्याचे नाव",
             work_address: "कामाचा पत्ता",
             work_location: "नकाशावर कामाचे स्थान",
@@ -298,34 +274,23 @@ const i18n = {
             money: "पैसा (₹)",
             tools_available: "नियोक्त्याकडे साधने उपलब्ध आहेत",
             submit_job: "नोकरी सबमिट करा",
-            
-            sort_by: "क्रमवारी लावा",
-            distance_near_far: "अंतर: जवळ → दूर",
-            distance_far_near: "अंतर: दूर → जवळ",
-            name_a_z: "नाव: अ → झ",
-            name_z_a: "नाव: झ → अ",
-            price_low_high: "किंमत: कमी → जास्त",
-            price_high_low: "किंमत: जास्त → कमी",
-            rating_high_low: "रेटिंग: जास्त → कमी",
-            rating_low_high: "रेटिंग: कमी → जास्त",
-            acceptance_first_last: "स्वीकृती वेळ: प्रथम → शेवटचे",
-            acceptance_last_first: "स्वीकृती वेळ: शेवटचे → प्रथम",
-            apply_filters: "फिल्टर लागू करा",
-            reset: "रीसेट",
-            
+            distance: "अंतर",
+            name: "नाव",
+            price: "किंमत",
+            rating: "रेटिंग",
+            date: "तारीख",
+            clear_all: "सर्व साफ करा",
             chat_with: "चॅट करा",
             negotiation_options: "वाटाघाटी पर्याय",
             reduce_price: "किंमत ₹100 कमी करा",
             increase_price: "किंमत ₹100 वाढवा",
             reduce_time: "वेळ 1 तास कमी करा",
             increase_time: "वेळ 1 तास वाढवा",
-            
             rate_worker: "कामगाराला रेट करा",
             job_completed: "नोकरी पूर्ण झाली",
             rate_worker_performance: "या नोकरीसाठी कामगाराच्या कामगिरीचे मूल्यांकन करा",
             additional_feedback: "अतिरिक्त अभिप्राय (ऐच्छिक)",
             submit_rating: "रेटिंग सबमिट करा",
-            
             confirmation: "पुष्टीकरण",
             delete_job_confirm: "तुम्हाला खरोखर ही नोकरी हटवायची आहे का?",
             remove_worker_confirm: "तुम्हाला खरोखर हा कामगार काढून टाकायचा आहे का?",
@@ -334,7 +299,6 @@ const i18n = {
             work_complete_message: "हे कामगार कामाच्या इतिहासात हलवेल आणि रेटिंग उघडेल.",
             yes: "होय",
             no: "नाही",
-            
             ai_ready: "सर्वोत्तम कामगार शोधण्यात मदत करण्यासाठी तयार",
             ai_welcome: "नमस्कार! मी तुमचा AI सहाय्यक आहे. मी तुमच्या नोकरी पोस्टसाठी सर्वोत्तम कामगार शोधण्यात तुमची मदत करू शकतो.",
             ai_welcome_full: "नमस्कार! मी तुमचा AI सहाय्यक आहे. मी तुमच्या नोकरी पोस्टसाठी सर्वोत्तम कामगार शोधण्यात तुमची मदत करू शकतो. मला विचारा: \"या नोकरीसाठी सर्वोत्तम कामगार शोधा\" किंवा तुम्ही काय शोधत आहात ते सांगा.",
@@ -343,24 +307,18 @@ const i18n = {
             find_near_workers: "माझ्या स्थानाजवळ कामगार शोधा",
             ai_suggestions: "AI सूचना",
             ai_subtitle: "तुमच्या नोकऱ्यांसाठी सर्वोत्तम कामगार शोधण्यात मदत मिळवा",
-            
             work_details: "कामाचे तपशील",
             worker_name: "कामगाराचे नाव",
             completion_date: "पूर्ण होण्याची तारीख",
             rating_given: "दिलेली रेटिंग",
-            date_new_old: "तारीख: नवीन → जुने",
-            date_old_new: "तारीख: जुने → नवीन",
-            
-            help_center: "मदत केंद्र",
-            about_us: "आमच्याबद्दल",
-            privacy_policy: "गोपनीयता धोरण",
-            terms_service: "सेवा अटी",
-            
+            payment: "पेमेंट",
+            actions: "क्रिया",
+            privacy: "गोपनीयता धोरण",
+            terms: "सेवा अटी",
             shramik: "श्रमिक",
             connect: "कनेक्ट",
-            
             tagline: "कामाशी हात जोडणे",
-            copyright: "© 2025 श्रमिककनेक्ट। सर्व हक्क राखीव।"
+            copyright: "© 2025 श्रमिककनेक्ट। सर्व हक्क राखीव."
         },
     },
     
@@ -391,7 +349,7 @@ const i18n = {
         elements.forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (this.translations[this.currentLang] && this.translations[this.currentLang][key]) {
-                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
                     element.placeholder = this.translations[this.currentLang][key];
                 } else {
                     element.textContent = this.translations[this.currentLang][key];
@@ -429,6 +387,7 @@ const DOM = {
     
     // Profile
     profileName: document.getElementById('profileName'),
+    profileEmail: document.getElementById('profileEmail'),
     employerNameDisplay: document.getElementById('employerNameDisplay'),
     profileEditBtn: document.getElementById('profileEditBtn'),
     profileImage: document.getElementById('profileImage'),
@@ -582,7 +541,7 @@ const state = {
 };
 
 // ============================================
-// Mock Data
+// Mock Data (Fallback)
 // ============================================
 const mockData = {
     jobs: [
@@ -823,16 +782,14 @@ function init() {
     // Initialize i18n
     i18n.init();
     
-    // Load mock data
-    state.jobs = [...mockData.jobs];
-    state.acceptedWorkers = [...mockData.acceptedWorkers];
-    state.hiredWorkers = [...mockData.hiredWorkers];
-    state.workHistory = [...mockData.workHistory];
+    // Load settings from localStorage
+    loadSettings();
     
-    // Update stats
+    // Load data from Django context (passed from HTML)
+    loadInitialData();
+    
+    // Update UI with loaded data
     updateStats();
-    
-    // Render initial data
     renderJobs();
     renderAcceptedWorkers();
     renderHiredWorkers();
@@ -845,13 +802,61 @@ function init() {
     // Set active section
     setActiveSection('dashboard');
     
-    // Load settings from localStorage
-    loadSettings();
-    
     // Initialize map for job posting
     initMap();
     
-    console.log('Enhanced ShramikConnect Dashboard initialized - Navigation bugs fixed');
+    console.log('Enhanced ShramikConnect Dashboard initialized - Dynamic data loaded');
+}
+
+// ============================================
+// Load Initial Data from Django Context
+// ============================================
+function loadInitialData() {
+    // Load from window.initialData (passed from HTML)
+    if (window.initialData) {
+        state.jobs = window.initialData.jobs || [];
+        state.acceptedWorkers = window.initialData.acceptedWorkers || [];
+        state.hiredWorkers = window.initialData.hiredWorkers || [];
+        state.workHistory = window.initialData.workHistory || [];
+        
+        console.log('Loaded initial data from Django context');
+    } else {
+        // Fallback to mock data
+        console.log('No initial data found, loading mock data');
+        state.jobs = [...mockData.jobs];
+        state.acceptedWorkers = [...mockData.acceptedWorkers];
+        state.hiredWorkers = [...mockData.hiredWorkers];
+        state.workHistory = [...mockData.workHistory];
+    }
+    
+    // Update profile information
+    updateProfileInfo();
+}
+
+// ============================================
+// Update Profile Information
+// ============================================
+function updateProfileInfo() {
+    if (window.employerData) {
+        const emp = window.employerData;
+        
+        if (DOM.profileName) {
+            DOM.profileName.textContent = emp.firstName + ' ' + emp.lastName;
+        }
+        
+        if (DOM.profileEmail) {
+            DOM.profileEmail.textContent = emp.email;
+        }
+        
+        if (DOM.employerNameDisplay) {
+            DOM.employerNameDisplay.textContent = emp.firstName + ' ' + emp.lastName;
+        }
+        
+        // Update profile photo if exists
+        if (emp.profilePhoto && DOM.profileImage) {
+            DOM.profileImage.src = emp.profilePhoto;
+        }
+    }
 }
 
 // ============================================
@@ -860,9 +865,9 @@ function init() {
 function initMap() {
     if (!DOM.mapContainer) return;
     
-    // Default to Mumbai
-    const defaultLat = 19.0760;
-    const defaultLng = 72.8777;
+    // Default to Mumbai or employer's saved location
+    const defaultLat = parseFloat(DOM.latitudeInput.value) || 19.0760;
+    const defaultLng = parseFloat(DOM.longitudeInput.value) || 72.8777;
     
     state.map = L.map('map').setView([defaultLat, defaultLng], 13);
     
@@ -897,21 +902,31 @@ function initMap() {
 // Update Statistics
 // ============================================
 function updateStats() {
-    DOM.totalJobs.textContent = state.jobs.length;
-    DOM.totalHired.textContent = state.hiredWorkers.length + state.workHistory.length;
+    if (DOM.totalJobs) {
+        DOM.totalJobs.textContent = state.jobs.length;
+    }
+    
+    if (DOM.totalHired) {
+        DOM.totalHired.textContent = state.hiredWorkers.length + state.workHistory.length;
+    }
     
     // Calculate average rating
     const allRatings = [...state.workHistory.map(w => w.rating)];
     const avg = allRatings.length > 0 
         ? (allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1)
         : '0.0';
-    DOM.avgRating.textContent = avg;
+    
+    if (DOM.avgRating) {
+        DOM.avgRating.textContent = avg;
+    }
 }
 
 // ============================================
 // Render Rating Stars
 // ============================================
 function renderRatingStars() {
+    if (!DOM.ratingStars) return;
+    
     const rating = parseFloat(DOM.avgRating.textContent);
     DOM.ratingStars.innerHTML = '';
     
@@ -1111,6 +1126,7 @@ function renderAcceptedWorkers() {
         DOM.acceptedWorkersContainer.appendChild(workerCard);
     });
 }
+
 // ============================================
 // Render Hired Workers
 // ============================================
@@ -1396,80 +1412,96 @@ function createWorkHistoryRow(history) {
 // ============================================
 function setupEventListeners() {
     // Sidebar functionality
-    DOM.hamburgerBtn.addEventListener('click', () => {
-        DOM.sidebar.classList.add('active');
-        DOM.sidebarOverlay.classList.add('active');
-    });
+    if (DOM.hamburgerBtn) {
+        DOM.hamburgerBtn.addEventListener('click', () => {
+            DOM.sidebar.classList.add('active');
+            DOM.sidebarOverlay.classList.add('active');
+        });
+    }
     
-    DOM.sidebarClose.addEventListener('click', closeSidebar);
-    DOM.sidebarOverlay.addEventListener('click', closeSidebar);
+    if (DOM.sidebarClose) {
+        DOM.sidebarClose.addEventListener('click', closeSidebar);
+    }
+    
+    if (DOM.sidebarOverlay) {
+        DOM.sidebarOverlay.addEventListener('click', closeSidebar);
+    }
     
     // Settings dropdown
-    DOM.sidebarSettingsIcon.addEventListener('click', (e) => {
-        e.stopPropagation();
-        DOM.settingsDropdown.classList.toggle('active');
-    });
+    if (DOM.sidebarSettingsIcon) {
+        DOM.sidebarSettingsIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            DOM.settingsDropdown.classList.toggle('active');
+        });
+    }
     
     // Close settings dropdown when clicking outside
     document.addEventListener('click', (e) => {
-        if (!DOM.settingsDropdown.contains(e.target) && !DOM.sidebarSettingsIcon.contains(e.target)) {
-            DOM.settingsDropdown.classList.remove('active');
+        if (DOM.settingsDropdown && DOM.sidebarSettingsIcon) {
+            if (!DOM.settingsDropdown.contains(e.target) && !DOM.sidebarSettingsIcon.contains(e.target)) {
+                DOM.settingsDropdown.classList.remove('active');
+            }
         }
     });
     
     // Language and theme settings
-    DOM.languageOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            DOM.languageOptions.forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-            i18n.saveLanguage(option.dataset.lang);
-            state.settings.language = option.dataset.lang;
-            saveSettings();
+    if (DOM.languageOptions) {
+        DOM.languageOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                DOM.languageOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                i18n.saveLanguage(option.dataset.lang);
+                state.settings.language = option.dataset.lang;
+                saveSettings();
+            });
         });
-    });
+    }
     
-    DOM.themeOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            DOM.themeOptions.forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-            state.settings.theme = option.dataset.theme;
-            applyTheme();
-            saveSettings();
+    if (DOM.themeOptions) {
+        DOM.themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                DOM.themeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                state.settings.theme = option.dataset.theme;
+                applyTheme();
+                saveSettings();
+            });
         });
-    });
-    
+    }
 
+    // Menu item clicks - Update AI Assistant handling
+    if (DOM.menuItems) {
+        DOM.menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = item.dataset.section;
+                
+                if (section === 'ai-assistant') {
+                    handleAIAccess('sidebar');
+                } else {
+                    setActiveSection(section);
+                    closeSidebar();
+                }
+            });
+        });
+    }
 
-// Menu item clicks - Update AI Assistant handling
-DOM.menuItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const section = item.dataset.section;
-        
-        if (section === 'ai-assistant') {
-            handleAIAccess('sidebar');
-        } else {
-            setActiveSection(section);
-            closeSidebar();
-        }
-    });
-});
-
-// Global navigation strip - Update AI Assistant handling
-DOM.navStripBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const section = btn.dataset.section;
-        if (section) {
-            if (section === 'ai-assistant') {
-                handleAIAccess('quick-links');
-            } else {
-                setActiveSection(section);
-            }
-        }
-    });
-});
-    
+    // Global navigation strip - Update AI Assistant handling
+    if (DOM.navStripBtns) {
+        DOM.navStripBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = btn.dataset.section;
+                if (section) {
+                    if (section === 'ai-assistant') {
+                        handleAIAccess('quick-links');
+                    } else {
+                        setActiveSection(section);
+                    }
+                }
+            });
+        });
+    }
     
     // Post job buttons
     [DOM.postJobBtn, DOM.addJobBtn].forEach(btn => {
@@ -1478,7 +1510,7 @@ DOM.navStripBtns.forEach(btn => {
         }
     });
     
-    // Quick action buttons - FIX: Proper event handling
+    // Quick action buttons
     if (DOM.viewAcceptedBtn) {
         DOM.viewAcceptedBtn.addEventListener('click', () => setActiveSection('accepted-workers'));
     }
@@ -1499,7 +1531,7 @@ DOM.navStripBtns.forEach(btn => {
         DOM.workHistoryBtn.addEventListener('click', () => setActiveSection('work-history'));
     }
     
-    // Logout buttons - FIX: Added missing stripLogoutBtn
+    // Logout buttons
     [DOM.logoutBtn, DOM.quickLogoutBtn, DOM.stripLogoutBtn].forEach(btn => {
         if (btn) {
             btn.addEventListener('click', handleLogout);
@@ -1507,7 +1539,13 @@ DOM.navStripBtns.forEach(btn => {
     });
     
     // Modal close buttons
-    [DOM.closeJobModalBtn, DOM.closeChatModalBtn, DOM.closeRatingModalBtn, DOM.closeProfileModalBtn, DOM.closeAIModalBtn, DOM.closeDeleteModalBtn, DOM.closeCompleteModalBtn, DOM.closeRemoveModalBtn, DOM.closeHistoryModalBtn].forEach(btn => {
+    const closeButtons = [
+        DOM.closeJobModalBtn, DOM.closeChatModalBtn, DOM.closeRatingModalBtn, 
+        DOM.closeProfileModalBtn, DOM.closeAIModalBtn, DOM.closeDeleteModalBtn, 
+        DOM.closeCompleteModalBtn, DOM.closeRemoveModalBtn, DOM.closeHistoryModalBtn
+    ];
+    
+    closeButtons.forEach(btn => {
         if (btn) {
             btn.addEventListener('click', () => {
                 closeAllModals();
@@ -1516,13 +1554,15 @@ DOM.navStripBtns.forEach(btn => {
     });
     
     // Close modal on outside click
-    DOM.modals.forEach(modal => {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeAllModals();
-            }
+    if (DOM.modals) {
+        DOM.modals.forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeAllModals();
+                }
+            });
         });
-    });
+    }
     
     // Job form submission
     if (DOM.submitJobBtn) {
@@ -1583,25 +1623,33 @@ DOM.navStripBtns.forEach(btn => {
     }
     
     // AI suggestion buttons
-    DOM.suggestionBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const suggestion = btn.dataset.suggestion;
-            if (state.currentSection === 'ai-assistant') {
-                DOM.aiInput.value = suggestion;
-                sendAIMessage(DOM.aiInput, DOM.aiChatMessages);
-            } else {
-                DOM.aiModalInput.value = suggestion;
-                sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages);
-            }
+    if (DOM.suggestionBtns) {
+        DOM.suggestionBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const suggestion = btn.dataset.suggestion;
+                if (state.currentSection === 'ai-assistant') {
+                    if (DOM.aiInput) {
+                        DOM.aiInput.value = suggestion;
+                        sendAIMessage(DOM.aiInput, DOM.aiChatMessages);
+                    }
+                } else {
+                    if (DOM.aiModalInput) {
+                        DOM.aiModalInput.value = suggestion;
+                        sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages);
+                    }
+                }
+            });
         });
-    });
+    }
     
     // AI file upload
     [DOM.aiFileUploadBtn, DOM.aiPageFileUploadBtn].forEach(btn => {
         if (btn) {
             btn.addEventListener('click', () => {
                 const fileInput = btn.id === 'aiFileUploadBtn' ? DOM.aiFileInput : DOM.aiPageFileInput;
-                fileInput.click();
+                if (fileInput) {
+                    fileInput.click();
+                }
             });
         }
     });
@@ -1628,7 +1676,9 @@ DOM.navStripBtns.forEach(btn => {
     // Chat file upload
     if (DOM.fileUploadBtn) {
         DOM.fileUploadBtn.addEventListener('click', () => {
-            DOM.fileInput.click();
+            if (DOM.fileInput) {
+                DOM.fileInput.click();
+            }
         });
     }
     
@@ -1651,22 +1701,24 @@ DOM.navStripBtns.forEach(btn => {
     });
     
     // Rating stars
-    DOM.stars.forEach(star => {
-        star.addEventListener('click', () => {
-            const rating = parseInt(star.dataset.rating);
-            setRating(rating);
+    if (DOM.stars) {
+        DOM.stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.dataset.rating);
+                setRating(rating);
+            });
+            
+            star.addEventListener('mouseover', () => {
+                const rating = parseInt(star.dataset.rating);
+                highlightStars(rating);
+            });
+            
+            star.addEventListener('mouseout', () => {
+                const currentRating = parseInt(DOM.ratingSelectedValue.textContent);
+                highlightStars(currentRating);
+            });
         });
-        
-        star.addEventListener('mouseover', () => {
-            const rating = parseInt(star.dataset.rating);
-            highlightStars(rating);
-        });
-        
-        star.addEventListener('mouseout', () => {
-            const currentRating = parseInt(DOM.ratingSelectedValue.textContent);
-            highlightStars(currentRating);
-        });
-    });
+    }
     
     // Submit rating
     if (DOM.submitRatingBtn) {
@@ -1700,27 +1752,26 @@ DOM.navStripBtns.forEach(btn => {
     
     setupFilterEventListeners();
     
-  // Close filters when clicking outside filter groups
-document.addEventListener('click', (e) => {
-    const clickedFilterGroup = e.target.closest('.filter-group');
-    const clickedFilterBtn = e.target.closest('.filter-parent-btn');
-    
-    if (!clickedFilterGroup && !clickedFilterBtn) {
-        state.filters.activeFilterType = null;
-        state.historyFilters.activeFilterType = null;
-        updateFilterUI();
-    }
-});
-    
+    // Close filters when clicking outside filter groups
+    document.addEventListener('click', (e) => {
+        const clickedFilterGroup = e.target.closest('.filter-group');
+        const clickedFilterBtn = e.target.closest('.filter-parent-btn');
+        
+        if (!clickedFilterGroup && !clickedFilterBtn) {
+            state.filters.activeFilterType = null;
+            state.historyFilters.activeFilterType = null;
+            updateFilterUI();
+        }
+    });
 }
 
 // ============================================
 // Sidebar Functions
 // ============================================
 function closeSidebar() {
-    DOM.sidebar.classList.remove('active');
-    DOM.sidebarOverlay.classList.remove('active');
-    DOM.settingsDropdown.classList.remove('active');
+    if (DOM.sidebar) DOM.sidebar.classList.remove('active');
+    if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.remove('active');
+    if (DOM.settingsDropdown) DOM.settingsDropdown.classList.remove('active');
 }
 
 // ============================================
@@ -1729,17 +1780,25 @@ function closeSidebar() {
 function loadSettings() {
     const savedSettings = localStorage.getItem('shramikconnect_settings');
     if (savedSettings) {
-        state.settings = JSON.parse(savedSettings);
+        try {
+            state.settings = JSON.parse(savedSettings);
+        } catch (e) {
+            console.error('Error parsing settings', e);
+        }
     }
     
     // Apply settings
-    DOM.languageOptions.forEach(option => {
-        option.classList.toggle('active', option.dataset.lang === state.settings.language);
-    });
+    if (DOM.languageOptions) {
+        DOM.languageOptions.forEach(option => {
+            option.classList.toggle('active', option.dataset.lang === state.settings.language);
+        });
+    }
     
-    DOM.themeOptions.forEach(option => {
-        option.classList.toggle('active', option.dataset.theme === state.settings.theme);
-    });
+    if (DOM.themeOptions) {
+        DOM.themeOptions.forEach(option => {
+            option.classList.toggle('active', option.dataset.theme === state.settings.theme);
+        });
+    }
     
     applyTheme();
 }
@@ -1758,10 +1817,7 @@ function applyTheme() {
 }
 
 // ============================================
-// Set Active Section - FIXED BUG
-// ============================================
-// ============================================
-// Set Active Section - FIXED: Home always active
+// Set Active Section
 // ============================================
 function setActiveSection(sectionId) {
     console.log(`Setting active section to: ${sectionId}`);
@@ -1770,42 +1826,52 @@ function setActiveSection(sectionId) {
     state.currentSection = sectionId;
     
     // Update menu items
-    DOM.menuItems.forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.section === sectionId) {
-            item.classList.add('active');
-        }
-    });
+    if (DOM.menuItems) {
+        DOM.menuItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.dataset.section === sectionId) {
+                item.classList.add('active');
+            }
+        });
+    }
     
     // Update nav links
-    DOM.navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.dataset.section === sectionId) {
-            link.classList.add('active');
-        }
-    });
+    if (DOM.navLinks) {
+        DOM.navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.section === sectionId) {
+                link.classList.add('active');
+            }
+        });
+    }
     
     // Update global navigation strip
-    DOM.navStripBtns.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.section === sectionId) {
-            btn.classList.add('active');
-        }
-    });
+    if (DOM.navStripBtns) {
+        DOM.navStripBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.section === sectionId) {
+                btn.classList.add('active');
+            }
+        });
+    }
     
     // Update content sections
-    DOM.contentSections.forEach(section => {
-        section.classList.remove('active');
-        if (section.id === sectionId) {
-            section.classList.add('active');
-        }
-    });
+    if (DOM.contentSections) {
+        DOM.contentSections.forEach(section => {
+            section.classList.remove('active');
+            if (section.id === sectionId) {
+                section.classList.add('active');
+            }
+        });
+    }
     
     // Show/hide global navigation strip
-    if (sectionId === 'dashboard') {
-        DOM.globalNavStrip.classList.remove('active');
-    } else {
-        DOM.globalNavStrip.classList.add('active');
+    if (DOM.globalNavStrip) {
+        if (sectionId === 'dashboard') {
+            DOM.globalNavStrip.classList.remove('active');
+        } else {
+            DOM.globalNavStrip.classList.add('active');
+        }
     }
     
     // Scroll to top of the section
@@ -1817,20 +1883,33 @@ function setActiveSection(sectionId) {
 // ============================================
 function openModal(modal) {
     closeAllModals();
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeAllModals() {
-    DOM.modals.forEach(modal => modal.classList.remove('active'));
+    if (DOM.modals) {
+        DOM.modals.forEach(modal => modal.classList.remove('active'));
+    }
     document.body.style.overflow = 'auto';
-    DOM.settingsDropdown.classList.remove('active');
+    if (DOM.settingsDropdown) {
+        DOM.settingsDropdown.classList.remove('active');
+    }
 }
 
 // ============================================
 // Job Functions
 // ============================================
 function submitJob() {
+    if (!DOM.employerNameInput || !DOM.workAddressInput || !DOM.jobTitleInput || 
+        !DOM.workTypeInput || !DOM.jobDescriptionInput || !DOM.requiredSkillsInput || 
+        !DOM.jobLocationInput || !DOM.jobPayInput || !DOM.workTimeInput) {
+        showNotification('Form inputs not found', 'error');
+        return;
+    }
+    
     const employerName = DOM.employerNameInput.value.trim();
     const workAddress = DOM.workAddressInput.value.trim();
     const title = DOM.jobTitleInput.value.trim();
@@ -1849,9 +1928,9 @@ function submitJob() {
     const location = DOM.jobLocationInput.value.trim();
     const pay = parseInt(DOM.jobPayInput.value);
     const time = parseInt(DOM.workTimeInput.value);
-    const toolsAvailable = DOM.toolsAvailableInput.checked;
-    const latitude = parseFloat(DOM.latitudeInput.value);
-    const longitude = parseFloat(DOM.longitudeInput.value);
+    const toolsAvailable = DOM.toolsAvailableInput ? DOM.toolsAvailableInput.checked : false;
+    const latitude = parseFloat(DOM.latitudeInput ? DOM.latitudeInput.value : 0);
+    const longitude = parseFloat(DOM.longitudeInput ? DOM.longitudeInput.value : 0);
     
     if (!employerName || !workAddress || !title || !workType || !description || selectedSkills.length === 0 || !location || !pay || !time) {
         showNotification('Please fill in all required fields', 'error');
@@ -1881,7 +1960,9 @@ function submitJob() {
     updateStats();
     
     // Reset form (including multi-select)
-    DOM.jobForm.reset();
+    if (DOM.jobForm) {
+        DOM.jobForm.reset();
+    }
     closeAllModals();
     
     // Show success message
@@ -1893,8 +1974,12 @@ function confirmDeleteJob(jobId) {
     if (!job) return;
     
     state.pendingDeleteJobId = jobId;
-    DOM.deleteConfirmTitle.textContent = i18n.t('delete_job_confirm');
-    DOM.deleteConfirmMessage.textContent = `Job: ${job.title}`;
+    if (DOM.deleteConfirmTitle) {
+        DOM.deleteConfirmTitle.textContent = i18n.t('delete_job_confirm');
+    }
+    if (DOM.deleteConfirmMessage) {
+        DOM.deleteConfirmMessage.textContent = `Job: ${job.title}`;
+    }
     openModal(DOM.deleteConfirmModal);
 }
 
@@ -1922,7 +2007,9 @@ function openChat(workerId) {
     
     state.currentWorkerId = workerId;
     state.currentChatWorker = worker;
-    DOM.chatWorkerName.textContent = worker.name;
+    if (DOM.chatWorkerName) {
+        DOM.chatWorkerName.textContent = worker.name;
+    }
     
     // Load chat messages
     loadChatMessages(workerId);
@@ -1932,6 +2019,8 @@ function openChat(workerId) {
 
 function loadChatMessages(workerId) {
     const messages = mockData.chatMessages[workerId] || [];
+    if (!DOM.chatMessages) return;
+    
     DOM.chatMessages.innerHTML = '';
     
     messages.forEach(msg => {
@@ -1958,6 +2047,8 @@ function loadChatMessages(workerId) {
 }
 
 function sendChatMessage() {
+    if (!DOM.chatInput || !DOM.chatMessages) return;
+    
     const message = DOM.chatInput.value.trim();
     if (!message || !state.currentWorkerId) return;
     
@@ -1983,8 +2074,7 @@ function sendChatMessage() {
     // Scroll to bottom
     DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
     
-    // In a real app, we would save the message to the backend
-    // For demo, we'll simulate a reply after 1 second
+    // Simulate reply
     setTimeout(() => {
         const replies = [
             "Yes, I can do that.",
@@ -2018,7 +2108,7 @@ function sendChatMessage() {
 
 function handleChatFileUpload(e) {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file || !DOM.chatMessages) return;
     
     // Show file in chat
     const messageDiv = document.createElement('div');
@@ -2040,18 +2130,22 @@ function handleChatFileUpload(e) {
     DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
     
     // Reset file input
-    DOM.fileInput.value = '';
+    if (DOM.fileInput) {
+        DOM.fileInput.value = '';
+    }
     
     showNotification(`File "${file.name}" uploaded`, 'success');
 }
 
 function handleVoiceMessage() {
     showNotification('Voice message recording started (simulated)', 'info');
-    // In a real app, this would use the Web Audio API
+    
     setTimeout(() => {
         showNotification('Voice message sent', 'success');
         
         // Add voice message to chat
+        if (!DOM.chatMessages) return;
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message sent';
         
@@ -2076,7 +2170,7 @@ function handleNegotiation(type, value) {
     if (!state.currentWorkerId) return;
     
     const worker = state.acceptedWorkers.find(w => w.id === state.currentWorkerId);
-    if (!worker) return;
+    if (!worker || !DOM.chatMessages) return;
     
     if (type === 'price') {
         worker.negotiatedPrice = (worker.negotiatedPrice || worker.expectedPrice) + value;
@@ -2111,10 +2205,7 @@ function handleNegotiation(type, value) {
 }
 
 function redirectToProfile(workerId) {
-    // In a real app, redirect to worker profile page
-    // For demo, we'll show an alert
     showNotification('Redirecting to worker profile page...', 'info');
-    // window.location.href = `worker_profile.html?id=${workerId}`;
 }
 
 function hireWorker(workerId) {
@@ -2173,7 +2264,9 @@ function completeWorkConfirmed() {
     
     const worker = state.hiredWorkers[workerIndex];
     state.currentWorkerId = worker.id;
-    DOM.ratingWorkerName.textContent = worker.name;
+    if (DOM.ratingWorkerName) {
+        DOM.ratingWorkerName.textContent = worker.name;
+    }
     
     closeAllModals();
     openModal(DOM.ratingModal);
@@ -2184,12 +2277,18 @@ function completeWorkConfirmed() {
 // Rating Functions
 // ============================================
 function setRating(rating) {
-    DOM.ratingSelectedValue.textContent = rating;
+    if (DOM.ratingSelectedValue) {
+        DOM.ratingSelectedValue.textContent = rating;
+    }
     highlightStars(rating);
-    DOM.submitRatingBtn.disabled = rating === 0;
+    if (DOM.submitRatingBtn) {
+        DOM.submitRatingBtn.disabled = rating === 0;
+    }
 }
 
 function highlightStars(rating) {
+    if (!DOM.stars) return;
+    
     DOM.stars.forEach(star => {
         if (parseInt(star.dataset.rating) <= rating) {
             star.classList.add('active');
@@ -2200,6 +2299,8 @@ function highlightStars(rating) {
 }
 
 function submitRating() {
+    if (!DOM.ratingSelectedValue) return;
+    
     const rating = parseInt(DOM.ratingSelectedValue.textContent);
     if (rating === 0) return;
     
@@ -2222,7 +2323,7 @@ function submitRating() {
         completionDate: new Date().toISOString().split('T')[0],
         rating: rating,
         payment: worker.negotiatedPrice || worker.expectedPrice,
-        feedback: DOM.ratingFeedback.value || 'Work completed successfully',
+        feedback: DOM.ratingFeedback ? DOM.ratingFeedback.value || 'Work completed successfully' : 'Work completed successfully',
         workType: job?.workType || 'Unknown',
         toolsAvailable: job?.toolsAvailable || false,
         jobDescription: job?.description || '',
@@ -2245,9 +2346,11 @@ function submitRating() {
 }
 
 // ============================================
-// AI Assistant Functions - FIXED BUG
+// AI Assistant Functions
 // ============================================
 function sendAIMessage(inputElement, messagesContainer) {
+    if (!inputElement || !messagesContainer) return;
+    
     const message = inputElement.value.trim();
     if (!message) return;
     
@@ -2290,6 +2393,8 @@ function handleAIFileUpload(e) {
     
     // Show file in AI chat
     const container = e.target.id === 'aiFileInput' ? DOM.aiModalMessages : DOM.aiChatMessages;
+    if (!container) return;
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = 'ai-message';
     
@@ -2354,6 +2459,8 @@ For example, try: "Find best worker for electrical wiring in Mumbai" or "Show me
 }
 
 function generateAISuggestions(message) {
+    if (!DOM.aiSuggestions) return;
+    
     const lowerMessage = message.toLowerCase();
     DOM.aiSuggestions.innerHTML = '';
     
@@ -2405,7 +2512,7 @@ function generateAISuggestions(message) {
 // ============================================
 function viewWorkHistoryDetails(historyId) {
     const history = state.workHistory.find(h => h.id === historyId);
-    if (!history) return;
+    if (!history || !DOM.workHistoryDetails) return;
     
     // Create stars for rating
     let starsHTML = '';
@@ -2502,6 +2609,8 @@ function viewWorkHistoryDetails(historyId) {
 // Utility Functions
 // ============================================
 function showNotification(message, type = 'success') {
+    if (!DOM.notificationWrapper) return;
+    
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.style.cssText = `
@@ -2539,36 +2648,24 @@ function showNotification(message, type = 'success') {
 }
 
 // ============================================
-// AI Assistant Access Controller - FIXED BUG
-// ============================================
-// ============================================
-// AI Assistant Access Controller - FIXED: Centralized routing
+// AI Assistant Access Controller
 // ============================================
 function handleAIAccess(source) {
-    // Source can be: 'dashboard', 'sidebar', 'quick-links', 'modal', 'other'
     console.log(`AI Access from: ${source}`);
     
-    // RULE 1: Open as FULL PAGE when from:
-    // - Dashboard Quick Actions (source: 'dashboard')
-    // - Sidebar menu (source: 'sidebar')
     if (source === 'dashboard' || source === 'sidebar') {
-        // Open AI Assistant as full page
         setActiveSection('ai-assistant');
-        // Ensure global navigation strip is shown for AI Assistant page
-        DOM.globalNavStrip.classList.add('active');
+        if (DOM.globalNavStrip) {
+            DOM.globalNavStrip.classList.add('active');
+        }
         return;
     }
     
-    // RULE 2: Open as MODAL when from:
-    // - Quick Links (source: 'quick-links')
-    // - Any other non-dashboard/sidebar context
     if (source === 'quick-links' || source === 'modal' || source === 'other') {
-        // Open AI Assistant as modal
         openModal(DOM.aiAssistantModal);
         return;
     }
     
-    // Default fallback: open as modal
     openModal(DOM.aiAssistantModal);
 }
 
@@ -2644,7 +2741,7 @@ function setupFilterEventListeners() {
                 activeSorts: {},
                 activeFilterType: null
             };
-            DOM.workerSearch.value = '';
+            if (DOM.workerSearch) DOM.workerSearch.value = '';
             updateFilterUI();
             renderAcceptedWorkers();
         });
@@ -2658,7 +2755,7 @@ function setupFilterEventListeners() {
                 activeSorts: {},
                 activeFilterType: null
             };
-            DOM.historySearch.value = '';
+            if (DOM.historySearch) DOM.historySearch.value = '';
             updateFilterUI();
             renderWorkHistory();
         });
@@ -2745,9 +2842,7 @@ function updateFilterUI() {
 function handleLogout() {
     showNotification('Logged out successfully', 'success');
     setTimeout(() => {
-        // In a real app, redirect to login page
-        // window.location.href = 'login.html';
-        console.log('Redirecting to login page...');
+        window.location.href = '/login_employer/';
     }, 1500);
 }
 

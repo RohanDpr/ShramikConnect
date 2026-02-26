@@ -114,15 +114,9 @@ function setupEventListeners() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange);
 }
 
-document.getElementById("loginButton").addEventListener("click", function () {
-    // Previously redirected immediately to /home_page_employer/ on click.
-    // Removed immediate redirect so form validation and async login flow run.
-});
-
-
 // ============================================
 // SETTINGS FUNCTIONS
-// ============================================
+//============================================
 
 // Toggle settings dropdown visibility
 function toggleSettingsDropdown() {
@@ -337,7 +331,28 @@ function handlePopupOverlayClick(event) {
 }
 
 // ============================================
-// LOGIN FUNCTION
+// CSRF TOKEN FUNCTION
+// ============================================
+
+// CSRF token get karne ka function
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// ============================================
+// LOGIN FUNCTION - FIXED VERSION
 // ============================================
 
 // Handle form submission
@@ -347,11 +362,8 @@ async function handleLogin(event) {
     if (loginButton.disabled) return;
     
     // Get form data
-    const userData = {
-        username: userInput.value.trim(),
-        password: passwordInput.value,
-        termsAccepted: termsCheckbox.checked
-    };
+    const email = userInput.value.trim();
+    const password = passwordInput.value;
     
     // Show loading state
     loginButton.classList.add('loading');
@@ -360,44 +372,51 @@ async function handleLogin(event) {
     loginButton.querySelector('.button-text').textContent = 'Logging in...';
     
     try {
-        // Simulate API call
-        await simulateLogin(userData);
+        // ACTUAL API CALL - Django server ko request bhejo
+        const response = await fetch('/login_employer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')  // CSRF token bhejna zaroori hai
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
         
-        // Success - in real app, redirect to employer dashboard
-        showSuccessMessage();
-        // Redirect to employer dashboard after a short delay so the user sees the success message
-        setTimeout(() => {
-            window.location.href = '/dashboard_employer/';
-        }, 1000);
+        const data = await response.json();
         
+        if (data.success) {
+            // Success - redirect to dashboard
+            showSuccessMessage('Login successful! Redirecting...');
+            setTimeout(() => {
+                window.location.href = data.redirect_url || '/dashboard_employer/';
+            }, 1000);
+        } else {
+            // Error - show message
+            showErrorMessage(data.message || 'Invalid credentials');
+            
+            // Reset button state
+            loginButton.classList.remove('loading');
+            loginButton.querySelector('.button-text').textContent = originalText;
+            loginButton.disabled = false;
+        }
     } catch (error) {
-        // Error handling
-        showErrorMessage(error.message);
-    } finally {
+        // Network error
+        console.error('Login error:', error);
+        showErrorMessage('Connection error. Please try again.');
+        
         // Reset button state
         loginButton.classList.remove('loading');
         loginButton.querySelector('.button-text').textContent = originalText;
         loginButton.disabled = false;
-        validateForm(); // Re-validate form
     }
 }
 
-// Simulate login API call
-function simulateLogin(userData) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulate successful login
-            if (userData.password.length >= 8 && userData.username && userData.termsAccepted) {
-                resolve({ success: true, message: 'Login successful' });
-            } else {
-                reject(new Error('Invalid credentials'));
-            }
-        }, 1500);
-    });
-}
-
 // Show success message after login
-function showSuccessMessage() {
+function showSuccessMessage(message) {
     // Create success notification
     const notification = document.createElement('div');
     notification.className = 'success-notification';
@@ -420,7 +439,7 @@ function showSuccessMessage() {
             max-width: 320px;
         ">
             <i class="fas fa-check-circle" style="font-size: 18px;"></i>
-            <span>Login successful! Redirecting...</span>
+            <span>${message}</span>
         </div>
     `;
     

@@ -1,6 +1,6 @@
 /**
  * Employer Signup Page - 5-Step Form
- * UPDATED VERSION WITH MAP INTEGRATION
+ * UPDATED VERSION WITH MAP INTEGRATION AND BACKEND SUBMISSION
  * 
  * Changes Made:
  * 1. All blue colors changed to green (#01A060)
@@ -10,6 +10,7 @@
  * 5. Redirect to login_employer.html
  * 6. Settings icon kept exactly the same
  * 7. All functionality preserved
+ * 8. Added backend form submission with fetch API
  */
 
 // ============================================
@@ -201,6 +202,28 @@ const validationPatterns = {
 // Dummy OTPs for demo
 const DUMMY_EMAIL_OTP = '123456';
 const DUMMY_MOBILE_OTP = '654321';
+
+// ============================================
+// CSRF TOKEN HELPER FUNCTION
+// ============================================
+
+/**
+ * Get CSRF token from cookies
+ */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 // ============================================
 // TRANSLATION SYSTEM - UPDATED FOR EMPLOYEE
@@ -2122,7 +2145,7 @@ function goToStep5() {
 }
 
 // ============================================
-// STEP 5: TERMS & CREATE ACCOUNT (SAME AS BEFORE)
+// STEP 5: TERMS & CREATE ACCOUNT - UPDATED WITH BACKEND SUBMISSION
 // ============================================
 
 /**
@@ -2271,7 +2294,7 @@ function updateRequirementsChecklist() {
 }
 
 /**
- * Handle create account button click
+ * Handle create account button click - UPDATED WITH BACKEND SUBMISSION
  */
 function handleCreateAccount() {
     if (createAccountBtn.disabled) {
@@ -2284,25 +2307,70 @@ function handleCreateAccount() {
         return;
     }
     
-    // Disable button and show loading
+    // Show loading
     createAccountBtn.disabled = true;
-    const originalText = createAccountBtn.innerHTML;
     createAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Creating Account...</span>';
     
-    // Simulate API call to create account
-    setTimeout(() => {
-        // Show success notification
-        showNotification('Account Created!', 'Your account has been created successfully. Redirecting to login...', 'success');
-        
-        // Reset button
+    // Create FormData object to send all data including files
+    const formData = new FormData();
+    
+    // Append all form fields
+    formData.append('first_name', userData.firstName);
+    formData.append('last_name', userData.lastName);
+    formData.append('dob', userData.dob);
+    formData.append('age', userData.age);
+    formData.append('gender', userData.gender);
+    formData.append('email', userData.email);
+    formData.append('email_verified', userData.emailVerified);
+    formData.append('mobile', userData.mobile);
+    formData.append('mobile_verified', userData.mobileVerified);
+    formData.append('password', userData.password);
+    formData.append('street', userData.street);
+    formData.append('city', userData.city);
+    formData.append('state', userData.state);
+    formData.append('pincode', userData.pincode);
+    formData.append('latitude', userData.workLocation.lat);
+    formData.append('longitude', userData.workLocation.lng);
+    formData.append('location_address', userData.workLocation.address);
+    formData.append('document_type', userData.documentType);
+    
+    // Append files
+    if (userData.profilePhoto) {
+        formData.append('profile_photo', userData.profilePhoto);
+    }
+    
+    if (userData.documentFile) {
+        formData.append('document_file', userData.documentFile);
+    }
+    
+    // Send to backend
+    fetch('/signup_employer/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Success!', data.message, 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect_url;
+            }, 2000);
+        } else {
+            showNotification('Error', data.message, 'error');
+            createAccountBtn.disabled = false;
+            createAccountBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Create Account</span>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
         createAccountBtn.disabled = false;
-        createAccountBtn.innerHTML = originalText;
-        
-        // Redirect to login page after 2 seconds
-        setTimeout(() => {
-            window.location.href = 'login_employer.html';
-        }, 2000);
-    }, 2000);
+        createAccountBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Create Account</span>';
+    });
 }
 
 // ============================================

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | ShramikConnect</title>
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ============================================
+         SIDEBAR (EXACT COPY FROM HELP PAGE)
+    ============================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </div>
+            <h2 data-i18n="menu">Menu</h2>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="sidebar-settings-icon" id="sidebarSettingsIcon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                        stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span data-i18n="settings">Settings</span>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="help_and_contact_page.html" class="menu-item-box">
+                    <i class="fas fa-question-circle"></i>
+                    <span data-i18n="help_contact">Help & Contact</span>
+                </a>
+                <a href="#" class="menu-item-box" id="homeLink">
+                    <i class="fas fa-home"></i>
+                    <span data-i18n="home">Home</span>
+                </a>
+                <a href="about.html" class="menu-item-box active">
+                    <i class="fas fa-info-circle"></i>
+                    <span data-i18n="about">About</span>
+                </a>
+                <a href="term_and_condition.html" class="menu-item-box">
+                    <i class="fas fa-file-contract"></i>
+                    <span data-i18n="terms_conditions">Terms & Conditions</span>
+                </a>
+                <a href="privacy_policy.html" class="menu-item-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <span data-i18n="privacy_policy">Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN (EXACT COPY FROM HELP PAGE)
+    ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         NAVBAR (EXACT COPY FROM HELP PAGE)
+    ============================================ -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo" id="logoContainer">
+                <img src="assets/ShramikConnect_logo.jpg" alt="ShramikConnect" class="logo-img" onerror="this.style.display='none'">
+                <h1>
+                    <span class="logo-shramik">Shramik</span><span class="logo-connect">Connect</span>
+                </h1>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <a href="#" class="nav-link" id="navHome" data-i18n="home">
+                <i class="fas fa-home"></i>
+                <span class="nav-text" data-i18n="home">Home</span>
+            </a>
+            <a href="help_and_contact_page.html" class="nav-link" data-i18n="help">
+                <i class="fas fa-question-circle"></i>
+                <span class="nav-text" data-i18n="help">Help</span>
+            </a>
+            <a href="about.html" class="nav-link active" data-i18n="about">
+                <i class="fas fa-info-circle"></i>
+                <span class="nav-text" data-i18n="about">About</span>
+                <div class="active-indicator"></div>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         MAIN CONTENT
+    ============================================ -->
+    <main class="main-content">
+
+        <!-- 1️⃣ HERO VIDEO SECTION (NO TEXT, NO LOOP) -->
+        <section class="hero-video-section">
+            <video class="hero-video" autoplay muted playsinline>
+                <source src="{% static 'video/Landing_video.mp4' %}" type="video/mp4">
+            </video>
+        </section>
+
+        <!-- 1️⃣.5️⃣ CTA SECTION (MOVED HERE - SMALLER) -->
+        <section class="cta-section-small">
+            <div class="container">
+                <div class="cta-content-small">
+                    <h2 class="cta-title-small" data-i18n="cta_title">Ready to Get Started?</h2>
+                    <div class="cta-buttons-small">
+                        <a href="#" class="btn btn-primary btn-small worker-btn" data-i18n="join_worker">Join as Worker</a>
+                        <a href="#" class="btn btn-secondary btn-small employer-btn" data-i18n="hire_employer">Hire as Employer</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2️⃣ MISSION & VISION (SIDE BY SIDE - FIXED) -->
+        <section class="mission-vision-section">
+            <div class="container">
+                <div class="mission-vision-grid side-by-side">
+                    <div class="mission-card reveal">
+                        <div class="icon-wrapper mission-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3 data-i18n="mission_title">Our Mission</h3>
+                        <p class="mission-text" data-i18n="mission_desc">Empowering India's informal workforce by providing dignified job opportunities, fair wages, and skill development through technology-driven solutions that bridge the gap between workers and verified employers.</p>
+                        <div class="mission-stats">
+                            <span><i class="fas fa-check-circle"></i> 10K+ Workers Placed</span>
+                            <span><i class="fas fa-check-circle"></i> 50+ Cities Covered</span>
+                        </div>
+                    </div>
+                    <div class="vision-card reveal">
+                        <div class="icon-wrapper vision-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 data-i18n="vision_title">Our Vision</h3>
+                        <p class="vision-text" data-i18n="vision_desc">To create a future where every Indian worker has access to meaningful employment opportunities, financial independence, and social security, while employers can easily find skilled, trustworthy talent in their local communities.</p>
+                        <div class="vision-stats">
+                            <span><i class="fas fa-star"></i> 2025: 1M Workers</span>
+                            <span><i class="fas fa-star"></i> 100% Verified</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3️⃣ ABOUT PLATFORM + STATS (SMALLER CARDS) -->
+        <section class="about-platform-section">
+            <div class="container">
+                <div class="about-header reveal">
+                    <h2 data-i18n="platform_title">What is ShramikConnect?</h2>
+                    <div class="header-decoration"></div>
+                </div>
+                <div class="about-content-grid reveal">
+                    <div class="about-text">
+                        <p data-i18n="platform_desc">We bridge the gap between India's informal workforce and verified employers through technology, transparency, and trust. Our platform makes hiring simple, safe, and accessible for everyone.</p>
+                        <ul class="about-features">
+                            <li><i class="fas fa-mobile-alt"></i> Easy-to-use mobile app</li>
+                            <li><i class="fas fa-shield-alt"></i> Verified profiles with background checks</li>
+                            <li><i class="fas fa-clock"></i> Instant job matching</li>
+                            <li><i class="fas fa-wallet"></i> Secure digital payments</li>
+                        </ul>
+                    </div>
+                    <div class="stats-grid-enhanced" id="statsGrid">
+                        <div class="stat-item-enhanced">
+                            <span class="stat-number" data-target="10000">0</span><span class="stat-plus">+</span>
+                            <span class="stat-label" data-i18n="stat_workers">Workers</span>
+                        </div>
+                        <div class="stat-item-enhanced">
+                            <span class="stat-number" data-target="2500">0</span><span class="stat-plus">+</span>
+                            <span class="stat-label" data-i18n="stat_employers">Employers</span>
+                        </div>
+                        <div class="stat-item-enhanced">
+                            <span class="stat-number" data-target="5000">0</span><span class="stat-plus">+</span>
+                            <span class="stat-label" data-i18n="stat_jobs">Jobs</span>
+                        </div>
+                        <div class="stat-item-enhanced">
+                            <span class="stat-number" data-target="98">0</span><span class="stat-percent">%</span>
+                            <span class="stat-label" data-i18n="stat_satisfaction">Satisfaction</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4️⃣ WHY CHOOSE US (ENHANCED) -->
+        <section class="why-choose-section">
+            <div class="container">
+                <h2 class="section-title reveal" data-i18n="why_title">Why Choose ShramikConnect</h2>
+                <div class="features-grid-enhanced">
+                    <div class="feature-card-enhanced reveal">
+                        <div class="feature-icon-wrapper blue-gradient">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 data-i18n="feature1_title">Verified Workers</h3>
+                            <p data-i18n="feature1_desc">Every worker undergoes multi-step verification for authenticity and skill.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card-enhanced reveal">
+                        <div class="feature-icon-wrapper green-gradient">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 data-i18n="feature2_title">Chatbot Support</h3>
+                            <p data-i18n="feature2_desc">24/7 AI-powered assistance for instant answers and guidance.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card-enhanced reveal">
+                        <div class="feature-icon-wrapper blue-gradient">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 data-i18n="feature3_title">Transparent Ratings</h3>
+                            <p data-i18n="feature3_desc">Genuine reviews from both sides build a trustworthy community.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card-enhanced reveal">
+                        <div class="feature-icon-wrapper green-gradient">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 data-i18n="feature4_title">24/7 Support</h3>
+                            <p data-i18n="feature4_desc">We're always here to help, with multi-lingual support and quick resolution.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5️⃣ SOCIAL MEDIA CONNECT (DARK MODE YELLOW) -->
+        <section class="social-connect-section">
+            <div class="container">
+                <div class="social-header">
+                    <h2 class="section-title reveal" data-i18n="social_title">Connect With Us</h2>
+                    <p class="social-subtitle">Join our community for updates, support, and more</p>
+                </div>
+                <div class="social-cards-grid">
+                    <a href="#" class="social-card instagram">
+                        <div class="social-card-inner">
+                            <i class="fab fa-instagram"></i>
+                            <span>@shramikconnect</span>
+                        </div>
+                    </a>
+                    <a href="#" class="social-card facebook">
+                        <div class="social-card-inner">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>/shramikconnect</span>
+                        </div>
+                    </a>
+                    <a href="#" class="social-card twitter">
+                        <div class="social-card-inner">
+                            <i class="fab fa-x-twitter"></i>
+                            <span>@shramikconnect</span>
+                        </div>
+                    </a>
+                    <a href="#" class="social-card youtube">
+                        <div class="social-card-inner">
+                            <i class="fab fa-youtube"></i>
+                            <span>/ShramikConnect</span>
+                        </div>
+                    </a>
+                    <a href="#" class="social-card linkedin">
+                        <div class="social-card-inner">
+                            <i class="fab fa-linkedin-in"></i>
+                            <span>company/shramikconnect</span>
+                        </div>
+                    </a>
+                    <a href="#" class="social-card email">
+                        <div class="social-card-inner">
+                            <i class="fas fa-envelope"></i>
+                            <span>hello@shramikconnect</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6️⃣ DEVELOPERS SECTION (UPDATED) -->
+        <section class="developers-section">
+            <div class="container">
+                <h2 class="section-title reveal" data-i18n="developers_title">Meet Our Developers</h2>
+                <div class="carousel-container">
+                    <button class="nav-btn prev-btn" aria-label="Previous">&lt;</button>
+                    <div class="carousel-track">
+                        <!-- Developer Card 1: Nagesh Daberao -->
+                        <div class="team-card" data-pos="-2">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="{% static 'images/nagesh.webp' %}" alt="Nagesh Daberao" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Nagesh <span>Daberao</span></h3>
+                                        <p class="dev-role">Co-Founder & Frontend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content">
+                                        <h3>Nagesh Daberao</h3>
+                                        <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                        <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                        <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                        <div class="skill-tags">
+                                            <span class="skill-tag">cyber security</span>
+                                            <span class="skill-tag">ai</span>
+                                            <span class="skill-tag">ml</span>
+                                        </div>
+                                        <div class="back-social-grid">
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                            </div>
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Developer Card 2: Rohan Dharpawar -->
+                        <div class="team-card" data-pos="-1">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="{% static 'images/rohan.jpeg' %}" alt="Rohan Dharpawar" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Rohan <span>Dharpawar</span></h3>
+                                        <p class="dev-role">Co-Founder & Backend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content">
+                                        <h3>Rohan Dharpawar</h3>
+                                        <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                        <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                        <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                        <div class="skill-tags">
+                                            <span class="skill-tag">cyber security</span>
+                                            <span class="skill-tag">ai</span>
+                                            <span class="skill-tag">ml</span>
+                                        </div>
+                                        <div class="back-social-grid">
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                            </div>
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Developer Card 3: Shaan Shukla (HIGHLIGHTED) -->
+                        <div class="team-card" data-pos="0">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="{% static 'images/shaan.jpeg' %}" alt="Shaan Shukla" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Shaan <span>Shukla</span></h3>
+                                        <p class="dev-role">Founder & Frontend + Backend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content">
+                                        <h3>Shaan Shukla</h3>
+                                        <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                        <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                        <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                        <div class="skill-tags">
+                                            <span class="skill-tag">cyber security</span>
+                                            <span class="skill-tag">ai</span>
+                                            <span class="skill-tag">ml</span>
+                                        </div>
+                                        <div class="back-social-grid">
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                            </div>
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Developer Card 4: Mohmmad Wasif -->
+                        <div class="team-card" data-pos="1">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="{% static 'images/wasif.jpeg' %}" alt="Mohmmad Wasif" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Mohmmad <span>Wasif</span></h3>
+                                        <p class="dev-role">Co-Founder & Frontend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content">
+                                        <h3>Mohmmad Wasif</h3>
+                                        <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                        <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                        <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                        <div class="skill-tags">
+                                            <span class="skill-tag">cyber security</span>
+                                            <span class="skill-tag">ai</span>
+                                            <span class="skill-tag">ml</span>
+                                        </div>
+                                        <div class="back-social-grid">
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                            </div>
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Developer Card 5: Sumedh Ingle -->
+                        <div class="team-card" data-pos="2">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="{% static 'images/sumedh.jpeg' %}" alt="Sumedh Ingle" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Sumedh <span>Ingle</span></h3>
+                                        <p class="dev-role">Co-Founder & Frontend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content">
+                                        <h3>Sumedh Ingle</h3>
+                                        <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                        <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                        <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                        <div class="skill-tags">
+                                            <span class="skill-tag">cyber security</span>
+                                            <span class="skill-tag">ai</span>
+                                            <span class="skill-tag">ml</span>
+                                        </div>
+                                        <div class="back-social-grid">
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                            </div>
+                                            <div class="social-row">
+                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="nav-btn next-btn" aria-label="Next">&gt;</button>
+                </div>
+                <div class="developer-cta">
+                    <a href="developer.html" class="btn-developer" data-i18n="know_more">
+                        <span>Know More About Developers</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7️⃣ FOOTER (EXACT COPY FROM HELP PAGE) -->
+        <footer class="footer">
+            <div class="footer-wave">
+                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+                    <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+                    <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+                </svg>
+            </div>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <div class="brand-text" id="brandText">
+                            <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                        </div>
+                        <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                        <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="links-column">
+                            <h3 class="column-title">Platform</h3>
+                            <a href="/login_worker/" class="footer-link">For Workers</a>
+                            <a href="/login_employer/" class="footer-link">For Employers</a>
+                        </div>
+                        <div class="links-column">
+                            <h3 class="column-title">Company</h3>
+                            <a href="/about/" class="footer-link" data-i18n="about">About</a>
+                            <a href="#" class="footer-link">How It Works</a>
+                        </div>
+                        <div class="links-column">
+                            <h3 class="column-title">Support</h3>
+                            <a href="/help_and_contact_page/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                            <a href="/privacy_policy/" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                            <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="{% static 'js/about.js' %}"></script>
+</body>
+</html>
