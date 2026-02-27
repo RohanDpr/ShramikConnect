@@ -10,3 +10,5 @@ python manage.py migrate
 if [ -f data.json ]; then
   python manage.py loaddata data.json
 fi
+
+python manage.py create_admin
