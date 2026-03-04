@@ -1,6 +1,10 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 import os
+from datetime import timedelta
+from django.utils import timezone
+import random
+import string
 
 # Create your models here.
 
@@ -123,6 +127,40 @@ class Employer(models.Model):
         if self.work_latitude and self.work_longitude:
             return (float(self.work_latitude), float(self.work_longitude))
         return None
+
+# ============================================
+# EMAIL OTP VERIFICATION MODEL
+# ============================================
+
+class EmailOTP(models.Model):
+    """Model to store email OTPs for verification"""
+    
+    email = models.EmailField(verbose_name="Email Address")
+    otp = models.CharField(max_length=6, verbose_name="OTP")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    is_verified = models.BooleanField(default=False, verbose_name="Is Verified")
+    
+    class Meta:
+        db_table = 'email_otp'
+        verbose_name = "Email OTP"
+        verbose_name_plural = "Email OTPs"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['email', 'created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.email} - {self.otp} - {'Verified' if self.is_verified else 'Pending'}"
+    
+    def is_valid(self):
+        """Check if OTP is still valid (within expiry time)"""
+        expiry_time = self.created_at + timedelta(minutes=5)  # 5 minutes expiry
+        return timezone.now() <= expiry_time
+    
+    @staticmethod
+    def generate_otp():
+        """Generate a 6-digit OTP"""
+        return ''.join(random.choices(string.digits, k=6))
 
 
 class Job(models.Model):
@@ -252,3 +290,4 @@ class ChatMessage(models.Model):
     
     class Meta:
         ordering = ['created_at']
+

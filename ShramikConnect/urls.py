@@ -34,10 +34,18 @@ urlpatterns = [
     path('dashboard_employer/', views.dashboard_employer, name='dashboard_employer'),
     path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
     
-    # API endpoints - only those that exist in views.py
+    # API endpoints
     path('api/employer/check-exists/', views.check_employer_exists, name='check_employer_exists'),
     path('api/employer/<int:employer_id>/', views.get_employer_details, name='get_employer_details'),
     path('api/employers/', views.list_employers, name='list_employers'),
+    
+    # ============================================
+    # EMAIL OTP VERIFICATION API ENDPOINTS
+    # ============================================
+    path('api/send-email-otp/', views.send_email_otp, name='send_email_otp'),
+    path('api/verify-email-otp/', views.verify_email_otp, name='verify_email_otp'),
+    path('api/resend-email-otp/', views.resend_email_otp, name='resend_email_otp'),
+    path('api/check-email-exists/', views.check_email_exists, name='check_email_exists'),
 ]
 
 # Serve media files in development

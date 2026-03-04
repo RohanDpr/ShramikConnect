@@ -4,10 +4,16 @@ from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils import timezone
 import json
 import os
 from datetime import datetime
-from core.models import Employer
+from core.models import Employer, EmailOTP
+import logging
+
+logger = logging.getLogger(__name__)
 
 def index(request):
     return render(request, 'index.html')
@@ -743,3 +749,401 @@ def get_work_history(request):
 @require_http_methods(["GET"])
 def get_work_history_details(request, history_id):
     return JsonResponse({'work_history': {}})
+
+# ============================================
+# EMAIL OTP VERIFICATION VIEWS
+# ============================================
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def send_email_otp(request):
+    """
+    Send OTP to email for verification
+    """
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+        
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'message': 'Email is required'
+            })
+        
+        # Check if email already exists in Employer table
+        if Employer.objects.filter(email=email).exists():
+            return JsonResponse({
+                'success': False,
+                'message': 'This email is already registered. Please login or use a different email.'
+            })
+        
+        # Generate OTP
+        otp = EmailOTP.generate_otp()
+        
+        # Save OTP to database
+        EmailOTP.objects.create(email=email, otp=otp)
+        
+        # Send email
+        subject = 'Email Verification OTP - ShramikConnect'
+        message = f"""
+Dear User,
+
+Thank you for registering with ShramikConnect!
+
+Your OTP for email verification is: {otp}
+
+This OTP is valid for 5 minutes.
+
+If you didn't request this, please ignore this email.
+
+Regards,
+ShramikConnect Team
+        """
+        
+        html_message = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }}
+        .header {{
+            background-color: #01A060;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }}
+        .content {{
+            padding: 20px;
+        }}
+        .otp-box {{
+            background-color: #f0f0f0;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>ShramikConnect</h2>
+        </div>
+        <div class="content">
+            <h3>Email Verification</h3>
+            <p>Dear User,</p>
+            <p>Thank you for registering with ShramikConnect! Please use the following OTP to verify your email address:</p>
+            
+            <div class="otp-box">
+                {otp}
+            </div>
+            
+            <p>This OTP is valid for <strong>5 minutes</strong>. Do not share this OTP with anyone.</p>
+            
+            <p>If you didn't request this verification, please ignore this email.</p>
+            
+            <p>Regards,<br>ShramikConnect Team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 ShramikConnect. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+        """
+        
+        # Send email
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+            html_message=html_message
+        )
+        
+        logger.info(f"OTP sent to email: {email}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'OTP sent successfully to your email'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Error sending OTP: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Failed to send OTP: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def verify_email_otp(request):
+    """
+    Verify the OTP entered by user
+    """
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+        otp = data.get('otp')
+        
+        if not email or not otp:
+            return JsonResponse({
+                'success': False,
+                'message': 'Email and OTP are required'
+            })
+        
+        # Get the latest OTP for this email
+        latest_otp = EmailOTP.objects.filter(
+            email=email
+        ).order_by('-created_at').first()
+        
+        if not latest_otp:
+            return JsonResponse({
+                'success': False,
+                'message': 'No OTP found for this email. Please request a new OTP.'
+            })
+        
+        if latest_otp.is_verified:
+            return JsonResponse({
+                'success': False,
+                'message': 'This email has already been verified'
+            })
+        
+        if not latest_otp.is_valid():
+            return JsonResponse({
+                'success': False,
+                'message': 'OTP has expired. Please request a new OTP.'
+            })
+        
+        if latest_otp.otp != otp:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid OTP. Please try again.'
+            })
+        
+        # Mark OTP as verified
+        latest_otp.is_verified = True
+        latest_otp.save()
+        
+        logger.info(f"Email verified successfully: {email}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Email verified successfully!'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Error verifying OTP: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Failed to verify OTP: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def resend_email_otp(request):
+    """
+    Resend OTP to email
+    """
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+        
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'message': 'Email is required'
+            })
+        
+        # Check if email already exists in Employer table
+        if Employer.objects.filter(email=email).exists():
+            return JsonResponse({
+                'success': False,
+                'message': 'This email is already registered. Please login or use a different email.'
+            })
+        
+        # Generate new OTP
+        otp = EmailOTP.generate_otp()
+        
+        # Save new OTP
+        EmailOTP.objects.create(email=email, otp=otp)
+        
+        # Send email
+        subject = 'New OTP for Email Verification - ShramikConnect'
+        message = f"""
+Dear User,
+
+Your new OTP for email verification is: {otp}
+
+This OTP is valid for 5 minutes.
+
+If you didn't request this, please ignore this email.
+
+Regards,
+ShramikConnect Team
+        """
+        
+        html_message = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }}
+        .header {{
+            background-color: #01A060;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }}
+        .content {{
+            padding: 20px;
+        }}
+        .otp-box {{
+            background-color: #f0f0f0;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>ShramikConnect</h2>
+        </div>
+        <div class="content">
+            <h3>New OTP for Email Verification</h3>
+            <p>Dear User,</p>
+            <p>Your new OTP for email verification is:</p>
+            
+            <div class="otp-box">
+                {otp}
+            </div>
+            
+            <p>This OTP is valid for <strong>5 minutes</strong>. Do not share this OTP with anyone.</p>
+            
+            <p>If you didn't request this, please ignore this email.</p>
+            
+            <p>Regards,<br>ShramikConnect Team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 ShramikConnect. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+        """
+        
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+            html_message=html_message
+        )
+        
+        logger.info(f"OTP resent to email: {email}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'New OTP sent successfully to your email'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Error resending OTP: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Failed to resend OTP: {str(e)}'
+        }, status=500)
+
+
+@require_http_methods(["GET"])
+def check_email_exists(request):
+    """
+    Check if email already exists in Employer table
+    Used for real-time validation during signup
+    """
+    try:
+        email = request.GET.get('email')
+        
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'message': 'Email parameter is required'
+            }, status=400)
+        
+        exists = Employer.objects.filter(email=email).exists()
+        
+        return JsonResponse({
+            'success': True,
+            'exists': exists
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking email: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=500)
