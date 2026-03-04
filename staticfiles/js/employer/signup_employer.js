@@ -1,23 +1,13 @@
 /**
  * Employer Signup Page - 5-Step Form
- * UPDATED VERSION WITH MAP INTEGRATION AND BACKEND SUBMISSION
- * 
- * Changes Made:
- * 1. All blue colors changed to green (#01A060)
- * 2. Worker → Employer text changes
- * 3. Removed Profession field
- * 4. Added Map for Work Location with pen/marker functionality
- * 5. Redirect to login_employer.html
- * 6. Settings icon kept exactly the same
- * 7. All functionality preserved
- * 8. Added backend form submission with fetch API
+ * COMPLETE UPDATED VERSION WITH REAL EMAIL OTP VERIFICATION
  */
 
 // ============================================
 // DOM ELEMENTS
 // ============================================
 
-// Settings Elements (EXACTLY SAME AS BEFORE)
+// Settings Elements
 const settingsIcon = document.getElementById('settingsIcon');
 const settingsDropdown = document.getElementById('settingsDropdown');
 const languageOptions = document.querySelectorAll('.language-option');
@@ -128,10 +118,6 @@ const reqTerms = document.getElementById('reqTerms');
 const backStep5 = document.getElementById('backStep5');
 const createAccountBtn = document.getElementById('createAccountBtn');
 
-// Login Link
-const loginLinkTitle = document.querySelector('.link-title');
-const loginLinkAction = document.querySelector('.link-action');
-
 // ============================================
 // STATE VARIABLES
 // ============================================
@@ -140,7 +126,7 @@ let currentStep = 1;
 let currentLanguage = 'en';
 let currentTheme = 'light';
 
-// User Data Storage (UPDATED: removed profession fields)
+// User Data Storage
 let userData = {
     profilePhoto: null,
     firstName: '',
@@ -199,10 +185,6 @@ const validationPatterns = {
     pincode: /^\d{6}$/
 };
 
-// Dummy OTPs for demo
-const DUMMY_EMAIL_OTP = '123456';
-const DUMMY_MOBILE_OTP = '654321';
-
 // ============================================
 // CSRF TOKEN HELPER FUNCTION
 // ============================================
@@ -226,7 +208,7 @@ function getCookie(name) {
 }
 
 // ============================================
-// TRANSLATION SYSTEM - UPDATED FOR EMPLOYEE
+// TRANSLATION SYSTEM
 // ============================================
 
 const translations = {
@@ -357,7 +339,7 @@ const translations = {
         'timer': 'Timer: {0}s remaining'
     },
     hi: {
-        // Hindi translations (updated for employer)
+        // Hindi translations
         'employer_signup': 'कर्मचारी पंजीकरण',
         'signup_subtitle': '5 आसान चरणों में अपना खाता बनाएं',
         'already_have_account': 'पहले से ही एक खाता है?',
@@ -483,7 +465,7 @@ const translations = {
         'timer': 'टाइमर: {0} सेकंड शेष'
     },
     mr: {
-        // Marathi translations (updated for employer)
+        // Marathi translations
         'employer_signup': 'कर्मचारी नोंदणी',
         'signup_subtitle': '5 सोप्या पायरीत तुमचे खाते तयार करा',
         'already_have_account': 'आधीपासून खाते आहे?',
@@ -614,79 +596,41 @@ const translations = {
 // INITIALIZATION
 // ============================================
 
-/**
- * Initialize the application
- */
 function init() {
     console.log('Employer Signup Page Initialized');
     
-    // Load preferences
     loadPreferences();
-    
-    // Apply language
     applyLanguage(currentLanguage);
-    
-    // Setup event listeners
     setupEventListeners();
-    
-    // Initialize form validation
     initializeFormValidation();
-    
-    // Update progress bar
     updateProgressBar();
-    
-    // Initialize DOB restrictions
     initializeDOB();
-    
-    // Enable terms checkbox
     termsCheckbox.disabled = false;
-    
-    // Initialize map when step 3 is loaded
     initializeMapWhenReady();
 }
 
-/**
- * Load saved user preferences
- */
 function loadPreferences() {
-    // Load theme preference
     const savedTheme = localStorage.getItem('preferredTheme') || 'light';
     currentTheme = savedTheme;
     
-    // Load language preference
     const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
     currentLanguage = savedLanguage;
     
-    // Update language buttons in dropdown
     updateLanguageButtons(savedLanguage);
-    
-    // Apply theme
     applyTheme(currentTheme);
 }
 
-/**
- * Update language buttons active state
- */
 function updateLanguageButtons(lang) {
     languageOptions.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
     });
 }
 
-/**
- * Initialize form validation
- */
 function initializeFormValidation() {
-    // Initial validation for step 1
     validateStep1();
-    
-    // Initialize password strength
     validatePassword();
 }
 
-/**
- * Initialize date of birth restrictions
- */
 function initializeDOB() {
     const today = new Date();
     const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
@@ -696,11 +640,7 @@ function initializeDOB() {
     dob.min = minDate.toISOString().split('T')[0];
 }
 
-/**
- * Initialize map when step 3 becomes active
- */
 function initializeMapWhenReady() {
-    // Observe when step 3 becomes active
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.attributeName === 'class') {
@@ -714,37 +654,23 @@ function initializeMapWhenReady() {
     observer.observe(step3, { attributes: true });
 }
 
-/**
- * Initialize Leaflet map
- */
 function initializeMap() {
-    // Default location (Mumbai, India)
     const defaultLat = 19.0760;
     const defaultLng = 72.8777;
     
-    // Create map
     map = L.map('map').setView([defaultLat, defaultLng], 12);
     
-    // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
     
-    // Add locate me button functionality
     locateMeBtn.addEventListener('click', locateUser);
-    
-    // Add mark location button functionality
     markLocationBtn.addEventListener('click', toggleMarkingMode);
-    
-    // Add click event to map for marking location
     map.on('click', handleMapClick);
     
     console.log('Map initialized');
 }
 
-/**
- * Initialize preview map
- */
 function initializePreviewMap(lat, lng) {
     if (previewMapInstance) {
         previewMapInstance.remove();
@@ -760,19 +686,8 @@ function initializePreviewMap(lat, lng) {
         previewMarker.remove();
     }
     
-    previewMarker = L.marker([lat, lng], {
-        icon: L.icon({
-            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        })
-    }).addTo(previewMapInstance);
+    previewMarker = L.marker([lat, lng]).addTo(previewMapInstance);
     
-    // Get address from coordinates
     getAddressFromCoordinates(lat, lng).then(address => {
         previewLocationText.textContent = address || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
     }).catch(() => {
@@ -780,9 +695,6 @@ function initializePreviewMap(lat, lng) {
     });
 }
 
-/**
- * Get address from coordinates using Nominatim
- */
 async function getAddressFromCoordinates(lat, lng) {
     try {
         const response = await fetch(
@@ -794,12 +706,7 @@ async function getAddressFromCoordinates(lat, lng) {
         }
         
         const data = await response.json();
-        
-        if (data.display_name) {
-            return data.display_name;
-        }
-        
-        return `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+        return data.display_name || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
     } catch (error) {
         console.error('Error fetching address:', error);
         return `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
@@ -810,30 +717,20 @@ async function getAddressFromCoordinates(lat, lng) {
 // EVENT LISTENERS SETUP
 // ============================================
 
-/**
- * Setup all event listeners
- */
 function setupEventListeners() {
-    // Settings dropdown toggle
     settingsIcon.addEventListener('click', toggleSettingsDropdown);
-    
-    // Close settings when clicking outside
     document.addEventListener('click', closeSettingsOnClickOutside);
     
-    // Language switcher
     languageOptions.forEach(btn => {
         btn.addEventListener('click', () => handleLanguageChange(btn.dataset.lang));
     });
     
-    // Theme switcher
     themeOptions.forEach(btn => {
         btn.addEventListener('click', () => handleThemeChange(btn.dataset.theme));
     });
     
-    // System theme change listener
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange);
     
-    // Step 1 Listeners
     capturePhotoBtn.addEventListener('click', handleCapturePhoto);
     uploadPhotoBtn.addEventListener('click', handleUploadPhoto);
     firstName.addEventListener('input', validateStep1);
@@ -844,7 +741,6 @@ function setupEventListeners() {
     });
     nextStep1.addEventListener('click', goToStep2);
     
-    // Step 2 Listeners
     emailInput.addEventListener('input', validateEmailInput);
     getEmailOtpBtn.addEventListener('click', handleGetEmailOtp);
     emailOtpInput.addEventListener('input', validateEmailOtp);
@@ -865,7 +761,6 @@ function setupEventListeners() {
     backStep2.addEventListener('click', () => goToStep(1));
     nextStep2.addEventListener('click', goToStep3);
     
-    // Step 3 Listeners
     street.addEventListener('input', validateStep3);
     city.addEventListener('input', validateStep3);
     state.addEventListener('input', validateStep3);
@@ -879,47 +774,27 @@ function setupEventListeners() {
     backStep3.addEventListener('click', () => goToStep(2));
     nextStep3.addEventListener('click', goToStep4);
     
-    // Step 4 Listeners
     backStep4.addEventListener('click', () => goToStep(3));
     nextStep4.addEventListener('click', goToStep5);
     
-    // Step 5 Listeners
     termsCheckbox.addEventListener('change', handleTermsCheckbox);
     
-    // Direct event listeners for terms links
     document.addEventListener('click', function(event) {
-        // Check if clicked element is a terms link
         if (event.target.classList.contains('terms-link')) {
             event.preventDefault();
             const href = event.target.getAttribute('href');
-            
-            // Open in new tab
             window.open(href, '_blank');
-            
-            // Show notification (optional)
-            if (href.includes('term_and_condition')) {
-                showNotification('Terms & Conditions', 'Opening Terms & Conditions in new tab', 'info');
-            } else if (href.includes('privacy_policy')) {
-                showNotification('Privacy Policy', 'Opening Privacy Policy in new tab', 'info');
-            }
         }
     });
     
     backStep5.addEventListener('click', () => goToStep(4));
     createAccountBtn.addEventListener('click', handleCreateAccount);
     
-    // Terms popup close button
     closePopupBtn.addEventListener('click', closeTermsPopup);
-    
-    // Setup terms links listeners
     setupTermsLinksListeners();
 }
 
-/**
- * Setup event listeners for terms links
- */
 function setupTermsLinksListeners() {
-    // Checkbox label के अंदर के links
     const checkboxLabel = document.querySelector('.checkbox-label');
     if (checkboxLabel) {
         checkboxLabel.addEventListener('click', function(event) {
@@ -927,18 +802,10 @@ function setupTermsLinksListeners() {
                 event.preventDefault();
                 const href = event.target.getAttribute('href');
                 window.open(href, '_blank');
-                
-                // Show notification
-                showNotification(
-                    href === 't&c.html' ? 'Terms & Conditions' : 'Privacy Policy',
-                    `Opening ${href === 't&c.html' ? 'Terms & Conditions' : 'Privacy Policy'} in new tab`,
-                    'info'
-                );
             }
         });
     }
     
-    // Popup में links
     const popupLinks = document.querySelectorAll('.popup-link');
     popupLinks.forEach(link => {
         link.addEventListener('click', function(event) {
@@ -950,21 +817,15 @@ function setupTermsLinksListeners() {
 }
 
 // ============================================
-// SETTINGS FUNCTIONS (EXACTLY SAME AS BEFORE)
+// SETTINGS FUNCTIONS
 // ============================================
 
-/**
- * Toggle settings dropdown visibility
- */
 function toggleSettingsDropdown() {
     const isActive = settingsDropdown.classList.toggle('active');
     settingsDropdown.setAttribute('aria-hidden', !isActive);
     settingsIcon.setAttribute('aria-expanded', isActive);
 }
 
-/**
- * Close settings when clicking outside
- */
 function closeSettingsOnClickOutside(event) {
     if (!settingsIcon.contains(event.target) && !settingsDropdown.contains(event.target)) {
         settingsDropdown.classList.remove('active');
@@ -973,53 +834,27 @@ function closeSettingsOnClickOutside(event) {
     }
 }
 
-// ============================================
-// LANGUAGE FUNCTIONS
-// ============================================
-
-/**
- * Handle language change
- */
 function handleLanguageChange(lang) {
     currentLanguage = lang;
     localStorage.setItem('preferredLanguage', lang);
-    
-    // Update buttons
     updateLanguageButtons(lang);
-    
-    // Apply language
     applyLanguage(lang);
 }
 
-/**
- * Apply language translations to all elements
- */
 function applyLanguage(lang) {
     const translation = translations[lang] || translations.en;
     
-    // Update all elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translation[key]) {
-            let translatedText = translation[key];
-            
-            // Handle timer text with placeholder
-            if (key === 'timer' && element.tagName === 'SPAN') {
-                const timerValue = element.querySelector('#timerDisplay') ? element.querySelector('#timerDisplay').textContent : '10';
-                translatedText = translatedText.replace('{0}', timerValue);
-            }
-            
-            if (element.tagName === 'INPUT' && element.type === 'submit' || 
-                element.tagName === 'BUTTON' || 
-                element.tagName === 'OPTION') {
-                element.textContent = translatedText;
+            if (element.tagName === 'INPUT' || element.tagName === 'BUTTON' || element.tagName === 'OPTION') {
+                element.textContent = translation[key];
             } else {
-                element.textContent = translatedText;
+                element.textContent = translation[key];
             }
         }
     });
     
-    // Update placeholders
     document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
         const key = element.getAttribute('data-i18n-placeholder');
         if (translation[key] && element.placeholder !== undefined) {
@@ -1027,7 +862,6 @@ function applyLanguage(lang) {
         }
     });
     
-    // Update OTP resend text if timer is running
     if (emailResendCountdown) {
         updateEmailResendText();
     }
@@ -1035,31 +869,19 @@ function applyLanguage(lang) {
         updateMobileResendText();
     }
     
-    // Update password strength text
     updatePasswordStrengthText();
 }
 
-// ============================================
-// THEME FUNCTIONS
-// ============================================
-
-/**
- * Handle theme change
- */
 function handleThemeChange(theme) {
     currentTheme = theme;
     localStorage.setItem('preferredTheme', theme);
     applyTheme(theme);
     
-    // Update active button
     themeOptions.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.theme === theme);
     });
 }
 
-/**
- * Apply theme to the page
- */
 function applyTheme(theme) {
     let themeToApply = theme;
     
@@ -1067,19 +889,14 @@ function applyTheme(theme) {
         themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     
-    // Update body class
     document.body.classList.remove('light-theme', 'dark-theme');
     document.body.classList.add(`${themeToApply}-theme`);
     
-    // Update active button in dropdown
     themeOptions.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.theme === theme);
     });
 }
 
-/**
- * Handle system theme change
- */
 function handleSystemThemeChange(event) {
     if (currentTheme === 'system') {
         applyTheme('system');
@@ -1090,9 +907,6 @@ function handleSystemThemeChange(event) {
 // MAP FUNCTIONS
 // ============================================
 
-/**
- * Locate user on map
- */
 function locateUser() {
     if (!navigator.geolocation) {
         showNotification('Error', 'Geolocation is not supported by your browser', 'error');
@@ -1108,32 +922,17 @@ function locateUser() {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             
-            // Update map view
             map.setView([lat, lng], 15);
             
-            // Remove existing marker
             if (marker) {
                 marker.remove();
             }
             
-            // Add new marker
-            marker = L.marker([lat, lng], {
-                icon: L.icon({
-                    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                })
-            }).addTo(map);
+            marker = L.marker([lat, lng]).addTo(map);
             
-            // Update user data
             userData.workLocation.lat = lat;
             userData.workLocation.lng = lng;
             
-            // Get address from coordinates
             getAddressFromCoordinates(lat, lng).then(address => {
                 userData.workLocation.address = address;
                 selectedLocationText.textContent = address || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
@@ -1141,14 +940,11 @@ function locateUser() {
                 selectedLocationText.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
             });
             
-            // Update latitude and longitude inputs
             latitudeInput.value = lat;
             longitudeInput.value = lng;
             
-            // Validate step 3
             validateStep3();
             
-            // Reset button
             locateMeBtn.disabled = false;
             locateMeBtn.innerHTML = originalText;
             
@@ -1183,9 +979,6 @@ function locateUser() {
     );
 }
 
-/**
- * Toggle marking mode on map
- */
 function toggleMarkingMode() {
     isMarkingMode = !isMarkingMode;
     
@@ -1204,38 +997,21 @@ function toggleMarkingMode() {
     }
 }
 
-/**
- * Handle map click for marking location
- */
 function handleMapClick(event) {
     if (!isMarkingMode) return;
     
     const lat = event.latlng.lat;
     const lng = event.latlng.lng;
     
-    // Remove existing marker
     if (marker) {
         marker.remove();
     }
     
-    // Add new marker
-    marker = L.marker([lat, lng], {
-        icon: L.icon({
-            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        })
-    }).addTo(map);
+    marker = L.marker([lat, lng]).addTo(map);
     
-    // Update user data
     userData.workLocation.lat = lat;
     userData.workLocation.lng = lng;
     
-    // Get address from coordinates
     getAddressFromCoordinates(lat, lng).then(address => {
         userData.workLocation.address = address;
         selectedLocationText.textContent = address || `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
@@ -1243,18 +1019,15 @@ function handleMapClick(event) {
         selectedLocationText.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
     });
     
-    // Update latitude and longitude inputs
     latitudeInput.value = lat;
     longitudeInput.value = lng;
     
-    // Exit marking mode
     isMarkingMode = false;
     markLocationBtn.innerHTML = '<i class="fas fa-map-pin"></i><span>Mark Location</span>';
     markLocationBtn.style.background = '';
     markLocationBtn.style.borderColor = '';
     markLocationBtn.style.color = '';
     
-    // Validate step 3
     validateStep3();
     
     showNotification('Location Marked', 'Work location has been marked on the map', 'success');
@@ -1264,11 +1037,7 @@ function handleMapClick(event) {
 // STEP NAVIGATION FUNCTIONS
 // ============================================
 
-/**
- * Navigate to specific step
- */
 function goToStep(stepNumber) {
-    // Validate current step before leaving
     if (stepNumber > currentStep) {
         if (!validateCurrentStep()) {
             showValidationError();
@@ -1276,20 +1045,17 @@ function goToStep(stepNumber) {
         }
     }
     
-    // Smooth transition effect
     const formContainer = document.querySelector('.form-container');
     formContainer.style.opacity = '0.7';
     formContainer.style.transform = 'translateY(10px)';
     
     setTimeout(() => {
-        // Hide all steps
         step1.classList.remove('active');
         step2.classList.remove('active');
         step3.classList.remove('active');
         step4.classList.remove('active');
         step5.classList.remove('active');
         
-        // Show target step
         if (stepNumber === 1) {
             step1.classList.add('active');
             currentStep = 1;
@@ -1309,27 +1075,19 @@ function goToStep(stepNumber) {
             validateStep5();
         }
         
-        // Update progress bar
         updateProgressBar();
         
-        // Restore form container
         formContainer.style.opacity = '1';
         formContainer.style.transform = 'translateY(0)';
         
-        // Scroll to top of form
         document.querySelector('.form-container').scrollIntoView({ 
             behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
+            block: 'start'
         });
     }, 150);
 }
 
-/**
- * Update progress bar
- */
 function updateProgressBar() {
-    // Update step completion
     steps.forEach((step, index) => {
         const stepNumber = index + 1;
         step.classList.remove('active', 'completed');
@@ -1341,14 +1099,10 @@ function updateProgressBar() {
         }
     });
     
-    // Update progress line
     const progressPercentage = ((currentStep - 1) / 4) * 100;
     progressFill.style.width = `${progressPercentage}%`;
 }
 
-/**
- * Validate current step before proceeding
- */
 function validateCurrentStep() {
     switch (currentStep) {
         case 1:
@@ -1366,9 +1120,6 @@ function validateCurrentStep() {
     }
 }
 
-/**
- * Show validation error message
- */
 function showValidationError() {
     const errorMessages = {
         1: 'Please fill all personal information fields',
@@ -1381,12 +1132,9 @@ function showValidationError() {
 }
 
 // ============================================
-// STEP 1: PERSONAL INFORMATION (SAME AS BEFORE)
+// STEP 1: PERSONAL INFORMATION
 // ============================================
 
-/**
- * Handle profile photo capture
- */
 function handleCapturePhoto() {
     showNotification('Camera Access', 'Camera access would be requested in a real application. For demo, please use upload photo option.', 'info');
     
@@ -1395,9 +1143,6 @@ function handleCapturePhoto() {
     }, 1000);
 }
 
-/**
- * Handle profile photo upload
- */
 function handleUploadPhoto() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -1436,9 +1181,6 @@ function handleUploadPhoto() {
     fileInput.click();
 }
 
-/**
- * Handle date of birth change
- */
 function handleDateOfBirthChange() {
     const dobValue = dob.value;
     if (!dobValue) {
@@ -1482,9 +1224,6 @@ function handleDateOfBirthChange() {
     validateStep1();
 }
 
-/**
- * Validate step 1
- */
 function validateStep1() {
     userData.firstName = firstName.value.trim();
     userData.lastName = lastName.value.trim();
@@ -1503,9 +1242,6 @@ function validateStep1() {
     return isValid;
 }
 
-/**
- * Go to step 2
- */
 function goToStep2() {
     if (!validateStep1()) {
         if (userData.age < 18) {
@@ -1520,12 +1256,9 @@ function goToStep2() {
 }
 
 // ============================================
-// STEP 2: SECURITY (SAME AS BEFORE)
+// STEP 2: SECURITY - UPDATED WITH REAL OTP
 // ============================================
 
-/**
- * Validate email input
- */
 function validateEmailInput() {
     const value = emailInput.value.trim();
     const isValid = validationPatterns.email.test(value);
@@ -1535,9 +1268,6 @@ function validateEmailInput() {
     return isValid;
 }
 
-/**
- * Validate mobile input
- */
 function validateMobileInput() {
     const value = mobileInput.value.trim();
     const isValid = validationPatterns.phone.test(value);
@@ -1548,7 +1278,7 @@ function validateMobileInput() {
 }
 
 /**
- * Handle Get Email OTP button click
+ * Handle Get Email OTP button click - UPDATED with real API
  */
 function handleGetEmailOtp() {
     const email = emailInput.value.trim();
@@ -1564,24 +1294,45 @@ function handleGetEmailOtp() {
     const originalText = getEmailOtpBtn.innerHTML;
     getEmailOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
     
-    setTimeout(() => {
-        console.log(`OTP sent to email: ${email}`);
-        
-        emailOtpSection.classList.add('active');
-        emailOtpInput.value = '';
-        emailDisplay.textContent = `OTP sent to ${email}`;
-        emailDisplay.classList.add('show');
-        
-        getEmailOtpBtn.classList.add('hidden');
-        
-        startEmailResendCountdown();
-        
-        showNotification('OTP Sent!', 'OTP has been sent to your email address', 'success');
-    }, 1500);
+    fetch('/api/send-email-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log(`OTP sent to email: ${email}`);
+            
+            emailOtpSection.classList.add('active');
+            emailOtpInput.value = '';
+            emailDisplay.textContent = `OTP sent to ${email}`;
+            emailDisplay.classList.add('show');
+            
+            getEmailOtpBtn.classList.add('hidden');
+            
+            startEmailResendCountdown();
+            
+            showNotification('OTP Sent!', data.message, 'success');
+        } else {
+            showNotification('Error', data.message, 'error');
+            getEmailOtpBtn.disabled = false;
+            getEmailOtpBtn.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        getEmailOtpBtn.disabled = false;
+        getEmailOtpBtn.innerHTML = originalText;
+    });
 }
 
 /**
- * Handle Get Mobile OTP button click
+ * Handle Get Mobile OTP button click - KEEPING DUMMY FOR NOW
  */
 function handleGetMobileOtp() {
     const mobile = mobileInput.value.trim();
@@ -1613,9 +1364,6 @@ function handleGetMobileOtp() {
     }, 1500);
 }
 
-/**
- * Start email resend countdown
- */
 function startEmailResendCountdown() {
     if (emailResendCountdown) {
         clearInterval(emailResendCountdown);
@@ -1640,9 +1388,6 @@ function startEmailResendCountdown() {
     }, 1000);
 }
 
-/**
- * Start mobile resend countdown
- */
 function startMobileResendCountdown() {
     if (mobileResendCountdown) {
         clearInterval(mobileResendCountdown);
@@ -1667,25 +1412,16 @@ function startMobileResendCountdown() {
     }, 1000);
 }
 
-/**
- * Update email resend button text
- */
 function updateEmailResendText() {
     const translation = translations[currentLanguage] || translations.en;
     emailResendText.textContent = translation.resend_otp_60s.replace('60s', `${emailResendTimeLeft}s`);
 }
 
-/**
- * Update mobile resend button text
- */
 function updateMobileResendText() {
     const translation = translations[currentLanguage] || translations.en;
     mobileResendText.textContent = translation.resend_otp_60s.replace('60s', `${mobileResendTimeLeft}s`);
 }
 
-/**
- * Validate email OTP
- */
 function validateEmailOtp() {
     const value = emailOtpInput.value.trim();
     const isValid = validationPatterns.otp.test(value);
@@ -1693,9 +1429,6 @@ function validateEmailOtp() {
     return isValid;
 }
 
-/**
- * Validate mobile OTP
- */
 function validateMobileOtp() {
     const value = mobileOtpInput.value.trim();
     const isValid = validationPatterns.otp.test(value);
@@ -1704,7 +1437,7 @@ function validateMobileOtp() {
 }
 
 /**
- * Handle Verify Email OTP button click
+ * Handle Verify Email OTP button click - UPDATED with real API
  */
 function handleVerifyEmailOtp() {
     const enteredOtp = emailOtpInput.value.trim();
@@ -1718,10 +1451,20 @@ function handleVerifyEmailOtp() {
     const originalText = verifyEmailOtpBtn.innerHTML;
     verifyEmailOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Verifying...</span>';
     
-    setTimeout(() => {
-        const isValid = enteredOtp === DUMMY_EMAIL_OTP;
-        
-        if (isValid) {
+    fetch('/api/verify-email-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ 
+            email: userData.email,
+            otp: enteredOtp 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
             userData.emailVerified = true;
             
             emailStatus.classList.add('verified');
@@ -1735,11 +1478,11 @@ function handleVerifyEmailOtp() {
                 emailResendCountdown = null;
             }
             
-            showNotification('OTP Verified!', 'Your email has been verified successfully', 'success');
+            showNotification('OTP Verified!', data.message, 'success');
             
             validateStep2();
         } else {
-            showNotification('Error', 'Invalid OTP. Please try again', 'error');
+            showNotification('Error', data.message, 'error');
             
             verifyEmailOtpBtn.disabled = false;
             verifyEmailOtpBtn.innerHTML = originalText;
@@ -1747,11 +1490,17 @@ function handleVerifyEmailOtp() {
             emailOtpInput.value = '';
             validateEmailOtp();
         }
-    }, 1500);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        verifyEmailOtpBtn.disabled = false;
+        verifyEmailOtpBtn.innerHTML = originalText;
+    });
 }
 
 /**
- * Handle Verify Mobile OTP button click
+ * Handle Verify Mobile OTP button click - KEEPING DUMMY FOR NOW
  */
 function handleVerifyMobileOtp() {
     const enteredOtp = mobileOtpInput.value.trim();
@@ -1766,7 +1515,7 @@ function handleVerifyMobileOtp() {
     verifyMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Verifying...</span>';
     
     setTimeout(() => {
-        const isValid = enteredOtp === DUMMY_MOBILE_OTP;
+        const isValid = enteredOtp === '654321';
         
         if (isValid) {
             userData.mobileVerified = true;
@@ -1798,27 +1547,48 @@ function handleVerifyMobileOtp() {
 }
 
 /**
- * Handle Resend Email OTP
+ * Handle Resend Email OTP - UPDATED with real API
  */
 function handleResendEmailOtp() {
     resendEmailOtpBtn.disabled = true;
     const originalText = emailResendText.innerHTML;
     emailResendText.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
     
-    setTimeout(() => {
-        console.log(`Resent OTP to email: ${userData.email}`);
-        
-        emailOtpInput.value = '';
-        verifyEmailOtpBtn.disabled = true;
-        
-        startEmailResendCountdown();
-        
-        showNotification('OTP Sent!', 'New OTP has been sent to your email', 'success');
-    }, 1000);
+    fetch('/api/resend-email-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ email: userData.email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log(`Resent OTP to email: ${userData.email}`);
+            
+            emailOtpInput.value = '';
+            verifyEmailOtpBtn.disabled = true;
+            
+            startEmailResendCountdown();
+            
+            showNotification('OTP Sent!', data.message, 'success');
+        } else {
+            showNotification('Error', data.message, 'error');
+            resendEmailOtpBtn.disabled = false;
+            emailResendText.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        resendEmailOtpBtn.disabled = false;
+        emailResendText.innerHTML = originalText;
+    });
 }
 
 /**
- * Handle Resend Mobile OTP
+ * Handle Resend Mobile OTP - KEEPING DUMMY FOR NOW
  */
 function handleResendMobileOtp() {
     resendMobileOtpBtn.disabled = true;
@@ -1837,9 +1607,6 @@ function handleResendMobileOtp() {
     }, 1000);
 }
 
-/**
- * Toggle password visibility
- */
 function togglePasswordVisibility(passwordField, toggleButton) {
     const isPasswordVisible = passwordField.type === 'text';
     passwordField.type = isPasswordVisible ? 'password' : 'text';
@@ -1854,9 +1621,6 @@ function togglePasswordVisibility(passwordField, toggleButton) {
     }
 }
 
-/**
- * Update password strength text based on language
- */
 function updatePasswordStrengthText() {
     const passValue = password.value;
     if (passValue.length === 0) {
@@ -1884,9 +1648,6 @@ function updatePasswordStrengthText() {
     }
 }
 
-/**
- * Validate password strength
- */
 function validatePassword() {
     const passValue = password.value;
     const confirmValue = confirmPassword.value;
@@ -1932,9 +1693,6 @@ function validatePassword() {
     return isLongEnough && passValue === confirmValue;
 }
 
-/**
- * Validate step 2
- */
 function validateStep2() {
     const isEmailVerified = userData.emailVerified;
     const isMobileVerified = userData.mobileVerified;
@@ -1946,9 +1704,6 @@ function validateStep2() {
     return isValid;
 }
 
-/**
- * Go to step 3
- */
 function goToStep3() {
     if (!validateStep2()) {
         showNotification('Validation Error', 'Please verify email, mobile and set password', 'error');
@@ -1959,12 +1714,9 @@ function goToStep3() {
 }
 
 // ============================================
-// STEP 3: IDENTITY & DOCUMENTS (UPDATED)
+// STEP 3: IDENTITY & DOCUMENTS
 // ============================================
 
-/**
- * Validate step 3
- */
 function validateStep3() {
     userData.street = street.value.trim();
     userData.city = city.value.trim();
@@ -1991,9 +1743,6 @@ function validateStep3() {
     return isValid;
 }
 
-/**
- * Handle document capture
- */
 function handleCaptureDocument() {
     showNotification('Document Capture', 'Camera access would be requested to capture document. For demo, please use upload file option.', 'info');
     
@@ -2002,9 +1751,6 @@ function handleCaptureDocument() {
     }, 1000);
 }
 
-/**
- * Handle document upload
- */
 function handleUploadDocument() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -2061,9 +1807,6 @@ function handleUploadDocument() {
     fileInput.click();
 }
 
-/**
- * Go to step 4
- */
 function goToStep4() {
     if (!validateStep3()) {
         showNotification('Validation Error', 'Please fill all required fields in Identity & Documents', 'error');
@@ -2074,14 +1817,10 @@ function goToStep4() {
 }
 
 // ============================================
-// STEP 4: PREVIEW (UPDATED WITH MAP)
+// STEP 4: PREVIEW
 // ============================================
 
-/**
- * Update preview with user data
- */
 function updatePreview() {
-    // Update profile photo
     if (userData.profilePhoto) {
         if (userData.profilePhoto instanceof File) {
             const reader = new FileReader();
@@ -2094,12 +1833,10 @@ function updatePreview() {
         }
     }
     
-    // Update personal info
     const genderText = userData.gender === 'male' ? 'Male' : 
                       userData.gender === 'female' ? 'Female' : 'Other';
     previewPersonalInfo.textContent = `${userData.firstName} ${userData.lastName}, ${userData.age} years, ${genderText}`;
     
-    // Update email
     previewEmail.textContent = userData.email || 'Not provided';
     previewEmailBadge.className = 'verification-badge';
     if (userData.emailVerified) {
@@ -2109,7 +1846,6 @@ function updatePreview() {
         previewEmailBadge.innerHTML = '<i class="fas fa-times-circle"></i><span>Not Verified</span>';
     }
     
-    // Update mobile
     previewMobile.textContent = userData.mobile || 'Not provided';
     previewMobileBadge.className = 'verification-badge';
     if (userData.mobileVerified) {
@@ -2119,38 +1855,28 @@ function updatePreview() {
         previewMobileBadge.innerHTML = '<i class="fas fa-times-circle"></i><span>Not Verified</span>';
     }
     
-    // Update password
     previewPassword.textContent = '••••••••';
     
-    // Update address
     previewAddress.textContent = `${userData.street}, ${userData.city}, ${userData.state} - ${userData.pincode}`;
     
-    // Update work location map
     if (userData.workLocation.lat && userData.workLocation.lng) {
         initializePreviewMap(userData.workLocation.lat, userData.workLocation.lng);
     }
     
-    // Update document
     const documentType = userData.documentType === 'aadhar' ? 'Aadhar Card' : 
                         userData.documentType === 'pan' ? 'Pan Card' : 'Document';
     previewDocument.textContent = userData.documentFile ? 
         `${documentType} uploaded` : 'Not uploaded';
 }
 
-/**
- * Go to step 5
- */
 function goToStep5() {
     goToStep(5);
 }
 
 // ============================================
-// STEP 5: TERMS & CREATE ACCOUNT - UPDATED WITH BACKEND SUBMISSION
+// STEP 5: TERMS & CREATE ACCOUNT
 // ============================================
 
-/**
- * Handle checkbox change
- */
 function handleTermsCheckbox(event) {
     if (termsCheckbox.checked) {
         showTermsPopup();
@@ -2159,66 +1885,48 @@ function handleTermsCheckbox(event) {
     validateStep5();
 }
 
-/**
- * Show terms and conditions popup
- */
 function showTermsPopup() {
-    // 1. Show popup
     termsPopup.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // 2. Disable close button
     closePopupBtn.disabled = true;
     
-    // 3. Reset countdown
     termsPopupCountdown = 10;
     countdownElement.textContent = termsPopupCountdown;
     timerDisplay.textContent = termsPopupCountdown;
     
-    // 4. Update close button text
     const translation = translations[currentLanguage] || translations.en;
     closePopupBtn.innerHTML = `<span>${translation.close}</span> (<span id="countdown">${termsPopupCountdown}</span>s)`;
     
-    // 5. Start timer
     startTermsPopupCountdown();
 }
 
-/**
- * Start terms popup countdown
- */
 function startTermsPopupCountdown() {
-    // Clear existing timer
     if (termsPopupTimer) {
         clearInterval(termsPopupTimer);
         termsPopupTimer = null;
     }
     
-    // Start new timer
     termsPopupTimer = setInterval(() => {
         termsPopupCountdown--;
         
-        // Get fresh DOM elements
         const freshCountdown = document.getElementById('countdown');
         const freshTimerDisplay = document.getElementById('timerDisplay');
         const freshCloseBtn = document.getElementById('closePopupBtn');
         
-        // Update countdown display
         if (freshCountdown) freshCountdown.textContent = termsPopupCountdown;
         if (freshTimerDisplay) freshTimerDisplay.textContent = termsPopupCountdown;
         
-        // Update timer text
         const translation = translations[currentLanguage] || translations.en;
         const timerTextElements = document.querySelectorAll('[data-i18n="timer"]');
         timerTextElements.forEach(el => {
             el.textContent = translation.timer.replace('{0}', termsPopupCountdown);
         });
         
-        // When timer reaches 0
         if (termsPopupCountdown <= 0) {
             clearInterval(termsPopupTimer);
             termsPopupTimer = null;
             
-            // Enable close button
             if (freshCloseBtn) {
                 freshCloseBtn.disabled = false;
                 freshCloseBtn.innerHTML = `<span>${translation.close}</span>`;
@@ -2227,9 +1935,6 @@ function startTermsPopupCountdown() {
     }, 1000);
 }
 
-/**
- * Close terms popup
- */
 function closeTermsPopup() {
     if (closePopupBtn.disabled) return;
     
@@ -2239,14 +1944,9 @@ function closeTermsPopup() {
     validateStep5();
 }
 
-/**
- * Validate step 5
- */
 function validateStep5() {
-    // Update requirements checklist
     updateRequirementsChecklist();
     
-    // Check all requirements
     const isAgeValid = userData.age >= 18;
     const isEmailVerified = userData.emailVerified;
     const isMobileVerified = userData.mobileVerified;
@@ -2260,61 +1960,41 @@ function validateStep5() {
     const allValid = isAgeValid && isEmailVerified && isMobileVerified && 
                      isDocumentUploaded && isAllFieldsFilled && isTermsChecked;
     
-    // Enable/disable create account button
     createAccountBtn.disabled = !allValid;
     
     return allValid;
 }
 
-/**
- * Update requirements checklist
- */
 function updateRequirementsChecklist() {
-    // Age requirement
     reqAge.classList.toggle('checked', userData.age >= 18);
-    
-    // Email verification
     reqEmail.classList.toggle('checked', userData.emailVerified);
-    
-    // Mobile verification
     reqMobile.classList.toggle('checked', userData.mobileVerified);
-    
-    // Document upload
     reqDocument.classList.toggle('checked', userData.documentFile !== null);
     
-    // All fields filled
     const isAllFieldsFilled = 
         userData.firstName && userData.lastName && userData.gender &&
         userData.street && userData.city && userData.state && 
         userData.pincode && userData.workLocation.lat && userData.workLocation.lng;
     reqFields.classList.toggle('checked', isAllFieldsFilled);
     
-    // Terms agreement
     reqTerms.classList.toggle('checked', termsCheckbox.checked);
 }
 
-/**
- * Handle create account button click - UPDATED WITH BACKEND SUBMISSION
- */
 function handleCreateAccount() {
     if (createAccountBtn.disabled) {
         return;
     }
     
-    // Show terms error if checkbox not checked
     if (!termsCheckbox.checked) {
         showNotification('Error', 'You must agree to the Terms & Conditions', 'error');
         return;
     }
     
-    // Show loading
     createAccountBtn.disabled = true;
     createAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Creating Account...</span>';
     
-    // Create FormData object to send all data including files
     const formData = new FormData();
     
-    // Append all form fields
     formData.append('first_name', userData.firstName);
     formData.append('last_name', userData.lastName);
     formData.append('dob', userData.dob);
@@ -2331,10 +2011,9 @@ function handleCreateAccount() {
     formData.append('pincode', userData.pincode);
     formData.append('latitude', userData.workLocation.lat);
     formData.append('longitude', userData.workLocation.lng);
-    formData.append('location_address', userData.workLocation.address);
+    formData.append('location_address', userData.workLocation.address || '');
     formData.append('document_type', userData.documentType);
     
-    // Append files
     if (userData.profilePhoto) {
         formData.append('profile_photo', userData.profilePhoto);
     }
@@ -2343,7 +2022,6 @@ function handleCreateAccount() {
         formData.append('document_file', userData.documentFile);
     }
     
-    // Send to backend
     fetch('/signup_employer/', {
         method: 'POST',
         body: formData,
@@ -2374,21 +2052,16 @@ function handleCreateAccount() {
 }
 
 // ============================================
-// NOTIFICATION SYSTEM (SAME AS BEFORE)
+// NOTIFICATION SYSTEM
 // ============================================
 
-/**
- * Show notification with different types
- */
 function showNotification(title, message, type = 'info') {
-    // Create notification container if it doesn't exist
     let notificationContainer = document.querySelector('.notification-container');
     if (!notificationContainer) {
         notificationContainer = document.createElement('div');
         notificationContainer.className = 'notification-container';
         document.body.appendChild(notificationContainer);
         
-        // Add styles for notifications
         const style = document.createElement('style');
         style.textContent = `
             .notification-container {
@@ -2470,11 +2143,9 @@ function showNotification(title, message, type = 'info') {
         document.head.appendChild(style);
     }
     
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = 'notification';
     
-    // Set icon based on type
     let icon = 'info-circle';
     if (type === 'success') icon = 'check-circle';
     if (type === 'error') icon = 'exclamation-circle';
@@ -2493,21 +2164,17 @@ function showNotification(title, message, type = 'info') {
         </button>
     `;
     
-    // Add to container
     notificationContainer.appendChild(notification);
     
-    // Show with animation
     setTimeout(() => {
         notification.classList.add('show');
     }, 10);
     
-    // Close button functionality
     const closeBtn = notification.querySelector('.notification-close');
     closeBtn.addEventListener('click', () => {
         closeNotification(notification);
     });
     
-    // Auto-close after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
             closeNotification(notification);
@@ -2515,9 +2182,6 @@ function showNotification(title, message, type = 'info') {
     }, 5000);
 }
 
-/**
- * Close notification
- */
 function closeNotification(notification) {
     notification.classList.remove('show');
     setTimeout(() => {
@@ -2531,10 +2195,8 @@ function closeNotification(notification) {
 // INITIALIZE APPLICATION
 // ============================================
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
 
-// Apply system theme on load if set to system
 if (currentTheme === 'system') {
     handleSystemThemeChange({ matches: window.matchMedia('(prefers-color-scheme: dark)').matches });
 }
