@@ -218,7 +218,8 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    const prev = localStorage.getItem('previousPage') || 'index.html';
+    let prev = localStorage.getItem('previousPage') || '/';
+    if (!prev.startsWith('/')) prev = '/';
     [homeLink, navHome, logoContainer].forEach(el => {
         if (el) el.addEventListener('click', (e) => { e.preventDefault(); window.location.href = prev; });
     });
@@ -356,7 +357,7 @@ function setupEventListeners() {
 // INIT
 // ============================================
 function init() {
-    localStorage.setItem('previousPage', window.location.pathname.split('/').pop() || 'about.html');
+    localStorage.setItem('previousPage', window.location.pathname || '/');
     const savedLang = localStorage.getItem('helpLanguage') || 'en';
     handleLanguageChange(savedLang);
     initTheme();

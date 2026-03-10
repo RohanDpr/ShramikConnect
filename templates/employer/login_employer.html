@@ -113,6 +113,7 @@
 
             <!-- Login Form -->
             <form class="login-form" id="loginForm">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="userInput" class="form-label">Company Email / Username</label>
                     <div class="input-with-icon">

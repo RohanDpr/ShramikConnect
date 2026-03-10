@@ -16,7 +16,7 @@ urlpatterns = [
     path("google765667aa04e8106b.html", google_verify),
     path('', views.index),
     path('role_selection/', views.role_selection),
-    path('help_and_contact/', views.help_and_contact),
+    path('help_and_contact/', views.help_and_contact, name='help_and_contact'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('about/', views.about, name='about'),
     path('term_and_condition/', views.term_and_condition, name='term_and_condition'),
@@ -33,6 +33,8 @@ urlpatterns = [
     path('get_password_employer/', views.get_password_employer),
     path('dashboard_employer/', views.dashboard_employer, name='dashboard_employer'),
     path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
+     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
+     path('contact_developer/', views.contact_developer, name='contact_developer'),
     
     # API endpoints
     path('api/employer/check-exists/', views.check_employer_exists, name='check_employer_exists'),

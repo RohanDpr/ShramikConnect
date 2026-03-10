@@ -147,6 +147,13 @@ def choose_password_employer(request):
 def change_password_employer(request):
     return render(request, 'employer/change_password_employer.html')
 
+
+def forgot_password_card(request):
+    return render(request, 'forget_password_card.html')
+
+def contact_developer(request):
+    return render(request, 'contact_developer_card.html')
+
 def get_password_employer(request):
     return render(request, 'employer/get_password_employer.html')
 

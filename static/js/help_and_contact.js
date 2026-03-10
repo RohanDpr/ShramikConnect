@@ -929,11 +929,76 @@ function handleCardClick(cardId) {
         }, 150);
     }
     
-    if (card.type === 'emergency') {
-        console.log('Emergency contact initiated for card:', cardId);
+    // =====================================
+    // HAR CARD KE LIYE ALAG URL
+    // =====================================
+    switch(cardId) {
+        
+        // FORGOT PASSWORD CARD
+        case 'password':
+            window.location.href = '/forgot_password_card/';  // ← APNA URL
+            break;
+        
+        // LOGIN CARD
+        case 'login':
+            window.location.href = '/login-help/';  // ← APNA URL
+            break;
+        
+        // SIGNUP CARD
+        case 'signup':
+            window.location.href = '/signup-help/';  // ← APNA URL
+            break;
+        
+        // DEVELOPER CARD
+        case 'developer':
+            window.location.href = '/contact-developer/';  // ← APNA URL
+            break;
+        
+        // SOCIAL MEDIA CARD
+        case 'social':
+            window.location.href = '/social-media/';  // ← APNA URL
+            break;
+        
+        // EMERGENCY CARD (Alert dikhana hai to)
+        case 'emergency':
+            alert('Emergency contacts:\nPolice: 100\nAmbulance: 102\nFire: 101');
+            break;
+        
+        // HOW IT WORKS CARD
+        case 'how-it-works':
+            window.location.href = '/how-it-works/';  // ← APNA URL
+            break;
+        
+        // ACCOUNT MANAGEMENT CARD
+        case 'account':
+            window.location.href = '/account-help/';  // ← APNA URL
+            break;
+        
+        // JOB SEARCH CARD
+        case 'job-search':
+            window.location.href = '/job-search-help/';  // ← APNA URL
+            break;
+        
+        // WORKER VERIFICATION CARD
+        case 'verification':
+            window.location.href = '/verification-help/';  // ← APNA URL
+            break;
+        
+        // PAYMENT SECURITY CARD
+        case 'payment':
+            window.location.href = '/payment-help/';  // ← APNA URL
+            break;
+        
+        // REPORT ISSUES CARD
+        case 'report':
+            window.location.href = '/report-issues/';  // ← APNA URL
+            break;
+        
+        // AGAR KOI AUR CARD HO
+        default:
+            alert(card.title + ' page under construction');
     }
 }
-
 // ============================================
 // FORM HANDLING (Unchanged)
 // ============================================
