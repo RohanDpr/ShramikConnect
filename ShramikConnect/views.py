@@ -157,6 +157,26 @@ def contact_developer(request):
 def get_password_employer(request):
     return render(request, 'employer/get_password_employer.html')
 
+
+def how_platform_works(request):
+    """How Platform Works page view"""
+    return render(request, 'how_platform_works_card.html')
+
+
+def login_card(request):
+    
+    return render(request, 'login_card.html')
+
+def emergency_contact_card(request):
+    
+    return render(request, 'emergency_contact_card.html')
+
+def connect_on_social_media_card(request):
+    return render(request, 'connect_on_social_media_card.html')
+
+def signup_card(request):
+    return render(request, 'singup_card.html')
+
 def dashboard_employer(request):
     """Employer dashboard - protected route"""
     # DEBUG: Print session data

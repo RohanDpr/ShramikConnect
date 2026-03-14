@@ -35,6 +35,13 @@ urlpatterns = [
     path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
      path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
      path('contact_developer/', views.contact_developer, name='contact_developer'),
+      path('signup-card/', views.signup_card, name='signup_card'),
+      path('emergency-contact-card/', views.emergency_contact_card, name='emergency_contact_card'),
+      path('how-platform-works/', views.how_platform_works, name='how_platform_works'),
+      path('connect-on-social-media-card/', views.connect_on_social_media_card, name='connect_on_social_media_card'),
+      path('how-platform-works/', views.how_platform_works, name='how_platform_works'),
+      path('login-card/', views.login_card, name='login_card'),
+     
     
     # API endpoints
     path('api/employer/check-exists/', views.check_employer_exists, name='check_employer_exists'),

@@ -64,6 +64,8 @@ const ALL_THEMES = [
   "system"
 ];
 
+
+
 // ============================================
 // TRANSLATIONS (Unchanged - same as original)
 // ============================================
@@ -833,38 +835,7 @@ const helpCards = [
         tags: ['guide', 'platform', 'tutorial'],
         type: 'how-it-works'
     },
-    {
-        id: 'account',
-        icon: 'fa-id-card',
-        titleKey: 'account_management',
-        descKey: 'account_management_desc',
-        tags: ['profile', 'settings', 'management'],
-        type: 'account'
-    },
-    {
-        id: 'job-search',
-        icon: 'fa-search',
-        titleKey: 'job_search_help',
-        descKey: 'job_search_help_desc',
-        tags: ['jobs', 'opportunities', 'search'],
-        type: 'job-search'
-    },
-    {
-        id: 'verification',
-        icon: 'fa-check-circle',
-        titleKey: 'worker_verification',
-        descKey: 'worker_verification_desc',
-        tags: ['verification', 'documents', 'trust'],
-        type: 'verification'
-    },
-    {
-        id: 'payment',
-        icon: 'fa-credit-card',
-        titleKey: 'payment_security',
-        descKey: 'payment_security_desc',
-        tags: ['payment', 'security', 'finance'],
-        type: 'payment'
-    },
+
     {
         id: 'report',
         icon: 'fa-exclamation-triangle',
@@ -880,7 +851,12 @@ function createHelpCards() {
     
     const translation = translations[currentLanguage];
     
-    helpCards.forEach((card, index) => {
+    // सिर्फ वही cards दिखाएँ जो हम चाहते हैं
+    const cardsToShow = helpCards.filter(card => {
+        return !['account', 'job-search', 'verification', 'payment'].includes(card.id);
+    });
+    
+    cardsToShow.forEach((card, index) => {
         const cardElement = document.createElement('div');
         cardElement.className = `help-card ${card.type}`;
         cardElement.dataset.cardId = card.id;
@@ -916,7 +892,6 @@ function createHelpCards() {
         cardsContainer.appendChild(cardElement);
     });
 }
-
 function handleCardClick(cardId) {
     const card = helpCards.find(c => c.id === cardId);
     if (!card) return;
@@ -941,32 +916,32 @@ function handleCardClick(cardId) {
         
         // LOGIN CARD
         case 'login':
-            window.location.href = '/login-help/';  // ← APNA URL
+            window.location.href = '/login-card/';  // ← APNA URL
             break;
         
         // SIGNUP CARD
         case 'signup':
-            window.location.href = '/signup-help/';  // ← APNA URL
+            window.location.href = '/signup-card/';  // ← APNA URL
             break;
         
         // DEVELOPER CARD
         case 'developer':
-            window.location.href = '/contact-developer/';  // ← APNA URL
+            window.location.href = '/contact_developer/';  // ← APNA URL
             break;
         
         // SOCIAL MEDIA CARD
         case 'social':
-            window.location.href = '/social-media/';  // ← APNA URL
+            window.location.href = '/connect-on-social-media-card/';  // ← APNA URL
             break;
         
         // EMERGENCY CARD (Alert dikhana hai to)
         case 'emergency':
-            alert('Emergency contacts:\nPolice: 100\nAmbulance: 102\nFire: 101');
+            window.location.href = '/emergency-contact-card/';  // ← APNA URL
             break;
         
         // HOW IT WORKS CARD
         case 'how-it-works':
-            window.location.href = '/how-it-works/';  // ← APNA URL
+            window.location.href = '/how-platform-works/';  // ← APNA URL
             break;
         
         // ACCOUNT MANAGEMENT CARD
@@ -991,8 +966,23 @@ function handleCardClick(cardId) {
         
         // REPORT ISSUES CARD
         case 'report':
-            window.location.href = '/report-issues/';  // ← APNA URL
-            break;
+            const reportSection = document.getElementById('reportSection');
+    if (reportSection) {
+        reportSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+        
+        // Highlight the form
+        const reportForm = document.querySelector('.report-form');
+        if (reportForm) {
+            reportForm.style.boxShadow = '0 0 0 4px var(--accent-1)';
+            setTimeout(() => {
+                reportForm.style.boxShadow = '';
+            }, 2000);
+        }
+    }
+    break;
         
         // AGAR KOI AUR CARD HO
         default:
@@ -1404,15 +1394,28 @@ function createFAQ() {
             </div>
         `;
         
-        const questionElement = faqElement.querySelector('.faq-question');
-        questionElement.addEventListener('click', () => {
-            const currentlyActive = faqContainer.querySelector('.faq-item.active');
-            if (currentlyActive && currentlyActive !== faqElement) {
-                currentlyActive.classList.remove('active');
-            }
-            faqElement.classList.toggle('active');
+       const questionElement = faqElement.querySelector('.faq-question');
+
+// नया code - Question par click karne par related card par le jaye
+questionElement.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    const relatedCardId = item.relatedCard;
+    const cardElement = document.querySelector(`[data-card-id="${relatedCardId}"]`);
+    
+    if (cardElement) {
+        cardElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
         });
         
+        // Highlight card
+        cardElement.style.boxShadow = '0 0 0 4px var(--accent-1)';
+        setTimeout(() => {
+            cardElement.style.boxShadow = '';
+        }, 2000);
+    }
+});
         const linkElement = faqElement.querySelector('.faq-link');
         if (linkElement) {
             linkElement.addEventListener('click', (e) => {

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShramikConnect - Connecting Hands to Work</title>
+    <meta name="description" content="ShramikConnect - Platform connecting workers and employers seamlessly">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="ShramikConnect - Connecting Hands to Work">
+    <meta property="og:description" content="Platform connecting workers and employers seamlessly">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/Logo only.png">
+    
+    <!-- Preload Video -->
+    <link rel="preload" as="video" href="images/Landing_video.mp4" type="video/mp4">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Settings Icon -->
+    <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+            <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                stroke="currentColor" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- Settings Dropdown -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true" aria-labelledby="settingsIcon">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option" data-theme="light" data-i18n="light">Light</button>
+                <button class="theme-option" data-theme="dark" data-i18n="dark">Dark</button>
+                <button class="theme-option" data-theme="system" data-i18n="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+        <div class="video-container">
+            <video class="hero-video" autoplay muted playsinline loop
+                   poster="images/fallback-poster.jpg" 
+                   aria-label="Background video showing ShramikConnect platform"
+                   id="mainVideo">
+                <source src="images/Landing_video.mp4" type="video/mp4">
+                <source src="images/video/Landing_video.webm" type="video/webm">
+                Your browser does not support the video tag.
+            </video>
+            
+            <div class="video-fallback" id="videoFallback">
+                <img src="images/fallback-poster.jpg" alt="ShramikConnect Platform">
+            </div>
+        </div>
+    </section>
+
+    <!-- Get Started Section -->
+    <section class="get-started-section" id="getStartedSection">
+        <!-- Main Heading -->
+        <h1 class="main-title" data-i18n="get_started_title">Get started with ShramikConnect</h1>
+        
+        <!-- Tagline -->
+        <p class="main-subtitle" data-i18n="tagline">Connecting hands to work</p>
+        
+        <!-- Description -->
+        <p class="main-description" data-i18n="description">ShramikConnect brings workers and employers on a single platform. Discover opportunities, connect instantly, and simplify the way labour hiring works.</p>
+        
+        <!-- CTA Button -->
+        <a href="/role_selection/">
+            <button class="cta-button" id="ctaButton" data-i18n="cta">Start Connecting</button>
+        </a>
+        
+        <!-- Feature Highlights -->
+        <div class="feature-highlights">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H12Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span class="feature-text" data-i18n="feature_verified">Verified Workers & Employers</span>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="feature-text" data-i18n="feature_instant">Instant Communication Channel</span>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M9 12H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 9V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="feature-text" data-i18n="feature_zero">Zero Middlemen, Zero Confusion</span>
+            </div>
+        </div>
+        
+        <!-- Mini Stat Cards -->
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-number">200+</div>
+                <div class="stat-label" data-i18n="stat_workers">Workers Connected</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">80+</div>
+                <div class="stat-label" data-i18n="stat_employers">Active Employers</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">350+</div>
+                <div class="stat-label" data-i18n="stat_hirings">Successful Hirings</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-text" id="brandText">
+                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                    </div>
+                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                    <p class="copyright" data-i18n="copyright">© 2025 ShramikConnect. All rights reserved.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="links-column">
+                        <h3 class="column-title" data-i18n="platform">Platform</h3>
+                        <a href="/login_worker/" class="footer-link" data-i18n="for_workers">For Workers</a>
+                        <a href="/login_employer/" class="footer-link" data-i18n="for_employers">For Employers</a>
+                    </div>
+                    
+                    <div class="links-column">
+                        <h3 class="column-title" data-i18n="company">Company</h3>
+                        <a href="/about/" class="footer-link" data-i18n="about">About Us</a>
+                        <a href="#" class="footer-link" data-i18n="how_it_works">How It Works</a>
+                    </div>
+                    
+                    <div class="links-column">
+                        <h3 class="column-title" data-i18n="support">Support</h3>
+                        <a href="/help_and_contact/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                        <a href="/privacy_policy/" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                        <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link" aria-label="Email"><i class="far fa-envelope"></i></a>
+                </div>
+                
+                <div class="footer-cta">
+                    <p data-i18n="ready_to_start">Ready to get started?</p>
+                    <a href="/role_selection/">
+                        <button class="cta-button" data-i18n="join_now">Join Now</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/vendor/gsap.min.js"></script>
+    <script src="js/vendor/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

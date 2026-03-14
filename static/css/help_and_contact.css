@@ -2466,7 +2466,13 @@ input[type="search"] {
 .logo-img {
     border-radius: var(--border-radius-sm) !important;
 }
-
+/* Hide specific cards */
+.help-card[data-card-id="account"],
+.help-card[data-card-id="job-search"],
+.help-card[data-card-id="verification"],
+.help-card[data-card-id="payment"] {
+    display: none !important;
+}
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     *,
