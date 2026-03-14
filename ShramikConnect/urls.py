@@ -16,7 +16,7 @@ urlpatterns = [
     path("google765667aa04e8106b.html", google_verify),
     path('', views.index),
     path('role_selection/', views.role_selection),
-    path('help_and_contact/', views.help_and_contact),
+    path('help_and_contact/', views.help_and_contact, name='help_and_contact'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('about/', views.about, name='about'),
     path('term_and_condition/', views.term_and_condition, name='term_and_condition'),
@@ -40,6 +40,19 @@ urlpatterns = [
     path('choose_password_employer/', views.choose_password_employer),
     path('change_password_employer/', views.change_password_employer),
     path('get_password_employer/', views.get_password_employer),
+#=======
+    path('dashboard_employer/', views.dashboard_employer, name='dashboard_employer'),
+    path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
+     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
+     path('contact_developer/', views.contact_developer, name='contact_developer'),
+      path('signup-card/', views.signup_card, name='signup_card'),
+      path('emergency-contact-card/', views.emergency_contact_card, name='emergency_contact_card'),
+      path('how-platform-works/', views.how_platform_works, name='how_platform_works'),
+      path('connect-on-social-media-card/', views.connect_on_social_media_card, name='connect_on_social_media_card'),
+      path('how-platform-works/', views.how_platform_works, name='how_platform_works'),
+      path('login-card/', views.login_card, name='login_card'),
+     
+#>>>>>>> e445699bb61f6aecb3aff6115502029337c55011
     
     # API endpoints - Employer
     path('api/employer/check-exists/', views.check_employer_exists, name='check_employer_exists'),

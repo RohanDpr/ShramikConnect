@@ -11,10 +11,13 @@
     <meta property="og:title" content="ShramikConnect - Connecting Hands to Work">
     <meta property="og:description" content="Platform connecting workers and employers seamlessly">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="{% static 'images/Logo only.png' %}">
+    <meta property="og:image" content="images/Logo only.png">
     
     <!-- Preload Video -->
     <link rel="preload" as="video" href="{% static 'video/Landing_video.mp4' %}" type="video/mp4">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -35,7 +38,7 @@
         <div class="settings-section">
             <h3 class="settings-heading" data-i18n="language">Language</h3>
             <div class="language-switcher">
-                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="en">English</button>
                 <button class="language-option" data-lang="hi">हिन्दी</button>
                 <button class="language-option" data-lang="mr">मराठी</button>
             </div>
@@ -44,15 +47,9 @@
         <div class="settings-section">
             <h3 class="settings-heading" data-i18n="theme">Theme</h3>
             <div class="theme-switcher">
-                <button class="theme-option active" data-theme="light">
-                    <span data-i18n="light">Light</span>
-                </button>
-                <button class="theme-option" data-theme="dark">
-                    <span data-i18n="dark">Dark</span>
-                </button>
-                <button class="theme-option" data-theme="system">
-                    <span data-i18n="system">System</span>
-                </button>
+                <button class="theme-option" data-theme="light" data-i18n="light">Light</button>
+                <button class="theme-option" data-theme="dark" data-i18n="dark">Dark</button>
+                <button class="theme-option" data-theme="system" data-i18n="system">System</button>
             </div>
         </div>
     </div>
@@ -60,17 +57,17 @@
     <!-- Hero Section -->
     <section class="hero-section" id="heroSection">
         <div class="video-container">
-            <video class="hero-video" autoplay muted playsinline 
-                   poster="{% static 'images/fallback-poster.jpg' %}" 
-                   aria-label="Background video showing ShramikConnect platform">
-                <source src="{% static 'video/Landing_video.webm' %}" type="video/webm">
+            <video class="hero-video" autoplay muted playsinline loop
+                   poster="images/fallback-poster.jpg" 
+                   aria-label="Background video showing ShramikConnect platform"
+                   id="mainVideo">
                 <source src="{% static 'video/Landing_video.mp4' %}" type="video/mp4">
-                <!-- Fallback image if video doesn't load -->
-                <img src="{% static 'images/fallback-poster.jpg' %}" alt="ShramikConnect Platform">
+                <source src="{% static 'video/Landing_video.webm' %}" type="video/webm">
+                Your browser does not support the video tag.
             </video>
             
             <div class="video-fallback" id="videoFallback">
-                <img src="{% static 'images/fallback-poster.jpg' %}" alt="ShramikConnect Platform">
+                <img src="images/fallback-poster.jpg" alt="ShramikConnect Platform">
             </div>
         </div>
     </section>
@@ -88,14 +85,11 @@
         
         <!-- CTA Button -->
         <a href="/role_selection/">
-        <button class="cta-button" id="ctaButton" data-i18n="cta">
-            Start Connecting
-        </button>
+            <button class="cta-button" id="ctaButton" data-i18n="cta">Start Connecting</button>
         </a>
         
         <!-- Feature Highlights -->
         <div class="feature-highlights">
-            
             <div class="feature-item">
                 <div class="feature-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -103,7 +97,7 @@
                         <path d="M12 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H12Z" stroke="currentColor" stroke-width="2"/>
                     </svg>
                 </div>
-                <span class="feature-text">Verified Workers & Employers</span>
+                <span class="feature-text" data-i18n="feature_verified">Verified Workers & Employers</span>
             </div>
             
             <div class="feature-item">
@@ -112,7 +106,7 @@
                         <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
-                <span class="feature-text">Instant Communication Channel</span>
+                <span class="feature-text" data-i18n="feature_instant">Instant Communication Channel</span>
             </div>
             
             <div class="feature-item">
@@ -123,7 +117,7 @@
                         <path d="M12 9V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                 </div>
-                <span class="feature-text">Zero Middlemen, Zero Confusion</span>
+                <span class="feature-text" data-i18n="feature_zero">Zero Middlemen, Zero Confusion</span>
             </div>
         </div>
         
@@ -131,20 +125,18 @@
         <div class="stat-cards">
             <div class="stat-card">
                 <div class="stat-number">200+</div>
-                <div class="stat-label">Workers Connected</div>
+                <div class="stat-label" data-i18n="stat_workers">Workers Connected</div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-number">80+</div>
-                <div class="stat-label">Active Employers</div>
+                <div class="stat-label" data-i18n="stat_employers">Active Employers</div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-number">350+</div>
-                <div class="stat-label">Successful Hirings</div>
+                <div class="stat-label" data-i18n="stat_hirings">Successful Hirings</div>
             </div>
-            
-            
         </div>
     </section>
 
@@ -165,24 +157,24 @@
                         <span class="shramik">Shramik</span><span class="connect">Connect</span>
                     </div>
                     <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
-                    <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
+                    <p class="copyright" data-i18n="copyright">© 2025 ShramikConnect. All rights reserved.</p>
                 </div>
                 
                 <div class="footer-links">
                     <div class="links-column">
-                        <h3 class="column-title">Platform</h3>
-                        <a href="/login_worker/" class="footer-link">For Workers</a>
-                        <a href="/login_employer/" class="footer-link">For Employers</a>
+                        <h3 class="column-title" data-i18n="platform">Platform</h3>
+                        <a href="/login_worker/" class="footer-link" data-i18n="for_workers">For Workers</a>
+                        <a href="/login_employer/" class="footer-link" data-i18n="for_employers">For Employers</a>
                     </div>
                     
                     <div class="links-column">
-                        <h3 class="column-title">Company</h3>
+                        <h3 class="column-title" data-i18n="company">Company</h3>
                         <a href="/about/" class="footer-link" data-i18n="about">About Us</a>
-                        <a href="#" class="footer-link">How It Works</a>
+                        <a href="/how-platform-works/" class="footer-link" data-i18n="how_it_works">How It Works</a>
                     </div>
                     
                     <div class="links-column">
-                        <h3 class="column-title">Support</h3>
+                        <h3 class="column-title" data-i18n="support">Support</h3>
                         <a href="/help_and_contact/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
                         <a href="/privacy_policy/" class="footer-link" data-i18n="privacy">Privacy Policy</a>
                         <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
@@ -192,24 +184,17 @@
             
             <div class="footer-bottom">
                 <div class="social-links">
-                    <a href="#" class="social-link" aria-label="Instagram">
-                        <img src="{% static 'images/logo/instagram-white.png' %}" alt="Instagram" width="20" height="20">
-                    </a>
-                    <a href="#" class="social-link" aria-label="Facebook">
-                        <img src="{% static 'images/logo/facebook-white.png' %}" alt="Facebook" width="20" height="20">
-                    </a>
-                    <a href="#" class="social-link" aria-label="X (Twitter)">
-                        <img src="{% static 'images/logo/twitter-white.png' %}" alt="X (Twitter)" width="20" height="20">
-                    </a>
-                    <a href="#" class="social-link" aria-label="Email">
-                        <img src="{% static 'images/logo/email-white.png' %}" alt="Email" width="20" height="20">
-                    </a>
+                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                   <a href="https://www.facebook.com/shramikconnect" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+
+                    <a href="https://youtube.com/@shramikconnect?si=4p-FRw0gFxA-kkvk" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="mailto:team.shramikconnect@gmail.com" class="social-link" aria-label="Email"><i class="far fa-envelope"></i></a>
                 </div>
                 
                 <div class="footer-cta">
-                    <p>Ready to get started?</p>
+                    <p data-i18n="ready_to_start">Ready to get started?</p>
                     <a href="/role_selection/">
-                    <button class="cta-button">Join Now</button>
+                        <button class="cta-button" data-i18n="join_now">Join Now</button>
                     </a>
                 </div>
             </div>
@@ -217,9 +202,8 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="{% static 'js/vendor/gsap.min.js' %}"></script>
-    <script src="{% static 'js/vendor/ScrollTrigger.min.js' %}"></script>
-    <script src="{% static 'js/vendor/i18next.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script> 
+    <script src="js/vendor/gsap.min.js"></script>
+    <script src="js/vendor/ScrollTrigger.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

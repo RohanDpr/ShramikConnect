@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How ShramikConnect Works | Platform Guide</title>
+    
+    <!-- Base styles from help and contact page -->
+    <link rel="stylesheet" href="{% static 'css/help_and_contact.css' %}">
+    
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/how_platform_works_card.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="welcome-title">
+                    <span class="title-line" data-i18n="platform_title">How ShramikConnect Works</span>
+                    <span class="title-line highlight" data-i18n="platform_subtitle">Your Complete Guide to the Platform</span>
+                </h1>
+            </div>
+
+            <!-- Introduction Message -->
+            <div class="intro-message">
+                <i class="fas fa-rocket"></i>
+                <p data-i18n="platform_intro">Welcome to ShramikConnect! Whether you're a worker looking for opportunities or an employer seeking skilled labor, we're here to help. Click "Start Connecting" to begin your journey, or watch our video guide below.</p>
+            </div>
+
+            <!-- ============================================
+                 LANDING SECTION
+                 ============================================ -->
+            <div class="landing-section" id="landingSection">
+                <div class="landing-content">
+                    <h2 data-i18n="landing_title">Ready to Get Started?</h2>
+                    <p data-i18n="landing_desc">Choose your path and we'll guide you through every step - from account creation to finding the perfect match.</p>
+                    
+                    <div class="stats-preview">
+                        <div class="stat-preview-item">
+                            <i class="fas fa-users"></i>
+                            <span class="stat-number">10,000+</span>
+                            <span class="stat-label" data-i18n="workers">Workers</span>
+                        </div>
+                        <div class="stat-preview-item">
+                            <i class="fas fa-building"></i>
+                            <span class="stat-number">2,500+</span>
+                            <span class="stat-label" data-i18n="employers">Employers</span>
+                        </div>
+                        <div class="stat-preview-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span class="stat-number">5,000+</span>
+                            <span class="stat-label" data-i18n="jobs_completed">Jobs Completed</span>
+                        </div>
+                    </div>
+
+                    <button class="start-connecting-btn" id="startConnectingBtn">
+                        <span data-i18n="start_connecting">Start Connecting</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 ROLE SELECTION SECTION (HIDDEN INITIALLY)
+                 ============================================ -->
+            <div class="role-selection-section" id="roleSelectionSection" style="display: none;">
+                <h2 class="section-title" data-i18n="choose_role">Who are you?</h2>
+                
+                <div class="role-cards-container">
+                    <!-- Worker Card -->
+                    <div class="role-card-large" id="workerRoleCard">
+                        <div class="role-icon-large">
+                            <i class="fas fa-hard-hat"></i>
+                            <span class="pulse-dot"></span>
+                        </div>
+                        <h3 data-i18n="worker">Worker</h3>
+                        <p data-i18n="worker_desc_large">I'm looking for work opportunities, want to showcase my skills, and connect with employers.</p>
+                        <ul class="role-features">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="worker_feature1">Find jobs near you</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="worker_feature2">Get fair wages</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="worker_feature3">Build your profile</span></li>
+                        </ul>
+                        <button class="select-role-btn worker-btn" data-role="worker">
+                            <span data-i18n="select_worker">I'm a Worker</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Employer Card -->
+                    <div class="role-card-large" id="employerRoleCard">
+                        <div class="role-icon-large">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 data-i18n="employer">Employer</h3>
+                        <p data-i18n="employer_desc_large">I need skilled workers for my projects, want to post jobs, and hire verified talent.</p>
+                        <ul class="role-features">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="employer_feature1">Post job requirements</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="employer_feature2">Find verified workers</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="employer_feature3">Secure payments</span></li>
+                        </ul>
+                        <button class="select-role-btn employer-btn" data-role="employer">
+                            <span data-i18n="select_employer">I'm an Employer</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="back-to-landing-btn" id="backToLandingBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_start">Back to Start</span>
+                </button>
+            </div>
+
+            <!-- ============================================
+                 WORKER WORKFLOW SECTION (HIDDEN INITIALLY)
+                 ============================================ -->
+            <div class="workflow-section" id="workerWorkflow" style="display: none;">
+                <div class="workflow-header">
+                    <h2 data-i18n="worker_workflow_title">👷 Worker Journey on ShramikConnect</h2>
+                    <button class="back-to-roles-btn" id="workerBackToRoles">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back_to_roles">Back to Role Selection</span>
+                    </button>
+                </div>
+
+                <div class="workflow-steps">
+                    <!-- Step 1: Registration -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">1</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step1_title">Registration</h3>
+                            <p data-i18n="worker_step1_desc">Workers register on the ShramikConnect app or website by providing basic details: Full Name, Mobile Number (OTP verification), Location, Skills, Experience level, and Preferred working hours. After registration, a worker profile is created.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Login -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">2</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step2_title">Login</h3>
+                            <p data-i18n="worker_step2_desc">After registration, workers can log in using Mobile Number + OTP or Email + Password. Upon login, they access the dashboard where available jobs and notifications are displayed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Browse Jobs -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">3</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step3_title">Browse Jobs</h3>
+                            <p data-i18n="worker_step3_desc">Workers can browse available jobs on their dashboard and filter by Location, Job Type, Salary, Working Hours, and Skill Category. This helps them find jobs that match their skills and preferences.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: View Job Details -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">4</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step4_title">View Job Details</h3>
+                            <p data-i18n="worker_step4_desc">Clicking on a job displays complete information: Employer name, Job description, Required skills, Work location, Payment details, and Job duration. Workers can decide if the job is suitable for them.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Chatbot Help -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">5</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step5_title">Chatbot Help</h3>
+                            <p data-i18n="worker_step5_desc">If workers face any issues, the AI chatbot provides instant assistance with job search guidance, app usage help, safety instructions, and employer communication tips.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Apply for Job -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">6</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step6_title">Apply for Job</h3>
+                            <p data-i18n="worker_step6_desc">When workers find a suitable job, they click the "Apply" button. The application process sends a request to the employer, who reviews the worker's profile and decides whether to hire them.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Work Completion Request -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">7</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="worker_step7_title">Work Completion Request</h3>
+                            <p data-i18n="worker_step7_desc">After completing the job, workers send a completion request. The employer verifies the work, and the payment process is initiated. This officially marks the job as complete.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Account Card (Single instance) -->
+                <div class="existing-account-card">
+                    <i class="fas fa-user-check"></i>
+                    <div>
+                        <h4 data-i18n="existing_account_worker">Already have an account?</h4>
+                        <p data-i18n="existing_account_worker_desc">Go to the login page and enter your mobile number and password. If you forgot your password, use the "Forgot Password" option to reset it.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 EMPLOYER WORKFLOW SECTION (HIDDEN INITIALLY)
+                 ============================================ -->
+            <div class="workflow-section" id="employerWorkflow" style="display: none;">
+                <div class="workflow-header">
+                    <h2 data-i18n="employer_workflow_title">💼 Employer Journey on ShramikConnect</h2>
+                    <button class="back-to-roles-btn" id="employerBackToRoles">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="back_to_roles">Back to Role Selection</span>
+                    </button>
+                </div>
+
+                <div class="workflow-steps">
+                    <!-- Step 1: Registration -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">1</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step1_title">Registration</h3>
+                            <p data-i18n="employer_step1_desc">Employers register on the platform by providing: Name, Business name (optional), Mobile Number (OTP verification), Location, and Work category. This creates their employer account.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Login -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">2</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step2_title">Login</h3>
+                            <p data-i18n="employer_step2_desc">After registration, employers log in to access their employer dashboard, where they can manage jobs, view applications, and hire workers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Post Job -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">3</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step3_title">Post Job</h3>
+                            <p data-i18n="employer_step3_desc">Employers post jobs by filling in: Job title, Work description, Required skills, Location, Payment/Wages, and Working duration. Once posted, the job becomes visible to workers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: View Workers -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">4</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step4_title">View Workers</h3>
+                            <p data-i18n="employer_step4_desc">Employers can browse available worker profiles and check their skills, experience, ratings, and location to find suitable candidates.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Chatbot Help -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">5</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step5_title">Chatbot Help</h3>
+                            <p data-i18n="employer_step5_desc">Employers can use the AI chatbot for guidance on job posting, worker selection tips, and platform usage, ensuring a smooth experience.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Hire Worker -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">6</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step6_title">Hire Worker</h3>
+                            <p data-i18n="employer_step6_desc">When employers select a worker, they send a hire request. The worker receives a notification and can accept the job, after which work begins.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Rating Worker -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">7</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step7_title">Rating Worker</h3>
+                            <p data-i18n="employer_step7_desc">After job completion, employers rate workers based on work quality, behavior, time management, and professionalism. This helps future employers identify trusted workers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Mark Job Complete -->
+                    <div class="step-item">
+                        <div class="step-number-wrapper">
+                            <span class="step-number">8</span>
+                        </div>
+                        <div class="step-content-wrapper">
+                            <h3 data-i18n="employer_step8_title">Mark Job Complete</h3>
+                            <p data-i18n="employer_step8_desc">In the final step, employers mark the job as complete, confirming completion and settling payment. The job is saved in history, officially closing the transaction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Account Card (Single instance) -->
+                <div class="existing-account-card">
+                    <i class="fas fa-building"></i>
+                    <div>
+                        <h4 data-i18n="existing_account_employer">Already have an account?</h4>
+                        <p data-i18n="existing_account_employer_desc">Login with your registered email or mobile number and password. Forgot your password? Use the reset option to create a new one.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 YOUTUBE VIDEO SECTION (ADJUSTED WIDTH)
+                 ============================================ -->
+            <div class="video-section">
+                <h2 class="section-title" data-i18n="video_title">🎥 Watch: How ShramikConnect Works</h2>
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/YOUR_VIDEO_ID" 
+                        title="How ShramikConnect Works"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <p class="video-caption" data-i18n="video_caption">This video explains the complete platform workflow for both workers and employers.</p>
+            </div>
+
+            <!-- Big Back to Help & Contact Button -->
+            <div class="big-back">
+                <a href="help_and_contact_page.html" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_help">Back to Help & Contact</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+     <script src="{% static 'js/how_platform_works_card.js' %}"></script>
+</body>
+</html>

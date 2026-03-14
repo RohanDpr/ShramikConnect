@@ -1308,6 +1308,7 @@ body.dark .social-card:hover .social-card-inner { border-color: var(--accent-yel
     justify-content: center;
     align-items: center;
     perspective: 1200px;
+   
 }
 
 .carousel-track {
@@ -1318,6 +1319,14 @@ body.dark .social-card:hover .social-card-inner { border-color: var(--accent-yel
     justify-content: center;
     align-items: center;
     transform-style: preserve-3d;
+}
+
+.social-cards-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;  /* This centers everything */
+    align-items: center;
+    gap: 20px;
 }
 
 .nav-btn {

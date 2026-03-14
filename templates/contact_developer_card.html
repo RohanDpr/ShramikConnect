@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet Our Developers | ShramikConnect</title>
+    
+    <!-- CSS FILES -->
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+    <link rel="stylesheet" href="{% static 'css/contact_developer_card.css' %}">
+
+
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN (Same as help_and_contact)
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - DEVELOPERS SECTION
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="welcome-title">
+                    <span class="title-line" data-i18n="developers_title">Meet Our Amazing Developers</span>
+                    <span class="title-line highlight" data-i18n="developers_subtitle">The creative minds behind ShramikConnect</span>
+                </h1>
+            </div>
+
+            <!-- Introduction Message -->
+            <div class="intro-message">
+                <i class="fas fa-code"></i>
+                <p data-i18n="developers_intro">Our dedicated team of developers works tirelessly to make ShramikConnect better every day. Hover over cards and click "Know more" to visit individual developer pages.</p>
+            </div>
+
+            <!-- Developers Carousel Section (Exactly like about page) -->
+            <section class="developers-section">
+                <div class="carousel-container">
+                    <button class="nav-btn prev-btn" aria-label="Previous">&lt;</button>
+                    <div class="carousel-track">
+                        <!-- Developer Card 1: Nagesh Daberao (exact copy from about.html) -->
+                        <div class="team-card" data-pos="-2">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="images/dev_1.png" alt="Nagesh Daberao" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Nagesh <span>Daberao</span></h3>
+                                        <p class="dev-role">Co-Founder & Frontend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content-scroll">
+                                        <div class="back-content">
+                                            <h3>Nagesh Daberao</h3>
+                                            <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                            <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                            <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                            <div class="skill-tags">
+                                                <span class="skill-tag">cyber security</span>
+                                                <span class="skill-tag">ai</span>
+                                                <span class="skill-tag">ml</span>
+                                            </div>
+                                            <div class="back-social-grid">
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                                </div>
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="#"><i class="fab fa-youtube"></i></a>
+                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                </div>
+                                            </div>
+                                            <!-- Small Know More Button -->
+                                            <a href="nagesh.html" class="know-more-back-btn" data-developer="nagesh">
+                                                <span>Know more</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Developer Card 2: Rohan Dharpawar (exact copy from about.html) -->
+                        <div class="team-card" data-pos="-1">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="images/dev_2.png" alt="Rohan Dharpawar" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Rohan <span>Dharpawar</span></h3>
+                                        <p class="dev-role">Co-Founder & Backend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content-scroll">
+                                        <div class="back-content">
+                                            <h3>Rohan Dharpawar</h3>
+                                            <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                            <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                            <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                            <div class="skill-tags">
+                                                <span class="skill-tag">cyber security</span>
+                                                <span class="skill-tag">ai</span>
+                                                <span class="skill-tag">ml</span>
+                                            </div>
+                                            <div class="back-social-grid">
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                                </div>
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="#"><i class="fab fa-youtube"></i></a>
+                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                </div>
+                                            </div>
+                                            <!-- Small Know More Button -->
+                                            <a href="rohan.html" class="know-more-back-btn" data-developer="rohan">
+                                                <span>Know more</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Developer Card 3: Shaan Shukla (Center - Highlighted) exact copy from about.html -->
+                        <div class="team-card center-highlight" data-pos="0">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="images/dev_3.png" alt="Shaan Shukla" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Shaan <span>Shukla</span></h3>
+                                        <p class="dev-role">Founder & Frontend + Backend Developer</p>
+                                    </div>
+                                    <div class="featured-badge">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content-scroll">
+                                        <div class="back-content">
+                                            <h3>Shaan Shukla <span class="highlight-star">⭐</span></h3>
+                                            <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                            <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                            <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                            <div class="skill-tags">
+                                                <span class="skill-tag">cyber security</span>
+                                                <span class="skill-tag">ai</span>
+                                                <span class="skill-tag">ml</span>
+                                            </div>
+                                            <div class="back-social-grid">
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                                </div>
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="#"><i class="fab fa-youtube"></i></a>
+                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                </div>
+                                            </div>
+                                            <!-- Small Know More Button - Primary style for center -->
+                                            <a href="shaan.html" class="know-more-back-btn primary" data-developer="shaan">
+                                                <span>Know more</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Developer Card 4: Mohmmad Wasif (exact copy from about.html) -->
+                        <div class="team-card" data-pos="1">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="images/dev_4.png" alt="Mohmmad Wasif" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Mohmmad <span>Wasif</span></h3>
+                                        <p class="dev-role">Co-Founder & Frontend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content-scroll">
+                                        <div class="back-content">
+                                            <h3>Mohmmad Wasif</h3>
+                                            <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                            <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                            <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                            <div class="skill-tags">
+                                                <span class="skill-tag">cyber security</span>
+                                                <span class="skill-tag">ai</span>
+                                                <span class="skill-tag">ml</span>
+                                            </div>
+                                            <div class="back-social-grid">
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                                </div>
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="#"><i class="fab fa-youtube"></i></a>
+                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                </div>
+                                            </div>
+                                            <!-- Small Know More Button -->
+                                            <a href="wasif.html" class="know-more-back-btn" data-developer="wasif">
+                                                <span>Know more</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Developer Card 5: Sumedh Ingle (exact copy from about.html) -->
+                        <div class="team-card" data-pos="2">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <img src="images/dev_5.png" alt="Sumedh Ingle" class="dev-img">
+                                    <div class="dev-info">
+                                        <h3>Sumedh <span>Ingle</span></h3>
+                                        <p class="dev-role">Co-Founder & Frontend Developer</p>
+                                    </div>
+                                </div>
+                                <div class="card-back">
+                                    <div class="back-content-scroll">
+                                        <div class="back-content">
+                                            <h3>Sumedh Ingle</h3>
+                                            <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                                            <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                                            <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                                            <div class="skill-tags">
+                                                <span class="skill-tag">cyber security</span>
+                                                <span class="skill-tag">ai</span>
+                                                <span class="skill-tag">ml</span>
+                                            </div>
+                                            <div class="back-social-grid">
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                                                </div>
+                                                <div class="social-row">
+                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="#"><i class="fab fa-youtube"></i></a>
+                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                </div>
+                                            </div>
+                                            <!-- Small Know More Button -->
+                                            <a href="sumedh.html" class="know-more-back-btn" data-developer="sumedh">
+                                                <span>Know more</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="nav-btn next-btn" aria-label="Next">&gt;</button>
+                </div>
+                <!-- Big "Know More" button REMOVED as requested -->
+            </section>
+
+            <!-- Big Back to Help & Contact Button - Keeping this one -->
+            <div class="big-back">
+                <a href="help_and_contact_page.html" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_help">Back to Help & Contact</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/contact_developer_card.js'%}"></script>
+</body>
+</html>
