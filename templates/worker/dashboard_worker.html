@@ -865,5 +865,27 @@
     </footer>
 
     <script src="{% static 'js/worker/dashboard_worker.js' %}"></script>
+    <!-- Hidden data for JavaScript -->
+<script>
+    window.workerData = {
+        id: {% if worker.id %}{{ worker.id }}{% else %}null{% endif %},
+        full_name: "{% if worker.get_full_name %}{{ worker.get_full_name }}{% endif %}",
+        first_name: "{% if worker.first_name %}{{ worker.first_name }}{% endif %}",
+        last_name: "{% if worker.last_name %}{{ worker.last_name }}{% endif %}",
+        email: "{% if worker.email %}{{ worker.email }}{% endif %}",
+        mobile: "{% if worker.mobile %}{{ worker.mobile }}{% endif %}",
+        profession: "{% if worker.profession %}{{ worker.profession }}{% endif %}",
+        profile_photo: "{% if worker.profile_photo %}{{ worker.profile_photo.url }}{% endif %}"
+    };
+    
+    window.initialData = {
+        jobs: {{ jobs|default:'[]'|safe }},
+        applied_jobs: {{ applied_jobs|default:'[]'|safe }},
+        active_jobs: {{ active_jobs|default:'[]'|safe }},
+        work_history: {{ work_history|default:'[]'|safe }}
+    };
+    
+    console.log('Worker Data:', window.workerData);
+</script>
 </body>
 </html>

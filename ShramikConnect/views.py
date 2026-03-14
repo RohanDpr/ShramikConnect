@@ -9,8 +9,9 @@ from django.conf import settings
 from django.utils import timezone
 import json
 import os
+import math
 from datetime import datetime
-from core.models import Employer, EmailOTP
+from core.models import Employer, Worker, EmailOTP, Job, JobApplication, WorkHistory
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,44 +34,115 @@ def about(request):
 def term_and_condition(request):
     return render(request, 'term_and_condition.html')
 
-def login_worker(request):
-    return render(request, 'worker/login_worker.html')
+# ============================================
+# WORKER LOGIN VIEW
+# ============================================
 
-def login_employer(request):
-    """Handle employer login"""
+def login_worker(request):
+    """Handle worker login"""
     if request.method == 'POST':
         try:
-            # JSON data handle karo (AJAX request ke liye)
             if request.headers.get('Content-Type') == 'application/json':
                 data = json.loads(request.body)
                 email = data.get('email')
                 password = data.get('password')
             else:
-                # Normal form submission
+                email = request.POST.get('email')
+                password = request.POST.get('password')
+            
+            print(f"Worker Login attempt - Email: {email}")
+            
+            try:
+                worker = Worker.objects.get(email=email, is_active=True)
+                print(f"Worker found: {worker.first_name} {worker.last_name}")
+                
+                if worker.password == password:
+                    print("✅ Password matched!")
+                    
+                    request.session['worker_id'] = worker.id
+                    request.session['worker_email'] = worker.email
+                    request.session['worker_name'] = worker.get_full_name()
+                    request.session.modified = True
+                    print(f"✅ Session set: {request.session.items()}")
+                    
+                    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        return JsonResponse({
+                            'success': True,
+                            'message': 'Login successful!',
+                            'redirect_url': '/dashboard_worker/',
+                            'worker': {
+                                'id': worker.id,
+                                'name': worker.get_full_name(),
+                                'email': worker.email,
+                                'profession': worker.profession
+                            }
+                        })
+                    else:
+                        messages.success(request, 'Login successful!')
+                        return redirect('dashboard_worker')
+                else:
+                    print("❌ Password did not match!")
+                    error_msg = 'Invalid password'
+                    
+            except Worker.DoesNotExist:
+                print(f"❌ No worker found with email: {email}")
+                error_msg = 'No account found with this email'
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': error_msg
+                }, status=400)
+            else:
+                messages.error(request, error_msg)
+                return render(request, 'worker/login_worker.html')
+                
+        except Exception as e:
+            print(f"Login error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': f'Login failed: {str(e)}'
+                }, status=400)
+            else:
+                messages.error(request, f'Login failed: {str(e)}')
+                return render(request, 'worker/login_worker.html')
+    
+    return render(request, 'worker/login_worker.html')
+
+
+def login_employer(request):
+    """Handle employer login"""
+    if request.method == 'POST':
+        try:
+            if request.headers.get('Content-Type') == 'application/json':
+                data = json.loads(request.body)
+                email = data.get('email')
+                password = data.get('password')
+            else:
                 email = request.POST.get('email')
                 password = request.POST.get('password')
             
             print(f"Login attempt - Email: {email}")
             
-            # Find employer by email
             try:
                 employer = Employer.objects.get(email=email, is_active=True)
                 print(f"Employer found: {employer.first_name} {employer.last_name}")
                 print(f"Stored password: {employer.password}")
                 print(f"Entered password: {password}")
                 
-                # Direct password comparison (no hashing)
                 if employer.password == password:
                     print("✅ Password matched!")
                     
-                    # Set session
                     request.session['employer_id'] = employer.id
                     request.session['employer_email'] = employer.email
                     request.session['employer_name'] = employer.get_full_name()
-                    request.session.modified = True  # 👈 YEH ADD KARO
+                    request.session.modified = True
                     print(f"✅ Session set: {request.session.items()}")
                     
-                    # Return success response
                     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                         return JsonResponse({
                             'success': True,
@@ -93,7 +165,6 @@ def login_employer(request):
                 print(f"❌ No employer found with email: {email}")
                 error_msg = 'No account found with this email'
             
-            # Return error response
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False,
@@ -117,42 +188,51 @@ def login_employer(request):
                 messages.error(request, f'Login failed: {str(e)}')
                 return render(request, 'employer/login_employer.html')
     
-    # GET request - show login page
     return render(request, 'employer/login_employer.html')
 
+
 def signup_worker(request):
+    """Handle worker signup page rendering and form submission"""
+    if request.method == 'POST':
+        return handle_worker_signup(request)
+    
     return render(request, 'worker/signup_worker.html')
+
 
 def signup_employer(request):
     """Handle employer signup page rendering and form submission"""
     if request.method == 'POST':
-        # Handle form submission
         return handle_employer_signup(request)
     
-    # GET request - render the signup page
     return render(request, 'employer/signup_employer.html')
+
 
 def choose_password_worker(request):
     return render(request, 'worker/choose_password_worker.html')
 
+
 def change_password_worker(request):
     return render(request, 'worker/change_password_worker.html')
+
 
 def get_password_worker(request):
     return render(request, 'worker/get_password_worker.html')
 
+
 def choose_password_employer(request):
     return render(request, 'employer/choose_password_employer.html')
+
 
 def change_password_employer(request):
     return render(request, 'employer/change_password_employer.html')
 
+
 def get_password_employer(request):
     return render(request, 'employer/get_password_employer.html')
 
+
 def dashboard_employer(request):
     """Employer dashboard - protected route"""
-    # DEBUG: Print session data
     print("=" * 50)
     print("DASHBOARD ACCESS ATTEMPT")
     print(f"Session keys: {request.session.keys()}")
@@ -160,7 +240,6 @@ def dashboard_employer(request):
     print(f"employer_name in session: {request.session.get('employer_name')}")
     print("=" * 50)
     
-    # Check if logged in
     if 'employer_id' not in request.session:
         print("❌ No employer_id in session - redirecting to login")
         messages.error(request, 'Please login to access dashboard')
@@ -173,8 +252,7 @@ def dashboard_employer(request):
         employer = Employer.objects.get(id=employer_id, is_active=True)
         print(f"✅ Employer found: {employer.first_name} {employer.last_name}")
         
-        # Get employer's data (mock for now)
-        jobs = []  # In real app, fetch from database
+        jobs = []
         accepted_workers = []
         hired_workers = []
         work_history = []
@@ -212,8 +290,100 @@ def dashboard_employer(request):
         messages.error(request, f'Error loading dashboard: {str(e)}')
         return redirect('/login_employer/')
 
+
+# ============================================
+# WORKER DASHBOARD VIEW
+# ============================================
+
 def dashboard_worker(request):
-    return render(request, 'worker/dashboard_worker.html')
+    """Worker dashboard - protected route"""
+    print("=" * 50)
+    print("WORKER DASHBOARD ACCESS ATTEMPT")
+    print(f"Session keys: {request.session.keys()}")
+    print(f"worker_id in session: {request.session.get('worker_id')}")
+    print("=" * 50)
+    
+    if 'worker_id' not in request.session:
+        print("❌ No worker_id in session - redirecting to login")
+        messages.error(request, 'Please login to access dashboard')
+        return redirect('/login_worker/')
+    
+    try:
+        worker_id = request.session['worker_id']
+        print(f"Looking for worker with ID: {worker_id}")
+        
+        worker = Worker.objects.get(id=worker_id, is_active=True)
+        print(f"✅ Worker found: {worker.first_name} {worker.last_name} - {worker.profession}")
+        
+        # Safely get data with error handling
+        jobs = []
+        applied_jobs = []
+        active_jobs = []
+        work_history = []
+        
+        try:
+            jobs = get_available_jobs(worker)
+        except Exception as e:
+            print(f"Error getting jobs: {e}")
+            jobs = []
+        
+        try:
+            applied_jobs = get_applied_jobs(worker)
+        except Exception as e:
+            print(f"Error getting applied jobs: {e}")
+            applied_jobs = []
+        
+        try:
+            active_jobs = get_active_jobs(worker)
+        except Exception as e:
+            print(f"Error getting active jobs: {e}")
+            active_jobs = []
+        
+        try:
+            work_history = get_work_history(worker)
+        except Exception as e:
+            print(f"Error getting work history: {e}")
+            work_history = []
+        
+        total_applied = len(applied_jobs)
+        total_active = len(active_jobs)
+        total_completed = len(work_history)
+        total_earnings = sum([h.get('payment', 0) for h in work_history]) if work_history else 0
+        
+        context = {
+            'worker': worker,
+            'full_name': worker.get_full_name(),
+            'first_name': worker.first_name,
+            'last_name': worker.last_name,
+            'email': worker.email,
+            'mobile': worker.mobile,
+            'profession': worker.profession,
+            'profile_photo_url': worker.profile_photo.url if worker.profile_photo else None,
+            'total_applied': total_applied,
+            'total_active': total_active,
+            'total_completed': total_completed,
+            'total_earnings': total_earnings,
+            'avg_rating': worker.rating,
+            'jobs': json.dumps(jobs, default=str),
+            'applied_jobs': json.dumps(applied_jobs, default=str),
+            'active_jobs': json.dumps(active_jobs, default=str),
+            'work_history': json.dumps(work_history, default=str),
+        }
+        
+        print("✅ Rendering worker dashboard template")
+        return render(request, 'worker/dashboard_worker.html', context)
+        
+    except Worker.DoesNotExist:
+        print(f"❌ Worker with ID {request.session.get('worker_id')} not found")
+        messages.error(request, 'Account not found')
+        return redirect('/login_worker/')
+    except Exception as e:
+        print(f"❌ Error loading dashboard: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        messages.error(request, f'Error loading dashboard: {str(e)}')
+        return redirect('/login_worker/')
+
 
 def logout_employer(request):
     """Handle employer logout"""
@@ -226,14 +396,22 @@ def logout_employer(request):
     return redirect('/login_employer/')
 
 
+def logout_worker(request):
+    """Handle worker logout"""
+    if 'worker_id' in request.session:
+        del request.session['worker_id']
+        del request.session['worker_email']
+        del request.session['worker_name']
+    
+    messages.success(request, 'Logged out successfully!')
+    return redirect('/login_worker/')
+
+
 # ============================================
-# Helper Functions to Get Employer Data
+# HELPER FUNCTIONS FOR EMPLOYER DATA
 # ============================================
 
 def get_employer_jobs(employer_id):
-    """Get jobs posted by this employer"""
-    # In a real app, this would query the database
-    # For now, return mock data filtered by employer_id
     mock_jobs = [
         {
             "id": 1,
@@ -290,13 +468,10 @@ def get_employer_jobs(employer_id):
             "postedDate": "2023-09-25"
         }
     ]
-    
-    # Filter jobs by employer_id
     return [job for job in mock_jobs if job.get('employer_id') == employer_id]
 
+
 def get_employer_accepted_workers(employer_id):
-    """Get workers accepted by this employer"""
-    # In a real app, this would query the database
     mock_workers = [
         {
             "id": 1,
@@ -350,11 +525,10 @@ def get_employer_accepted_workers(employer_id):
             "negotiatedTime": None
         }
     ]
-    
     return [w for w in mock_workers if w.get('employer_id') == employer_id]
 
+
 def get_employer_hired_workers(employer_id):
-    """Get workers hired by this employer"""
     mock_hired = [
         {
             "id": 6,
@@ -391,11 +565,10 @@ def get_employer_hired_workers(employer_id):
             "status": "completed"
         }
     ]
-    
     return [w for w in mock_hired if w.get('employer_id') == employer_id]
 
+
 def get_employer_work_history(employer_id):
-    """Get work history for this employer"""
     mock_history = [
         {
             "id": 101,
@@ -440,8 +613,169 @@ def get_employer_work_history(employer_id):
             "jobLocation": "Mumbai, Andheri East"
         }
     ]
-    
     return [h for h in mock_history if h.get('employer_id') == employer_id]
+
+
+# ============================================
+# HELPER FUNCTIONS FOR WORKER DATA - FIXED
+# ============================================
+
+def get_available_jobs(worker):
+    """Get jobs available for this worker - FIXED with manual dict creation"""
+    try:
+        jobs = Job.objects.filter(status='open')
+        applied_job_ids = JobApplication.objects.filter(worker=worker).values_list('job_id', flat=True)
+        jobs = jobs.exclude(id__in=applied_job_ids)
+        
+        job_list = []
+        for job in jobs:
+            try:
+                job_dict = {
+                    'id': job.id,
+                    'title': job.title,
+                    'workType': job.work_type,
+                    'description': job.description,
+                    'skills': job.skills,
+                    'location': job.location,
+                    'workAddress': job.work_address,
+                    'pay': job.pay,
+                    'time': job.time,
+                    'toolsAvailable': job.tools_available,
+                    'status': job.status,
+                    'postedDate': job.posted_date.isoformat() if job.posted_date else None,
+                    'employerName': job.employer.get_full_name() if job.employer else "Unknown",
+                    'employerPhoto': job.employer.profile_photo.url if job.employer and job.employer.profile_photo else None,
+                }
+                
+                # Add distance if available
+                if (worker.current_latitude and worker.current_longitude and 
+                    job.latitude and job.longitude):
+                    try:
+                        distance = calculate_distance(
+                            float(worker.current_latitude),
+                            float(worker.current_longitude),
+                            float(job.latitude),
+                            float(job.longitude)
+                        )
+                        job_dict['distance'] = round(distance, 1)
+                    except:
+                        job_dict['distance'] = None
+                else:
+                    job_dict['distance'] = None
+                
+                job_list.append(job_dict)
+            except Exception as e:
+                print(f"Error processing job {job.id}: {e}")
+                continue
+        
+        return job_list
+    except Exception as e:
+        print(f"Error in get_available_jobs: {e}")
+        return []
+
+
+def get_applied_jobs(worker):
+    """Get jobs applied by this worker - FIXED with manual dict creation"""
+    try:
+        applications = JobApplication.objects.filter(worker=worker).order_by('-applied_date')
+        applied_jobs = []
+        
+        for app in applications:
+            try:
+                job_dict = {
+                    'id': app.id,
+                    'jobId': app.job.id,
+                    'jobTitle': app.job.title,
+                    'employerName': app.job.employer.get_full_name() if app.job.employer else "Unknown",
+                    'location': app.job.location,
+                    'pay': app.job.pay,
+                    'status': app.status,
+                    'appliedDate': app.applied_date.isoformat() if app.applied_date else None,
+                    'expectedPrice': app.expected_price,
+                    'availability': app.availability,
+                    'cover_message': app.cover_message,
+                }
+                applied_jobs.append(job_dict)
+            except Exception as e:
+                print(f"Error processing application {app.id}: {e}")
+                continue
+        
+        return applied_jobs
+    except Exception as e:
+        print(f"Error in get_applied_jobs: {e}")
+        return []
+
+
+def get_active_jobs(worker):
+    """Get jobs where worker is hired and work is in progress - FIXED with manual dict creation"""
+    try:
+        applications = JobApplication.objects.filter(
+            worker=worker,
+            status='hired'
+        ).order_by('-hired_date')
+        
+        active_jobs = []
+        for app in applications:
+            try:
+                job_dict = {
+                    'id': app.id,
+                    'jobId': app.job.id,
+                    'jobTitle': app.job.title,
+                    'employerName': app.job.employer.get_full_name() if app.job.employer else "Unknown",
+                    'employerPhoto': app.job.employer.profile_photo.url if app.job.employer and app.job.employer.profile_photo else None,
+                    'location': app.job.location,
+                    'pay': app.job.pay,
+                    'hiredDate': app.hired_date.isoformat() if app.hired_date else None,
+                }
+                active_jobs.append(job_dict)
+            except Exception as e:
+                print(f"Error processing active job {app.id}: {e}")
+                continue
+        
+        return active_jobs
+    except Exception as e:
+        print(f"Error in get_active_jobs: {e}")
+        return []
+
+
+def get_work_history(worker):
+    """Get completed work history for this worker - FIXED with manual dict creation"""
+    try:
+        work_history = WorkHistory.objects.filter(worker=worker).order_by('-completion_date')
+        history_list = []
+        
+        for wh in work_history:
+            try:
+                history_dict = {
+                    'id': wh.id,
+                    'jobTitle': wh.job_title,
+                    'employerName': wh.employer_name,
+                    'payment': wh.payment,
+                    'rating': wh.rating,
+                    'completionDate': wh.completion_date.isoformat() if wh.completion_date else None,
+                    'feedback': wh.feedback,
+                    'location': wh.job_location,
+                }
+                history_list.append(history_dict)
+            except Exception as e:
+                print(f"Error processing work history {wh.id}: {e}")
+                continue
+        
+        return history_list
+    except Exception as e:
+        print(f"Error in get_work_history: {e}")
+        return []
+
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    """Calculate distance between two coordinates in km using Haversine formula"""
+    R = 6371
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    return R * c
+
 
 # ============================================
 # EMPLOYER SIGNUP HANDLING FUNCTIONS
@@ -450,12 +784,7 @@ def get_employer_work_history(employer_id):
 @csrf_exempt
 @require_http_methods(["POST"])
 def handle_employer_signup(request):
-    """
-    Handle employer signup form submission
-    This function processes the multipart form data from the signup form
-    """
     try:
-        # Extract form data
         data = request.POST
         
         print("=" * 50)
@@ -465,7 +794,6 @@ def handle_employer_signup(request):
         print(f"Email: {data.get('email')}")
         print(f"Password: {data.get('password')}")
         
-        # Check if employer with this email or mobile already exists
         if Employer.objects.filter(email=data.get('email')).exists():
             messages.error(request, 'An account with this email already exists.')
             return render(request, 'employer/signup_employer.html')
@@ -474,57 +802,55 @@ def handle_employer_signup(request):
             messages.error(request, 'An account with this mobile number already exists.')
             return render(request, 'employer/signup_employer.html')
         
-        # Handle file uploads
+        latest_otp = EmailOTP.objects.filter(
+            email=data.get('email'), 
+            is_verified=True
+        ).order_by('-created_at').first()
+        
+        if not latest_otp:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Email not verified. Please verify your email first.'
+                }, status=400)
+            else:
+                messages.error(request, 'Email not verified. Please verify your email first.')
+                return render(request, 'employer/signup_employer.html')
+        
         profile_photo = request.FILES.get('profile_photo')
         document_file = request.FILES.get('document_file')
         
-        # Create employer instance
         employer = Employer(
-            # Personal Information
             first_name=data.get('first_name'),
             last_name=data.get('last_name'),
             date_of_birth=datetime.strptime(data.get('dob'), '%Y-%m-%d').date(),
             age=int(data.get('age', 0)),
             gender=data.get('gender'),
-            
-            # Contact Information
             email=data.get('email'),
             email_verified=data.get('email_verified') == 'true',
             mobile=data.get('mobile'),
             mobile_verified=data.get('mobile_verified') == 'true',
-            
-            # Direct password store (no hashing)
             password=data.get('password'),
-            
-            # Address Information
             street=data.get('street'),
             city=data.get('city'),
             state=data.get('state'),
             pincode=data.get('pincode'),
-            
-            # Work Location
             work_latitude=data.get('latitude') if data.get('latitude') else None,
             work_longitude=data.get('longitude') if data.get('longitude') else None,
             work_location_address=data.get('location_address', ''),
-            
-            # Document Information
             document_type=data.get('document_type'),
         )
         
-        # Save profile photo if provided
         if profile_photo:
             employer.profile_photo = profile_photo
         
-        # Save document file if provided
         if document_file:
             employer.document_file = document_file
         
-        # Save to database
         employer.save()
         print(f"✅ Employer saved with ID: {employer.id}")
         print(f"✅ Password stored: {employer.password}")
         
-        # Return success response
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({
                 'success': True,
@@ -552,12 +878,128 @@ def handle_employer_signup(request):
             return render(request, 'employer/signup_employer.html')
 
 
+# ============================================
+# WORKER SIGNUP HANDLING FUNCTION
+# ============================================
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def handle_worker_signup(request):
+    try:
+        data = request.POST
+        
+        print("=" * 50)
+        print("WORKER SIGNUP REQUEST RECEIVED")
+        print("=" * 50)
+        print(f"First name: {data.get('first_name')}")
+        print(f"Email: {data.get('email')}")
+        print(f"Profession: {data.get('profession')}")
+        
+        if Worker.objects.filter(email=data.get('email')).exists():
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': 'An account with this email already exists.'
+                }, status=400)
+            else:
+                messages.error(request, 'An account with this email already exists.')
+                return render(request, 'worker/signup_worker.html')
+        
+        if Worker.objects.filter(mobile=data.get('mobile')).exists():
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': 'An account with this mobile number already exists.'
+                }, status=400)
+            else:
+                messages.error(request, 'An account with this mobile number already exists.')
+                return render(request, 'worker/signup_worker.html')
+        
+        latest_otp = EmailOTP.objects.filter(
+            email=data.get('email'), 
+            is_verified=True
+        ).order_by('-created_at').first()
+        
+        if not latest_otp:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Email not verified. Please verify your email first.'
+                }, status=400)
+            else:
+                messages.error(request, 'Email not verified. Please verify your email first.')
+                return render(request, 'worker/signup_worker.html')
+        
+        profile_photo = request.FILES.get('profile_photo')
+        document_file = request.FILES.get('document_file')
+        
+        profession = data.get('profession')
+        other_profession = data.get('other_profession') if profession == 'other' else ''
+        
+        worker = Worker(
+            first_name=data.get('first_name'),
+            last_name=data.get('last_name'),
+            date_of_birth=datetime.strptime(data.get('dob'), '%Y-%m-%d').date(),
+            age=int(data.get('age', 0)),
+            gender=data.get('gender'),
+            email=data.get('email'),
+            email_verified=True,
+            mobile=data.get('mobile'),
+            mobile_verified=data.get('mobile_verified') == 'true',
+            password=data.get('password'),
+            profession=profession,
+            other_profession=other_profession,
+            street=data.get('street'),
+            city=data.get('city'),
+            state=data.get('state'),
+            pincode=data.get('pincode'),
+            preferred_work_area=data.get('work_area', ''),
+            document_type=data.get('document_type'),
+            skills=[],
+        )
+        
+        if profile_photo:
+            worker.profile_photo = profile_photo
+        
+        if document_file:
+            worker.document_file = document_file
+        
+        worker.save()
+        print(f"✅ Worker saved with ID: {worker.id}")
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': 'Account created successfully!',
+                'redirect_url': '/login_worker/'
+            })
+        else:
+            messages.success(request, 'Account created successfully! Please login.')
+            return redirect('/login_worker/')
+            
+    except Exception as e:
+        import traceback
+        print("=" * 50)
+        print("ERROR OCCURRED:")
+        print(traceback.format_exc())
+        print("=" * 50)
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'message': f'Error creating account: {str(e)}'
+            }, status=400)
+        else:
+            messages.error(request, f'Error creating account: {str(e)}')
+            return render(request, 'worker/signup_worker.html')
+
+
+# ============================================
+# EMPLOYER API ENDPOINTS
+# ============================================
+
 @require_http_methods(["GET"])
 def get_employer_details(request, employer_id):
-    """
-    Fetch employer details by ID
-    Used for dashboard or profile viewing
-    """
     try:
         employer = Employer.objects.get(id=employer_id, is_active=True)
         
@@ -598,10 +1040,6 @@ def get_employer_details(request, employer_id):
 @require_http_methods(["POST"])
 @csrf_exempt
 def check_employer_exists(request):
-    """
-    Check if employer exists with given email or mobile
-    Used during signup for real-time validation
-    """
     try:
         data = json.loads(request.body)
         email = data.get('email')
@@ -629,9 +1067,6 @@ def check_employer_exists(request):
 
 @require_http_methods(["GET"])
 def list_employers(request):
-    """
-    List all employers (for admin panel)
-    """
     employers = Employer.objects.all().values(
         'id', 'first_name', 'last_name', 'email', 'mobile', 
         'is_approved', 'created_at'
@@ -640,19 +1075,108 @@ def list_employers(request):
 
 
 # ============================================
+# WORKER API ENDPOINTS
+# ============================================
+
+@require_http_methods(["GET"])
+def get_worker_details(request, worker_id):
+    try:
+        worker = Worker.objects.get(id=worker_id, is_active=True)
+        
+        data = {
+            'id': worker.id,
+            'full_name': worker.get_full_name(),
+            'first_name': worker.first_name,
+            'last_name': worker.last_name,
+            'email': worker.email,
+            'mobile': worker.mobile,
+            'email_verified': worker.email_verified,
+            'mobile_verified': worker.mobile_verified,
+            'gender': worker.gender,
+            'age': worker.age,
+            'date_of_birth': worker.date_of_birth.strftime('%Y-%m-%d'),
+            'profession': worker.profession,
+            'other_profession': worker.other_profession,
+            'skills': worker.skills,
+            'address': f"{worker.street}, {worker.city}, {worker.state} - {worker.pincode}",
+            'street': worker.street,
+            'city': worker.city,
+            'state': worker.state,
+            'pincode': worker.pincode,
+            'preferred_work_area': worker.preferred_work_area,
+            'document_type': worker.document_type,
+            'profile_photo_url': worker.profile_photo.url if worker.profile_photo else None,
+            'document_url': worker.document_file.url if worker.document_file else None,
+            'rating': worker.rating,
+            'total_ratings': worker.total_ratings,
+            'is_approved': worker.is_approved,
+            'created_at': worker.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        
+        return JsonResponse({'success': True, 'data': data})
+        
+    except Worker.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Worker not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def check_worker_exists(request):
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+        mobile = data.get('mobile')
+        
+        response = {
+            'exists': False,
+            'email_exists': False,
+            'mobile_exists': False
+        }
+        
+        if email:
+            response['email_exists'] = Worker.objects.filter(email=email).exists()
+        
+        if mobile:
+            response['mobile_exists'] = Worker.objects.filter(mobile=mobile).exists()
+        
+        response['exists'] = response['email_exists'] or response['mobile_exists']
+        
+        return JsonResponse(response)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+@require_http_methods(["GET"])
+def list_workers(request):
+    workers = Worker.objects.filter(is_active=True).order_by('-created_at')
+    worker_list = []
+    for worker in workers:
+        worker_list.append({
+            'id': worker.id,
+            'name': worker.get_full_name(),
+            'profession': worker.profession,
+            'city': worker.city,
+            'rating': worker.rating,
+            'profile_photo': worker.profile_photo.url if worker.profile_photo else None,
+        })
+    return JsonResponse({'workers': worker_list})
+
+
+# ============================================
 # API Endpoint to Get Employer Dashboard Data
 # ============================================
 
 @require_http_methods(["GET"])
 def get_employer_dashboard_data(request):
-    """API endpoint to get dashboard data for logged-in employer"""
     if 'employer_id' not in request.session:
         return JsonResponse({'success': False, 'message': 'Not authenticated'}, status=401)
     
     try:
         employer_id = request.session['employer_id']
         
-        # In a real app, these would come from database
         data = {
             'jobs': [],
             'accepted_workers': [],
@@ -667,58 +1191,202 @@ def get_employer_dashboard_data(request):
 
 
 # ============================================
-# Job API endpoints (placeholder)
+# API Endpoint to Get Worker Dashboard Data - FIXED
+# ============================================
+
+@require_http_methods(["GET"])
+def get_worker_dashboard_data(request):
+    """API endpoint to get dashboard data for logged-in worker"""
+    if 'worker_id' not in request.session:
+        return JsonResponse({'success': False, 'message': 'Not authenticated'}, status=401)
+    
+    try:
+        worker_id = request.session['worker_id']
+        worker = Worker.objects.get(id=worker_id, is_active=True)
+        
+        # Safe data fetching with error handling
+        jobs = []
+        applied_jobs = []
+        active_jobs = []
+        work_history = []
+        
+        try:
+            jobs = get_available_jobs(worker)
+        except Exception as e:
+            print(f"Error fetching jobs: {e}")
+            jobs = []
+        
+        try:
+            applied_jobs = get_applied_jobs(worker)
+        except Exception as e:
+            print(f"Error fetching applied jobs: {e}")
+            applied_jobs = []
+        
+        try:
+            active_jobs = get_active_jobs(worker)
+        except Exception as e:
+            print(f"Error fetching active jobs: {e}")
+            active_jobs = []
+        
+        try:
+            work_history = get_work_history(worker)
+        except Exception as e:
+            print(f"Error fetching work history: {e}")
+            work_history = []
+        
+        data = {
+            'jobs': jobs,
+            'applied_jobs': applied_jobs,
+            'active_jobs': active_jobs,
+            'work_history': work_history,
+        }
+        
+        return JsonResponse({'success': True, 'data': data})
+        
+    except Worker.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Worker not found'}, status=404)
+    except Exception as e:
+        print(f"Error in get_worker_dashboard_data: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+# ============================================
+# JOB API ENDPOINTS
 # ============================================
 
 @require_http_methods(["GET"])
 def list_jobs(request):
-    return JsonResponse({'jobs': []})
+    jobs = Job.objects.filter(status='open').order_by('-posted_date')
+    job_list = []
+    for job in jobs:
+        job_list.append({
+            'id': job.id,
+            'title': job.title,
+            'work_type': job.work_type,
+            'description': job.description,
+            'skills': job.skills,
+            'location': job.location,
+            'pay': job.pay,
+            'time': job.time,
+            'posted_date': job.posted_date.isoformat() if job.posted_date else None,
+            'employer_name': job.employer.get_full_name() if job.employer else "Unknown",
+        })
+    return JsonResponse({'jobs': job_list})
 
-@require_http_methods(["POST"])
-def create_job(request):
-    return JsonResponse({'success': True, 'message': 'Job created'})
 
 @require_http_methods(["GET"])
 def get_job_details(request, job_id):
-    return JsonResponse({'job': {}})
+    try:
+        job = Job.objects.get(id=job_id)
+        employer = job.employer
+        
+        data = {
+            'id': job.id,
+            'title': job.title,
+            'work_type': job.work_type,
+            'description': job.description,
+            'skills': job.skills,
+            'location': job.location,
+            'work_address': job.work_address,
+            'pay': job.pay,
+            'time': job.time,
+            'tools_available': job.tools_available,
+            'posted_date': job.posted_date.isoformat() if job.posted_date else None,
+            'employer': {
+                'name': employer.get_full_name() if employer else "Unknown",
+                'email': employer.email if employer else "",
+                'mobile': employer.mobile if employer else "",
+                'company_name': employer.company_name if employer else "",
+                'profile_photo': employer.profile_photo.url if employer and employer.profile_photo else None,
+            }
+        }
+        
+        return JsonResponse({'success': True, 'data': data})
+        
+    except Job.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Job not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
 
 @require_http_methods(["POST"])
+@csrf_exempt
+def create_job(request):
+    return JsonResponse({'success': True, 'message': 'Job created'})
+
+
+@require_http_methods(["POST"])
+@csrf_exempt
 def delete_job(request, job_id):
     return JsonResponse({'success': True, 'message': 'Job deleted'})
 
 
 # ============================================
-# Worker API endpoints (placeholder)
+# JOB APPLICATION API ENDPOINTS
 # ============================================
 
-@require_http_methods(["GET"])
-def list_workers(request):
-    return JsonResponse({'workers': []})
+@csrf_exempt
+@require_http_methods(["POST"])
+def apply_for_job(request):
+    if 'worker_id' not in request.session:
+        return JsonResponse({'success': False, 'message': 'Not authenticated'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        worker_id = request.session['worker_id']
+        job_id = data.get('job_id')
+        expected_price = data.get('expected_price')
+        availability = data.get('availability')
+        cover_message = data.get('cover_message', '')
+        
+        if not all([job_id, expected_price, availability]):
+            return JsonResponse({'success': False, 'message': 'Missing required fields'}, status=400)
+        
+        if JobApplication.objects.filter(worker_id=worker_id, job_id=job_id).exists():
+            return JsonResponse({'success': False, 'message': 'You have already applied for this job'}, status=400)
+        
+        application = JobApplication(
+            worker_id=worker_id,
+            job_id=job_id,
+            expected_price=expected_price,
+            availability=availability,
+            cover_message=cover_message,
+            status='pending'
+        )
+        application.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Application submitted successfully!',
+            'application_id': application.id
+        })
+        
+    except Exception as e:
+        logger.error(f"Error applying for job: {str(e)}")
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
-@require_http_methods(["GET"])
-def get_worker_details(request, worker_id):
-    return JsonResponse({'worker': {}})
-
-
-# ============================================
-# Application API endpoints (placeholder)
-# ============================================
 
 @require_http_methods(["GET"])
 def list_applications(request):
     return JsonResponse({'applications': []})
 
+
 @require_http_methods(["POST"])
 def accept_application(request, app_id):
     return JsonResponse({'success': True})
+
 
 @require_http_methods(["POST"])
 def hire_worker(request, app_id):
     return JsonResponse({'success': True})
 
+
 @require_http_methods(["POST"])
 def complete_work(request, app_id):
     return JsonResponse({'success': True})
+
 
 @require_http_methods(["POST"])
 def remove_application(request, app_id):
@@ -726,12 +1394,13 @@ def remove_application(request, app_id):
 
 
 # ============================================
-# Chat API endpoints (placeholder)
+# CHAT API ENDPOINTS
 # ============================================
 
 @require_http_methods(["GET"])
 def get_chat_messages(request, app_id):
     return JsonResponse({'messages': []})
+
 
 @require_http_methods(["POST"])
 def send_chat_message(request, app_id):
@@ -739,16 +1408,18 @@ def send_chat_message(request, app_id):
 
 
 # ============================================
-# Work History API endpoints (placeholder)
+# WORK HISTORY API ENDPOINTS
 # ============================================
 
 @require_http_methods(["GET"])
 def get_work_history(request):
     return JsonResponse({'work_history': []})
 
+
 @require_http_methods(["GET"])
 def get_work_history_details(request, history_id):
     return JsonResponse({'work_history': {}})
+
 
 # ============================================
 # EMAIL OTP VERIFICATION VIEWS
@@ -757,9 +1428,6 @@ def get_work_history_details(request, history_id):
 @csrf_exempt
 @require_http_methods(["POST"])
 def send_email_otp(request):
-    """
-    Send OTP to email for verification
-    """
     try:
         data = json.loads(request.body)
         email = data.get('email')
@@ -770,20 +1438,15 @@ def send_email_otp(request):
                 'message': 'Email is required'
             })
         
-        # Check if email already exists in Employer table
-        if Employer.objects.filter(email=email).exists():
+        if Employer.objects.filter(email=email).exists() or Worker.objects.filter(email=email).exists():
             return JsonResponse({
                 'success': False,
                 'message': 'This email is already registered. Please login or use a different email.'
             })
         
-        # Generate OTP
         otp = EmailOTP.generate_otp()
-        
-        # Save OTP to database
         EmailOTP.objects.create(email=email, otp=otp)
         
-        # Send email
         subject = 'Email Verification OTP - ShramikConnect'
         message = f"""
 Dear User,
@@ -873,7 +1536,6 @@ ShramikConnect Team
 </html>
         """
         
-        # Send email
         send_mail(
             subject,
             message,
@@ -906,9 +1568,6 @@ ShramikConnect Team
 @csrf_exempt
 @require_http_methods(["POST"])
 def verify_email_otp(request):
-    """
-    Verify the OTP entered by user
-    """
     try:
         data = json.loads(request.body)
         email = data.get('email')
@@ -920,7 +1579,6 @@ def verify_email_otp(request):
                 'message': 'Email and OTP are required'
             })
         
-        # Get the latest OTP for this email
         latest_otp = EmailOTP.objects.filter(
             email=email
         ).order_by('-created_at').first()
@@ -949,7 +1607,6 @@ def verify_email_otp(request):
                 'message': 'Invalid OTP. Please try again.'
             })
         
-        # Mark OTP as verified
         latest_otp.is_verified = True
         latest_otp.save()
         
@@ -976,9 +1633,6 @@ def verify_email_otp(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def resend_email_otp(request):
-    """
-    Resend OTP to email
-    """
     try:
         data = json.loads(request.body)
         email = data.get('email')
@@ -989,20 +1643,15 @@ def resend_email_otp(request):
                 'message': 'Email is required'
             })
         
-        # Check if email already exists in Employer table
-        if Employer.objects.filter(email=email).exists():
+        if Employer.objects.filter(email=email).exists() or Worker.objects.filter(email=email).exists():
             return JsonResponse({
                 'success': False,
                 'message': 'This email is already registered. Please login or use a different email.'
             })
         
-        # Generate new OTP
         otp = EmailOTP.generate_otp()
-        
-        # Save new OTP
         EmailOTP.objects.create(email=email, otp=otp)
         
-        # Send email
         subject = 'New OTP for Email Verification - ShramikConnect'
         message = f"""
 Dear User,
@@ -1121,10 +1770,6 @@ ShramikConnect Team
 
 @require_http_methods(["GET"])
 def check_email_exists(request):
-    """
-    Check if email already exists in Employer table
-    Used for real-time validation during signup
-    """
     try:
         email = request.GET.get('email')
         
@@ -1134,7 +1779,7 @@ def check_email_exists(request):
                 'message': 'Email parameter is required'
             }, status=400)
         
-        exists = Employer.objects.filter(email=email).exists()
+        exists = Employer.objects.filter(email=email).exists() or Worker.objects.filter(email=email).exists()
         
         return JsonResponse({
             'success': True,

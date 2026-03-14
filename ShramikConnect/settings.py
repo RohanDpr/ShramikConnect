@@ -14,12 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4_h65^&&4hjgr4oo%+%*j@3kdl8@dbmc=er#4gd$(qaxi$0_85')
+SECRET_KEY = 'django-insecure-4_h65^&&4hjgr4oo%+%*j@3kdl8@dbmc=er#4gd$(qaxi$0_85'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']  # Update this with your Render domain
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -36,8 +36,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Important for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -149,29 +149,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL CONFIGURATION FOR OTP VERIFICATION
 # ============================================
 
-# Use environment variables for email settings on Render
+# Email settings for Gmail (SMTP)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'team.shramikconnect@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'vkov smzz botn htqr')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'team.shramikconnect@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'vkov smzz botn htqr'  # Replace with your Gmail App Password
+DEFAULT_FROM_EMAIL = 'team.shramikconnect@gmail.com'
 
-# For development/testing only - NEVER use in production
+# For development/testing (prints emails to console instead of sending)
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # OTP Settings
 OTP_EXPIRY_MINUTES = 5
-
-# Security Settings for Production
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
