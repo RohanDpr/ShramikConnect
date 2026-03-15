@@ -78,14 +78,6 @@ const termsCards = [
         url: 'terms/employer.html'
     },
     {
-        id: 'payments',
-        icon: 'fa-credit-card',
-        titleKey: 'terms_payments_title',
-        descKey: 'terms_payments_desc',
-        tags: ['payment', 'fees', 'transactions'],
-        url: 'terms/payments.html'
-    },
-    {
         id: 'platform',
         icon: 'fa-cogs',
         titleKey: 'terms_platform_title',
@@ -110,14 +102,6 @@ const termsCards = [
         url: 'terms/termination.html'
     },
     {
-        id: 'privacy',
-        icon: 'fa-shield-alt',
-        titleKey: 'terms_privacy_title',
-        descKey: 'terms_privacy_desc',
-        tags: ['privacy', 'data', 'protection'],
-        url: 'privacy_policy.html'
-    },
-    {
         id: 'liability',
         icon: 'fa-scale-balanced',
         titleKey: 'terms_liability_title',
@@ -132,14 +116,6 @@ const termsCards = [
         descKey: 'terms_dispute_desc',
         tags: ['dispute', 'resolution', 'arbitration'],
         url: 'terms/dispute.html'
-    },
-    {
-        id: 'contact',
-        icon: 'fa-envelope',
-        titleKey: 'terms_contact_title',
-        descKey: 'terms_contact_desc',
-        tags: ['contact', 'support', 'help'],
-        url: 'terms/contact.html'
     }
 ];
 
