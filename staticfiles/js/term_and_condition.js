@@ -1,7 +1,6 @@
 /**
  * TERMS & CONDITIONS PAGE
  * With 3-theme system (light, dark, system) and i18n
- * EXACT CARD DESIGN AS HELP PAGE WITH TAGS
  */
 
 // ============================================
@@ -40,7 +39,7 @@ let previousPage = 'index.html';
 const ALL_THEMES = ["light", "dark", "system"];
 
 // ============================================
-// TERMS CARDS DATA - EXACT SAME STRUCTURE AS HELP PAGE WITH TAGS
+// TERMS CARDS DATA - SIRF 9 CARDS (NO DUPLICATES)
 // ============================================
 const termsCards = [
     {
@@ -124,7 +123,6 @@ const termsCards = [
 // ============================================
 const translations = {
     en: {
-        // Navigation
         'home': 'Home',
         'help': 'Help',
         'about': 'About',
@@ -134,45 +132,34 @@ const translations = {
         'terms_conditions': 'Terms & Conditions',
         'privacy_policy': 'Privacy Policy',
         
-        // Settings
         'language': 'Language',
         'theme': 'Theme',
         'light': 'Light',
         'dark': 'Dark',
         'system': 'System',
         
-        // Header
         'terms_subtitle': 'Welcome to ShramikConnect. By accessing or using our platform, you agree to be bound by these Terms & Conditions. Please take a moment to review them carefully. If you have any questions, feel free to contact our support team.',
         
-        // Card Titles
         'terms_intro_title': 'Introduction',
         'terms_eligibility_title': 'User Eligibility',
         'terms_worker_title': 'Worker Terms',
         'terms_employer_title': 'Employer Terms',
-        'terms_payments_title': 'Payments',
         'terms_platform_title': 'Platform Responsibilities',
         'terms_conduct_title': 'User Conduct',
         'terms_termination_title': 'Termination',
-        'terms_privacy_title': 'Privacy Reference',
         'terms_liability_title': 'Limitation of Liability',
         'terms_dispute_title': 'Dispute Resolution',
-        'terms_contact_title': 'Contact Information',
         
-        // Card Descriptions
         'terms_intro_desc': 'Overview of ShramikConnect platform and agreement',
         'terms_eligibility_desc': 'Age requirements and legal eligibility to use the platform',
         'terms_worker_desc': 'Responsibilities and obligations for workers',
         'terms_employer_desc': 'Responsibilities and obligations for employers',
-        'terms_payments_desc': 'Rules regarding payments, fees, and transactions',
         'terms_platform_desc': 'What ShramikConnect provides and our role',
         'terms_conduct_desc': 'Prohibited actions and acceptable behavior',
         'terms_termination_desc': 'Account suspension and termination policies',
-        'terms_privacy_desc': 'How we handle your data - Read our Privacy Policy',
         'terms_liability_desc': 'Limits of our legal responsibility',
         'terms_dispute_desc': 'How disputes are resolved',
-        'terms_contact_desc': 'How to reach us for support',
         
-        // Tags
         'tag_intro': 'intro',
         'tag_overview': 'overview',
         'tag_age': 'age',
@@ -183,9 +170,6 @@ const translations = {
         'tag_obligations': 'obligations',
         'tag_employer': 'employer',
         'tag_hiring': 'hiring',
-        'tag_payment': 'payment',
-        'tag_fees': 'fees',
-        'tag_transactions': 'transactions',
         'tag_platform': 'platform',
         'tag_role': 'role',
         'tag_conduct': 'conduct',
@@ -194,19 +178,12 @@ const translations = {
         'tag_termination': 'termination',
         'tag_suspension': 'suspension',
         'tag_account': 'account',
-        'tag_privacy': 'privacy',
-        'tag_data': 'data',
-        'tag_protection': 'protection',
         'tag_liability': 'liability',
         'tag_limitation': 'limitation',
         'tag_dispute': 'dispute',
         'tag_resolution': 'resolution',
         'tag_arbitration': 'arbitration',
-        'tag_contact': 'contact',
-        'tag_support': 'support',
-        'tag_help': 'help',
         
-        // Footer
         'tagline': 'Connecting hands to work',
         'copyright': '© 2025 ShramikConnect. All rights reserved.',
         'privacy': 'Privacy Policy',
@@ -234,29 +211,22 @@ const translations = {
         'terms_eligibility_title': 'उपयोगकर्ता पात्रता',
         'terms_worker_title': 'कर्मचारी नियम',
         'terms_employer_title': 'नियोक्ता नियम',
-        'terms_payments_title': 'भुगतान',
         'terms_platform_title': 'प्लेटफॉर्म जिम्मेदारियां',
         'terms_conduct_title': 'उपयोगकर्ता आचरण',
         'terms_termination_title': 'समाप्ति',
-        'terms_privacy_title': 'गोपनीयता संदर्भ',
         'terms_liability_title': 'देयता की सीमा',
         'terms_dispute_title': 'विवाद समाधान',
-        'terms_contact_title': 'संपर्क जानकारी',
         
         'terms_intro_desc': 'श्रमिककनेक्ट प्लेटफॉर्म और समझौते का अवलोकन',
         'terms_eligibility_desc': 'आयु आवश्यकताएं और प्लेटफॉर्म का उपयोग करने की कानूनी पात्रता',
         'terms_worker_desc': 'कर्मचारियों के लिए जिम्मेदारियां और दायित्व',
         'terms_employer_desc': 'नियोक्ताओं के लिए जिम्मेदारियां और दायित्व',
-        'terms_payments_desc': 'भुगतान, शुल्क और लेनदेन के बारे में नियम',
         'terms_platform_desc': 'श्रमिककनेक्ट क्या प्रदान करता है और हमारी भूमिका',
         'terms_conduct_desc': 'निषिद्ध कार्य और स्वीकार्य व्यवहार',
         'terms_termination_desc': 'खाता निलंबन और समाप्ति नीतियां',
-        'terms_privacy_desc': 'हम आपके डेटा को कैसे संभालते हैं - हमारी गोपनीयता नीति पढ़ें',
         'terms_liability_desc': 'हमारी कानूनी जिम्मेदारी की सीमाएं',
         'terms_dispute_desc': 'विवाद कैसे हल किए जाते हैं',
-        'terms_contact_desc': 'समर्थन के लिए हमसे कैसे संपर्क करें',
         
-        // Tags (simplified Hindi)
         'tag_intro': 'परिचय',
         'tag_overview': 'अवलोकन',
         'tag_age': 'आयु',
@@ -267,9 +237,6 @@ const translations = {
         'tag_obligations': 'दायित्व',
         'tag_employer': 'नियोक्ता',
         'tag_hiring': 'नियुक्ति',
-        'tag_payment': 'भुगतान',
-        'tag_fees': 'शुल्क',
-        'tag_transactions': 'लेनदेन',
         'tag_platform': 'प्लेटफॉर्म',
         'tag_role': 'भूमिका',
         'tag_conduct': 'आचरण',
@@ -278,17 +245,11 @@ const translations = {
         'tag_termination': 'समाप्ति',
         'tag_suspension': 'निलंबन',
         'tag_account': 'खाता',
-        'tag_privacy': 'गोपनीयता',
-        'tag_data': 'डेटा',
-        'tag_protection': 'सुरक्षा',
         'tag_liability': 'देयता',
         'tag_limitation': 'सीमा',
         'tag_dispute': 'विवाद',
         'tag_resolution': 'समाधान',
         'tag_arbitration': 'मध्यस्थता',
-        'tag_contact': 'संपर्क',
-        'tag_support': 'समर्थन',
-        'tag_help': 'सहायता',
         
         'tagline': 'काम करने के लिए हाथ जोड़ना',
         'copyright': '© 2025 श्रमिककनेक्ट। सर्वाधिकार सुरक्षित।'
@@ -315,29 +276,22 @@ const translations = {
         'terms_eligibility_title': 'वापरकर्ता पात्रता',
         'terms_worker_title': 'कामगार नियम',
         'terms_employer_title': 'नियोक्ता नियम',
-        'terms_payments_title': 'देयके',
         'terms_platform_title': 'प्लॅटफॉर्म जबाबदाऱ्या',
         'terms_conduct_title': 'वापरकर्ता आचरण',
         'terms_termination_title': 'समाप्ती',
-        'terms_privacy_title': 'गोपनीयता संदर्भ',
         'terms_liability_title': 'दायित्व मर्यादा',
         'terms_dispute_title': 'वाद निराकरण',
-        'terms_contact_title': 'संपर्क माहिती',
         
         'terms_intro_desc': 'श्रमिककनेक्ट प्लॅटफॉर्म आणि कराराचे विहंगावलोकन',
         'terms_eligibility_desc': 'वय आवश्यकता आणि प्लॅटफॉर्म वापरण्याची कायदेशीर पात्रता',
         'terms_worker_desc': 'कामगारांसाठी जबाबदाऱ्या आणि दायित्वे',
         'terms_employer_desc': 'नियोक्त्यांसाठी जबाबदाऱ्या आणि दायित्वे',
-        'terms_payments_desc': 'देयके, शुल्क आणि व्यवहारांबद्दल नियम',
         'terms_platform_desc': 'श्रमिककनेक्ट काय प्रदान करते आणि आमची भूमिका',
         'terms_conduct_desc': 'प्रतिबंधित कृती आणि स्वीकार्य वर्तन',
         'terms_termination_desc': 'खाते निलंबन आणि समाप्ती धोरणे',
-        'terms_privacy_desc': 'आम्ही तुमचा डेटा कसा हाताळतो - आमचे गोपनीयता धोरण वाचा',
         'terms_liability_desc': 'आमच्या कायदेशीर जबाबदारीच्या मर्यादा',
         'terms_dispute_desc': 'वाद कसे सोडवले जातात',
-        'terms_contact_desc': 'समर्थनासाठी आमच्याशी कसे संपर्क साधावा',
         
-        // Tags (simplified Marathi)
         'tag_intro': 'प्रस्तावना',
         'tag_overview': 'विहंगावलोकन',
         'tag_age': 'वय',
@@ -348,9 +302,6 @@ const translations = {
         'tag_obligations': 'दायित्वे',
         'tag_employer': 'नियोक्ता',
         'tag_hiring': 'नियुक्ती',
-        'tag_payment': 'देयक',
-        'tag_fees': 'शुल्क',
-        'tag_transactions': 'व्यवहार',
         'tag_platform': 'प्लॅटफॉर्म',
         'tag_role': 'भूमिका',
         'tag_conduct': 'आचरण',
@@ -359,17 +310,11 @@ const translations = {
         'tag_termination': 'समाप्ती',
         'tag_suspension': 'निलंबन',
         'tag_account': 'खाते',
-        'tag_privacy': 'गोपनीयता',
-        'tag_data': 'डेटा',
-        'tag_protection': 'संरक्षण',
         'tag_liability': 'दायित्व',
         'tag_limitation': 'मर्यादा',
         'tag_dispute': 'वाद',
         'tag_resolution': 'निराकरण',
         'tag_arbitration': 'मध्यस्थता',
-        'tag_contact': 'संपर्क',
-        'tag_support': 'समर्थन',
-        'tag_help': 'मदत',
         
         'tagline': 'कामासाठी हात जोडणे',
         'copyright': '© 2025 श्रमिककनेक्ट. सर्व हक्क राखीव.'
@@ -398,7 +343,6 @@ function applyLanguage(lang) {
         }
     });
     
-    // Refresh cards
     refreshCards();
 }
 
@@ -506,7 +450,7 @@ function setupNavigation() {
 }
 
 // ============================================
-// TERMS CARDS CREATION - EXACT SAME AS HELP PAGE WITH TAGS
+// TERMS CARDS CREATION
 // ============================================
 
 function createTermsCards() {
@@ -523,7 +467,6 @@ function createTermsCards() {
             cardElement.classList.add('special');
         }
         
-        // Generate tags HTML
         const tagsHTML = card.tags.map(tag => 
             `<span class="tag" data-i18n="tag_${tag}">${translation[`tag_${tag}`] || tag}</span>`
         ).join('');
@@ -561,26 +504,21 @@ function handleCardClick(url) {
 // ============================================
 
 function setupEventListeners() {
-    // Sidebar
     hamburgerBtn.addEventListener('click', toggleSidebar);
     sidebarOverlay.addEventListener('click', closeSidebar);
     sidebarClose.addEventListener('click', closeSidebar);
     
-    // Settings
     sidebarSettingsIcon.addEventListener('click', toggleSettingsDropdown);
     document.addEventListener('click', closeSettingsOnClickOutside);
     
-    // Language
     languageOptions.forEach(btn => {
         btn.addEventListener('click', () => handleLanguageChange(btn.dataset.lang));
     });
     
-    // Theme
     themeOptions.forEach(btn => {
         btn.addEventListener('click', () => handleThemeChange(btn.dataset.theme));
     });
     
-    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSidebar();
@@ -588,7 +526,6 @@ function setupEventListeners() {
         }
     });
     
-    // Window resize
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
             closeSidebar();
@@ -601,36 +538,20 @@ function setupEventListeners() {
 // ============================================
 
 function init() {
-    console.log('Terms & Conditions Page Initialized with Tags');
+    console.log('Terms & Conditions Page Initialized');
     
-    // Save current page as previous for home navigation
     const currentPage = window.location.pathname.split('/').pop();
     if (currentPage !== 'term_and_condition.html') {
         localStorage.setItem('previousPage', currentPage);
     }
     
-    // Load preferences
     const savedLanguage = localStorage.getItem('helpLanguage') || 'en';
-    
-    // Apply language
     handleLanguageChange(savedLanguage);
-    
-    // Apply theme
     initTheme();
-    
-    // Setup navigation
     setupNavigation();
-    
-    // Create terms cards with tags
     createTermsCards();
-    
-    // Setup event listeners
     setupEventListeners();
 }
-
-// ============================================
-// START APPLICATION
-// ============================================
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
