@@ -8,7 +8,11 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
+<<<<<<< HEAD
 set "VIRTUAL_ENV=E:\Doraemon\ShramikConnect\venv"
+=======
+set VIRTUAL_ENV=D:\CAP_PROJECT\ShramikConnect\venv
+>>>>>>> c24263cd4b6e803d45dc9073009e709607a34375
 
 if not defined PROMPT set PROMPT=$P$G
 
@@ -24,8 +28,13 @@ set PYTHONHOME=
 if defined _OLD_VIRTUAL_PATH set PATH=%_OLD_VIRTUAL_PATH%
 if not defined _OLD_VIRTUAL_PATH set _OLD_VIRTUAL_PATH=%PATH%
 
+<<<<<<< HEAD
 set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
 set "VIRTUAL_ENV_PROMPT=(venv) "
+=======
+set PATH=%VIRTUAL_ENV%\Scripts;%PATH%
+set VIRTUAL_ENV_PROMPT=(venv) 
+>>>>>>> c24263cd4b6e803d45dc9073009e709607a34375
 
 :END
 if defined _OLD_CODEPAGE (
