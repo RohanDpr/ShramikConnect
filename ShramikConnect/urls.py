@@ -20,17 +20,27 @@ urlpatterns = [
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('about/', views.about, name='about'),
     path('term_and_condition/', views.term_and_condition, name='term_and_condition'),
-    path('login_worker/', views.login_worker),
+    
+    # EMPLOYER URLs
     path('login_employer/', views.login_employer, name='login_employer'),
     path('logout_employer/', views.logout_employer, name='logout_employer'),
-    path('signup_worker/', views.signup_worker),
     path('signup_employer/', views.signup_employer, name='signup_employer'),
+    path('dashboard_employer/', views.dashboard_employer, name='dashboard_employer'),
+    
+    # WORKER URLs - ADD THESE
+    path('login_worker/', views.login_worker, name='login_worker'),
+    path('logout_worker/', views.logout_worker, name='logout_worker'),
+    path('signup_worker/', views.signup_worker, name='signup_worker'),
+    path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
+    
+    # Password management (keep existing)
     path('choose_password_worker/', views.choose_password_worker),
     path('change_password_worker/', views.change_password_worker),
     path('get_password_worker/', views.get_password_worker),
     path('choose_password_employer/', views.choose_password_employer),
     path('change_password_employer/', views.change_password_employer),
     path('get_password_employer/', views.get_password_employer),
+#=======
     path('dashboard_employer/', views.dashboard_employer, name='dashboard_employer'),
     path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
      path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
@@ -42,15 +52,25 @@ urlpatterns = [
       path('how-platform-works/', views.how_platform_works, name='how_platform_works'),
       path('login-card/', views.login_card, name='login_card'),
      
+#>>>>>>> e445699bb61f6aecb3aff6115502029337c55011
     
-    # API endpoints
+    # API endpoints - Employer
     path('api/employer/check-exists/', views.check_employer_exists, name='check_employer_exists'),
     path('api/employer/<int:employer_id>/', views.get_employer_details, name='get_employer_details'),
     path('api/employers/', views.list_employers, name='list_employers'),
     
-    # ============================================
-    # EMAIL OTP VERIFICATION API ENDPOINTS
-    # ============================================
+    # API endpoints - Worker - ADD THESE
+    path('api/worker/check-exists/', views.check_worker_exists, name='check_worker_exists'),
+    path('api/worker/<int:worker_id>/', views.get_worker_details, name='get_worker_details'),
+    path('api/workers/', views.list_workers, name='list_workers'),
+    path('api/worker/dashboard-data/', views.get_worker_dashboard_data, name='get_worker_dashboard_data'),
+    
+    # Job Application APIs - ADD THESE
+    path('api/jobs/', views.list_jobs, name='list_jobs'),
+    path('api/job/<int:job_id>/', views.get_job_details, name='get_job_details'),
+    path('api/apply-job/', views.apply_for_job, name='apply_for_job'),
+    
+    # Email OTP verification (keep existing)
     path('api/send-email-otp/', views.send_email_otp, name='send_email_otp'),
     path('api/verify-email-otp/', views.verify_email_otp, name='verify_email_otp'),
     path('api/resend-email-otp/', views.resend_email_otp, name='resend_email_otp'),
