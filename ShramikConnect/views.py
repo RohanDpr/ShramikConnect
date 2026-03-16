@@ -13,6 +13,8 @@ import math
 from datetime import datetime
 from core.models import Employer, Worker, EmailOTP, Job, JobApplication, WorkHistory
 import logging
+import sendgrid
+from sendgrid.helpers.mail import Mail
 
 logger = logging.getLogger(__name__)
 
@@ -1567,17 +1569,19 @@ ShramikConnect Team
 </html>
         """
         
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-            fail_silently=False,
-            html_message=html_message
-        )
-        
-        logger.info(f"OTP sent to email: {email}")
-        
+        sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        mail_data = {
+            "personalizations": [{"to": [{"email": email}]}],
+            "from": {"email": settings.DEFAULT_FROM_EMAIL},
+            "subject": subject,
+            "content": [
+                {"type": "text/plain", "value": message},
+                {"type": "text/html", "value": html_message}
+            ]
+        }
+        response = sg.client.mail.send.post(request_body=mail_data)
+        logger.info(f"SendGrid response: {response.status_code}")
+
         return JsonResponse({
             'success': True,
             'message': 'OTP sent successfully to your email'
@@ -1770,17 +1774,19 @@ ShramikConnect Team
 </html>
         """
         
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-            fail_silently=False,
-            html_message=html_message
-        )
-        
-        logger.info(f"OTP resent to email: {email}")
-        
+        sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        mail_data = {
+            "personalizations": [{"to": [{"email": email}]}],
+            "from": {"email": settings.DEFAULT_FROM_EMAIL},
+            "subject": subject,
+            "content": [
+                {"type": "text/plain", "value": message},
+                {"type": "text/html", "value": html_message}
+            ]
+        }
+        response = sg.client.mail.send.post(request_body=mail_data)
+        logger.info(f"SendGrid response: {response.status_code}")
+
         return JsonResponse({
             'success': True,
             'message': 'New OTP sent successfully to your email'
