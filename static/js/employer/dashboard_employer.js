@@ -1,7 +1,25 @@
 /**
  * ShramikConnect - Enhanced Employer Dashboard
- * Merging functionality with modern design
+ * Complete working version with all APIs integrated
  */
+
+// ============================================
+// CSRF TOKEN HELPER
+// ============================================
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 // ============================================
 // INTERNATIONALIZATION (i18n)
@@ -58,6 +76,10 @@ const i18n = {
             money: "Money (₹)",
             tools_available: "Tools available with employer",
             submit_job: "Submit Job",
+            total_applications: "Total Applications",
+            pending: "Pending",
+            accepted: "Accepted",
+            hired: "Hired",
             
             // Filters
             sort_by: "Sort By",
@@ -130,18 +152,55 @@ const i18n = {
             // Footer
             privacy: "Privacy Policy",
             terms: "Terms & Conditions",
-            help: "Help & Contact",
-            about: "About Us",
+            help_contact: "Help & Contact",
+            about_us: "About Us",
             
             // Logo
             shramik: "Shramik",
             connect: "Connect",
             
             tagline: "Connecting hands to work",
-            copyright: "© 2025 ShramikConnect. All rights reserved."
+            copyright: "© 2025 ShramikConnect. All rights reserved.",
+            
+            // Application Status
+            status_pending: "Pending",
+            status_accepted: "Accepted",
+            status_rejected: "Rejected",
+            status_hired: "Hired",
+            status_completed: "Completed",
+            
+            // Buttons
+            accept: "Accept",
+            reject: "Reject",
+            hire: "Hire",
+            chat: "Chat",
+            view_profile: "View Profile",
+            mark_complete: "Mark Complete",
+            delete: "Delete",
+            
+            // Messages
+            no_jobs: "No Jobs Posted Yet",
+            no_jobs_desc: "Start by posting your first job to find workers",
+            post_first_job: "Post Your First Job",
+            no_workers: "No Workers Found",
+            no_workers_desc: "Try adjusting your search criteria",
+            no_hired_workers: "No Hired Workers Yet",
+            no_hired_workers_desc: "Hire workers from your accepted applicants",
+            no_work_history: "No Work History Yet",
+            no_work_history_desc: "Complete jobs to build your work history",
+            no_pending: "No Pending Applications",
+            no_pending_desc: "Workers who apply for your jobs will appear here",
+            pending_applications: "Pending Applications",
+            accept: "Accept",
+            skills: "Skills",
+            profession: "Profession",
+            expected_price: "Expected Price",
+            availability: "Availability",
+            cover_message: "Cover Message",
+            applied_date: "Applied Date",
+            view: "View"
         },
         hi: {
-            // Hindi translations (same as before)
             menu: "मेनू",
             settings: "सेटिंग्स",
             dashboard: "डैशबोर्ड",
@@ -184,6 +243,10 @@ const i18n = {
             money: "पैसा (₹)",
             tools_available: "नियोक्ता के पास उपकरण उपलब्ध हैं",
             submit_job: "नौकरी सबमिट करें",
+            total_applications: "कुल आवेदन",
+            pending: "लंबित",
+            accepted: "स्वीकृत",
+            hired: "किराए पर",
             distance: "दूरी",
             name: "नाम",
             price: "मूल्य",
@@ -210,8 +273,7 @@ const i18n = {
             yes: "हाँ",
             no: "नहीं",
             ai_ready: "सर्वश्रेष्ठ कर्मचारी खोजने में आपकी सहायता के लिए तैयार",
-            ai_welcome: "नमस्ते! मैं आपका एआई सहायक हूं। मैं आपकी नौकरी पोस्ट के लिए सर्वश्रेष्ठ कर्मचारी खोजने में आपकी मदद कर सकता हूं।",
-            ai_welcome_full: "नमस्ते! मैं आपका एआई सहायक हूं। मैं आपकी नौकरी पोस्ट के लिए सर्वश्रेष्ठ कर्मचारी खोजने में आपकी मदद कर सकता हूं। मुझसे पूछें: \"इस नौकरी के लिए सर्वश्रेष्ठ कर्मचारी खोजें\" या बताएं कि आप क्या ढूंढ रहे हैं।",
+            ai_welcome_full: "नमस्ते! मैं आपका एआई सहायक हूं। मैं आपकी नौकरी पोस्ट के लिए सर्वश्रेष्ठ कर्मचारी खोजने में आपकी मदद कर सकता हूं।",
             find_best_worker: "इस नौकरी के लिए सर्वश्रेष्ठ कर्मचारी खोजें",
             show_plumbing_workers: "मुझे प्लंबिंग कौशल वाले कर्मचारी दिखाएं",
             find_near_workers: "मेरे स्थान के पास कर्मचारी खोजें",
@@ -223,15 +285,39 @@ const i18n = {
             rating_given: "दी गई रेटिंग",
             payment: "भुगतान",
             actions: "कार्रवाई",
-            privacy: "गोपनीयता नीति",
-            terms: "नियम और शर्तें",
-            shramik: "श्रमिक",
-            connect: "कनेक्ट",
-            tagline: "काम से हाथ जोड़ना",
-            copyright: "© 2025 श्रमिककनेक्ट। सर्वाधिकार सुरक्षित।"
+            status_pending: "लंबित",
+            status_accepted: "स्वीकृत",
+            status_rejected: "अस्वीकृत",
+            status_hired: "किराए पर",
+            status_completed: "पूर्ण",
+            accept: "स्वीकार करें",
+            reject: "अस्वीकार करें",
+            hire: "किराए पर लें",
+            chat: "चैट",
+            view_profile: "प्रोफाइल देखें",
+            mark_complete: "पूर्ण चिह्नित करें",
+            delete: "हटाएं",
+            no_jobs: "अभी तक कोई नौकरी पोस्ट नहीं",
+            no_jobs_desc: "श्रमिकों को खोजने के लिए अपनी पहली नौकरी पोस्ट करें",
+            post_first_job: "अपनी पहली नौकरी पोस्ट करें",
+            no_workers: "कोई कर्मचारी नहीं मिला",
+            no_workers_desc: "अपने खोज मानदंड समायोजित करें",
+            no_hired_workers: "अभी तक कोई किराए पर कर्मचारी नहीं",
+            no_hired_workers_desc: "अपने स्वीकृत आवेदकों से कर्मचारियों को किराए पर लें",
+            no_work_history: "अभी तक कोई कार्य इतिहास नहीं",
+            no_work_history_desc: "अपना कार्य इतिहास बनाने के लिए नौकरियां पूरी करें",
+            no_pending: "कोई लंबित आवेदन नहीं",
+            no_pending_desc: "आपकी नौकरियों के लिए आवेदन करने वाले कर्मचारी यहां दिखेंगे",
+            pending_applications: "लंबित आवेदन",
+            skills: "कौशल",
+            profession: "पेशा",
+            expected_price: "अपेक्षित मूल्य",
+            availability: "उपलब्धता",
+            cover_message: "कवर संदेश",
+            applied_date: "आवेदन तिथि",
+            view: "देखें"
         },
         mr: {
-            // Marathi translations
             menu: "मेनू",
             settings: "सेटिंग्ज",
             dashboard: "डॅशबोर्ड",
@@ -274,6 +360,10 @@ const i18n = {
             money: "पैसा (₹)",
             tools_available: "नियोक्त्याकडे साधने उपलब्ध आहेत",
             submit_job: "नोकरी सबमिट करा",
+            total_applications: "एकूण अर्ज",
+            pending: "प्रलंबित",
+            accepted: "स्वीकृत",
+            hired: "भाड्याने",
             distance: "अंतर",
             name: "नाव",
             price: "किंमत",
@@ -300,8 +390,7 @@ const i18n = {
             yes: "होय",
             no: "नाही",
             ai_ready: "सर्वोत्तम कामगार शोधण्यात मदत करण्यासाठी तयार",
-            ai_welcome: "नमस्कार! मी तुमचा AI सहाय्यक आहे. मी तुमच्या नोकरी पोस्टसाठी सर्वोत्तम कामगार शोधण्यात तुमची मदत करू शकतो.",
-            ai_welcome_full: "नमस्कार! मी तुमचा AI सहाय्यक आहे. मी तुमच्या नोकरी पोस्टसाठी सर्वोत्तम कामगार शोधण्यात तुमची मदत करू शकतो. मला विचारा: \"या नोकरीसाठी सर्वोत्तम कामगार शोधा\" किंवा तुम्ही काय शोधत आहात ते सांगा.",
+            ai_welcome_full: "नमस्कार! मी तुमचा AI सहाय्यक आहे. मी तुमच्या नोकरी पोस्टसाठी सर्वोत्तम कामगार शोधण्यात तुमची मदत करू शकतो.",
             find_best_worker: "या नोकरीसाठी सर्वोत्तम कामगार शोधा",
             show_plumbing_workers: "मला प्लंबिंग कौशल्ये असलेले कामगार दाखवा",
             find_near_workers: "माझ्या स्थानाजवळ कामगार शोधा",
@@ -313,12 +402,37 @@ const i18n = {
             rating_given: "दिलेली रेटिंग",
             payment: "पेमेंट",
             actions: "क्रिया",
-            privacy: "गोपनीयता धोरण",
-            terms: "सेवा अटी",
-            shramik: "श्रमिक",
-            connect: "कनेक्ट",
-            tagline: "कामाशी हात जोडणे",
-            copyright: "© 2025 श्रमिककनेक्ट। सर्व हक्क राखीव."
+            status_pending: "प्रलंबित",
+            status_accepted: "स्वीकृत",
+            status_rejected: "नकारले",
+            status_hired: "भाड्याने",
+            status_completed: "पूर्ण",
+            accept: "स्वीकारा",
+            reject: "नकार द्या",
+            hire: "भाड्याने घ्या",
+            chat: "चॅट",
+            view_profile: "प्रोफाइल पहा",
+            mark_complete: "पूर्ण चिन्हांकित करा",
+            delete: "हटवा",
+            no_jobs: "अद्याप कोणतीही नोकरी पोस्ट केलेली नाही",
+            no_jobs_desc: "कामगार शोधण्यासाठी तुमची पहिली नोकरी पोस्ट करा",
+            post_first_job: "तुमची पहिली नोकरी पोस्ट करा",
+            no_workers: "कोणतेही कामगार सापडले नाहीत",
+            no_workers_desc: "तुमचे शोध निकष समायोजित करा",
+            no_hired_workers: "अद्याप कोणतेही भाड्याने कामगार नाहीत",
+            no_hired_workers_desc: "तुमच्या स्वीकृत अर्जदारांकडून कामगार भाड्याने घ्या",
+            no_work_history: "अद्याप कोणताही कामाचा इतिहास नाही",
+            no_work_history_desc: "तुमचा कामाचा इतिहास तयार करण्यासाठी नोकऱ्या पूर्ण करा",
+            no_pending: "कोणतेही प्रलंबित अर्ज नाहीत",
+            no_pending_desc: "तुमच्या नोकऱ्यांसाठी अर्ज करणारे कामगार येथे दिसतील",
+            pending_applications: "प्रलंबित अर्ज",
+            skills: "कौशल्ये",
+            profession: "व्यवसाय",
+            expected_price: "अपेक्षित किंमत",
+            availability: "उपलब्धता",
+            cover_message: "कव्हर संदेश",
+            applied_date: "अर्ज तारीख",
+            view: "पहा"
         },
     },
     
@@ -510,24 +624,25 @@ const DOM = {
 // Application State
 // ============================================
 const state = {
-    currentWorkerId: null,
+    currentApplicationId: null,
     currentJobId: null,
     currentChatWorker: null,
     currentSection: 'dashboard',
     pendingDeleteJobId: null,
     pendingRemoveWorkerId: null,
-    pendingCompleteWorkerId: null,
+    pendingCompleteApplicationId: null,
     map: null,
     marker: null,
     jobs: [],
-    acceptedWorkers: [],
-    hiredWorkers: [],
+    pendingApplications: [],
+    applications: [], // All applications for employer's jobs
+    acceptedWorkers: [], // Applications with status 'accepted'
+    hiredWorkers: [], // Applications with status 'hired'
     workHistory: [],
-    // Updated filter structure for nested filters
     filters: {
         search: '',
-        activeSorts: {}, // Stores active sort for each filter type
-        activeFilterType: null // Currently open filter type
+        activeSorts: {},
+        activeFilterType: null
     },
     historyFilters: {
         search: '',
@@ -541,256 +656,25 @@ const state = {
 };
 
 // ============================================
-// Mock Data (Fallback)
-// ============================================
-const mockData = {
-    jobs: [
-        {
-            id: 1,
-            employerName: "Rajesh Sharma",
-            workAddress: "Bandra West, Mumbai",
-            latitude: 19.0596,
-            longitude: 72.8295,
-            title: "Electrician for House Wiring",
-            workType: "Electrical Wiring",
-            description: "Need an experienced electrician for complete house wiring in a 3BHK apartment.",
-            skills: ["Electrical Wiring", "Circuit Repair", "Safety Standards"],
-            location: "Mumbai, Andheri West",
-            pay: 15000,
-            time: 40,
-            toolsAvailable: true,
-            status: "open",
-            postedDate: "2023-10-15"
-        },
-        {
-            id: 2,
-            employerName: "Rajesh Sharma",
-            workAddress: "Kothrud, Pune",
-            latitude: 18.5074,
-            longitude: 73.8077,
-            title: "Plumber for Bathroom Renovation",
-            workType: "Plumbing",
-            description: "Plumbing work for bathroom renovation including pipe fitting and fixture installation.",
-            skills: ["Pipe Fitting", "Fixture Installation", "Leak Repair"],
-            location: "Pune, Kothrud",
-            pay: 8000,
-            time: 24,
-            toolsAvailable: false,
-            status: "in-progress",
-            postedDate: "2023-10-10"
-        },
-        {
-            id: 3,
-            employerName: "Rajesh Sharma",
-            workAddress: "Rohini, Delhi",
-            latitude: 28.7433,
-            longitude: 77.0679,
-            title: "Carpenter for Furniture Making",
-            workType: "Carpentry",
-            description: "Skilled carpenter needed for custom furniture making including wardrobes and beds.",
-            skills: ["Woodworking", "Furniture Making", "Measurement"],
-            location: "Delhi, Rohini",
-            pay: 12000,
-            time: 48,
-            toolsAvailable: true,
-            status: "completed",
-            postedDate: "2023-09-25"
-        }
-    ],
-    
-    acceptedWorkers: [
-        {
-            id: 1,
-            name: "Ramesh Kumar",
-            photo: "https://randomuser.me/api/portraits/men/1.jpg",
-            age: 32,
-            gender: "Male",
-            skills: ["Electrical Wiring", "Circuit Repair", "Maintenance"],
-            address: "Andheri West, Mumbai",
-            distance: 2.5,
-            rating: 4.5,
-            expectedPrice: 14000,
-            jobAcceptanceTime: "2023-10-16T09:30:00",
-            jobId: 1,
-            negotiatedPrice: null,
-            negotiatedTime: null
-        },
-        {
-            id: 2,
-            name: "Suresh Patel",
-            photo: "https://randomuser.me/api/portraits/men/2.jpg",
-            age: 28,
-            gender: "Male",
-            skills: ["Electrical Work", "Installation", "Troubleshooting"],
-            address: "Bandra, Mumbai",
-            distance: 5.2,
-            rating: 4.2,
-            expectedPrice: 14500,
-            jobAcceptanceTime: "2023-10-16T10:15:00",
-            jobId: 1,
-            negotiatedPrice: null,
-            negotiatedTime: null
-        },
-        {
-            id: 3,
-            name: "Arun Singh",
-            photo: "https://randomuser.me/api/portraits/men/3.jpg",
-            age: 35,
-            gender: "Male",
-            skills: ["Pipe Fitting", "Leak Repair", "Bathroom Plumbing"],
-            address: "Kothrud, Pune",
-            distance: 1.8,
-            rating: 4.7,
-            expectedPrice: 7500,
-            jobAcceptanceTime: "2023-10-11T14:20:00",
-            jobId: 2,
-            negotiatedPrice: null,
-            negotiatedTime: null
-        },
-        {
-            id: 4,
-            name: "Vikram Joshi",
-            photo: "https://randomuser.me/api/portraits/men/4.jpg",
-            age: 40,
-            gender: "Male",
-            skills: ["Woodworking", "Furniture Making", "Carpentry"],
-            address: "Rohini, Delhi",
-            distance: 3.5,
-            rating: 4.8,
-            expectedPrice: 11500,
-            jobAcceptanceTime: "2023-09-26T11:45:00",
-            jobId: 3,
-            negotiatedPrice: null,
-            negotiatedTime: null
-        },
-        {
-            id: 5,
-            name: "Priya Sharma",
-            photo: "https://randomuser.me/api/portraits/women/1.jpg",
-            age: 29,
-            gender: "Female",
-            skills: ["Electrical Maintenance", "Wiring", "Safety Checks"],
-            address: "Malad, Mumbai",
-            distance: 7.3,
-            rating: 4.3,
-            expectedPrice: 13500,
-            jobAcceptanceTime: "2023-10-17T08:15:00",
-            jobId: 1,
-            negotiatedPrice: null,
-            negotiatedTime: null
-        }
-    ],
-    
-    hiredWorkers: [
-        {
-            id: 6,
-            name: "Ajay Verma",
-            photo: "https://randomuser.me/api/portraits/men/5.jpg",
-            age: 38,
-            gender: "Male",
-            skills: ["Advanced Plumbing", "Pipe Installation", "Water System"],
-            address: "Hadapsar, Pune",
-            distance: 4.2,
-            rating: 4.9,
-            expectedPrice: 8500,
-            jobAcceptanceTime: "2023-10-05T09:00:00",
-            jobId: 2,
-            hiredDate: "2023-10-06",
-            status: "in-progress"
-        },
-        {
-            id: 7,
-            name: "Deepak Gupta",
-            photo: "https://randomuser.me/api/portraits/men/6.jpg",
-            age: 45,
-            gender: "Male",
-            skills: ["Carpentry", "Furniture Repair", "Wood Finishing"],
-            address: "Dwarka, Delhi",
-            distance: 6.1,
-            rating: 4.6,
-            expectedPrice: 12500,
-            jobAcceptanceTime: "2023-09-20T10:30:00",
-            jobId: 3,
-            hiredDate: "2023-09-21",
-            status: "completed"
-        }
-    ],
-    
-    workHistory: [
-        {
-            id: 101,
-            workerId: 7,
-            workerName: "Deepak Gupta",
-            workerPhoto: "https://randomuser.me/api/portraits/men/6.jpg",
-            employerName: "Rajesh Sharma",
-            jobId: 3,
-            jobTitle: "Carpenter for Furniture Making",
-            workAddress: "Rohini, Delhi",
-            completionDate: "2023-10-10",
-            rating: 5,
-            payment: 12500,
-            feedback: "Excellent work, very professional. Completed the furniture making ahead of schedule with great attention to detail.",
-            workType: "Carpentry",
-            toolsAvailable: true,
-            jobDescription: "Skilled carpenter needed for custom furniture making including wardrobes and beds.",
-            requiredSkills: ["Woodworking", "Furniture Making", "Measurement"],
-            workTime: 48,
-            jobLocation: "Delhi, Rohini"
-        },
-        {
-            id: 102,
-            workerId: 8,
-            workerName: "Mohammed Ali",
-            workerPhoto: "https://randomuser.me/api/portraits/men/7.jpg",
-            employerName: "Rajesh Sharma",
-            jobId: 4,
-            jobTitle: "Painter for House Interior",
-            workAddress: "Andheri East, Mumbai",
-            completionDate: "2023-09-15",
-            rating: 4,
-            payment: 9000,
-            feedback: "Good quality work, timely completion. Could improve on clean-up after work.",
-            workType: "Painting",
-            toolsAvailable: false,
-            jobDescription: "Interior painting for 2BHK apartment including walls and ceilings.",
-            requiredSkills: ["Wall Painting", "Color Mixing", "Surface Preparation"],
-            workTime: 32,
-            jobLocation: "Mumbai, Andheri East"
-        }
-    ],
-    
-    chatMessages: {
-        1: [
-            { sender: 'worker', text: 'Hello sir, I am interested in the electrician job.', time: '09:35 AM' },
-            { sender: 'employer', text: 'Hello Ramesh, can you start tomorrow?', time: '09:40 AM' },
-            { sender: 'worker', text: 'Yes, I can start tomorrow morning.', time: '09:42 AM' }
-        ],
-        2: [
-            { sender: 'worker', text: 'Namaste sir, I have 5 years experience in electrical work.', time: '10:20 AM' },
-            { sender: 'employer', text: 'Great, what is your expected price for this job?', time: '10:25 AM' }
-        ],
-        3: [
-            { sender: 'worker', text: 'Hello, I am Arun. I saw your plumbing job posting.', time: '02:25 PM' }
-        ]
-    }
-};
-
-// ============================================
 // Initialize Application
 // ============================================
-function init() {
+async function init() {
     // Initialize i18n
     i18n.init();
     
     // Load settings from localStorage
     loadSettings();
     
-    // Load data from Django context (passed from HTML)
-    loadInitialData();
+    // Load data from server
+    await loadEmployerJobs();
+    await loadApplications();
+    await loadWorkHistory();
     
     // Update UI with loaded data
     updateStats();
     renderJobs();
+    organizeApplications();
+    renderPendingApplications();
     renderAcceptedWorkers();
     renderHiredWorkers();
     renderWorkHistory();
@@ -805,32 +689,128 @@ function init() {
     // Initialize map for job posting
     initMap();
     
-    console.log('Enhanced ShramikConnect Dashboard initialized - Dynamic data loaded');
+    console.log('Enhanced ShramikConnect Dashboard initialized - Data loaded from server');
 }
 
 // ============================================
-// Load Initial Data from Django Context
+// Load Jobs from Server
 // ============================================
-function loadInitialData() {
-    // Load from window.initialData (passed from HTML)
-    if (window.initialData) {
-        state.jobs = window.initialData.jobs || [];
-        state.acceptedWorkers = window.initialData.acceptedWorkers || [];
-        state.hiredWorkers = window.initialData.hiredWorkers || [];
-        state.workHistory = window.initialData.workHistory || [];
+async function loadEmployerJobs() {
+    try {
+        const response = await fetch('/api/employer/get-my-jobs/', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         
-        console.log('Loaded initial data from Django context');
-    } else {
-        // Fallback to mock data
-        console.log('No initial data found, loading mock data');
-        state.jobs = [...mockData.jobs];
-        state.acceptedWorkers = [...mockData.acceptedWorkers];
-        state.hiredWorkers = [...mockData.hiredWorkers];
-        state.workHistory = [...mockData.workHistory];
+        const data = await response.json();
+        
+        if (data.success) {
+            state.jobs = data.jobs || [];
+            console.log('Jobs loaded:', state.jobs);
+        } else {
+            console.error('Failed to load jobs:', data.message);
+            showNotification('Failed to load jobs', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading jobs:', error);
+        showNotification('Error loading jobs. Please refresh.', 'error');
+    }
+}
+
+// ============================================
+// Load Applications from Server
+// ============================================
+async function loadApplications() {
+    try {
+        const response = await fetch('/api/employer/get-applications/', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            state.applications = data.applications || [];
+            console.log('Applications loaded:', state.applications);
+            organizeApplications();
+        } else {
+            console.error('Failed to load applications:', data.message);
+            showNotification('Failed to load applications', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading applications:', error);
+        showNotification('Error loading applications. Please refresh.', 'error');
+    }
+}
+
+// ============================================
+// Organize Applications by Status
+// ============================================
+function organizeApplications() {
+    state.pendingApplications = state.applications.filter(app => app.status === 'pending');
+    state.acceptedWorkers = state.applications.filter(app => app.status === 'accepted');
+    state.hiredWorkers = state.applications.filter(app => app.status === 'hired');
+    
+    // Work history comes from separate API or from completed applications
+    // For now, we'll filter completed applications
+    const completedApps = state.applications.filter(app => app.status === 'completed');
+    
+    // If we have work history data from somewhere else, use it
+    // This will be populated when we implement complete_work API
+}
+
+// ============================================
+// Render Pending Applications (NEW - Main Fix)
+// ============================================
+function renderPendingApplications() {
+    const container = document.getElementById('pendingApplicationsContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (state.pendingApplications.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state-container">
+                <div class="empty-state-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3 class="empty-state-title">${i18n.t('no_pending')}</h3>
+                <p class="empty-state-message">${i18n.t('no_pending_desc')}</p>
+            </div>
+        `;
+        return;
     }
     
-    // Update profile information
-    updateProfileInfo();
+    state.pendingApplications.forEach(application => {
+        const card = createApplicationCard(application, 'pending');
+        container.appendChild(card);
+    });
+}
+
+// ============================================
+// Load Work History from Server
+// ============================================
+async function loadWorkHistory() {
+    try {
+        const response = await fetch('/api/employer/work-history/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            state.workHistory = data.work_history || [];
+            console.log('Work history loaded:', state.workHistory.length, 'records');
+        } else {
+            console.error('Failed to load work history:', data.message);
+            state.workHistory = [];
+        }
+    } catch (error) {
+        console.error('Error loading work history:', error);
+        state.workHistory = [];
+    }
 }
 
 // ============================================
@@ -866,8 +846,8 @@ function initMap() {
     if (!DOM.mapContainer) return;
     
     // Default to Mumbai or employer's saved location
-    const defaultLat = parseFloat(DOM.latitudeInput.value) || 19.0760;
-    const defaultLng = parseFloat(DOM.longitudeInput.value) || 72.8777;
+    const defaultLat = parseFloat(DOM.latitudeInput?.value) || 19.0760;
+    const defaultLng = parseFloat(DOM.longitudeInput?.value) || 72.8777;
     
     state.map = L.map('map').setView([defaultLat, defaultLng], 13);
     
@@ -882,20 +862,20 @@ function initMap() {
     // Update coordinates when marker is dragged
     state.marker.on('dragend', function(e) {
         const position = e.target.getLatLng();
-        DOM.latitudeInput.value = position.lat;
-        DOM.longitudeInput.value = position.lng;
+        if (DOM.latitudeInput) DOM.latitudeInput.value = position.lat;
+        if (DOM.longitudeInput) DOM.longitudeInput.value = position.lng;
     });
     
     // Update marker when map is clicked
     state.map.on('click', function(e) {
         state.marker.setLatLng(e.latlng);
-        DOM.latitudeInput.value = e.latlng.lat;
-        DOM.longitudeInput.value = e.latlng.lng;
+        if (DOM.latitudeInput) DOM.latitudeInput.value = e.latlng.lat;
+        if (DOM.longitudeInput) DOM.longitudeInput.value = e.latlng.lng;
     });
     
     // Set initial coordinates
-    DOM.latitudeInput.value = defaultLat;
-    DOM.longitudeInput.value = defaultLng;
+    if (DOM.latitudeInput) DOM.latitudeInput.value = defaultLat;
+    if (DOM.longitudeInput) DOM.longitudeInput.value = defaultLng;
 }
 
 // ============================================
@@ -906,12 +886,17 @@ function updateStats() {
         DOM.totalJobs.textContent = state.jobs.length;
     }
     
+    const totalPendingEl = document.getElementById('totalPending');
+    if (totalPendingEl) {
+        totalPendingEl.textContent = state.pendingApplications.length;
+    }
+    
     if (DOM.totalHired) {
         DOM.totalHired.textContent = state.hiredWorkers.length + state.workHistory.length;
     }
     
-    // Calculate average rating
-    const allRatings = [...state.workHistory.map(w => w.rating)];
+    // Calculate average rating from work history
+    const allRatings = state.workHistory.map(w => w.rating || 0);
     const avg = allRatings.length > 0 
         ? (allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1)
         : '0.0';
@@ -927,7 +912,7 @@ function updateStats() {
 function renderRatingStars() {
     if (!DOM.ratingStars) return;
     
-    const rating = parseFloat(DOM.avgRating.textContent);
+    const rating = parseFloat(DOM.avgRating?.textContent || '0');
     DOM.ratingStars.innerHTML = '';
     
     for (let i = 1; i <= 5; i++) {
@@ -958,11 +943,11 @@ function renderJobs() {
                 <div class="empty-state-icon">
                     <i class="fas fa-briefcase"></i>
                 </div>
-                <h3 class="empty-state-title">No Jobs Posted Yet</h3>
-                <p class="empty-state-message">Start by posting your first job to find workers</p>
+                <h3 class="empty-state-title">${i18n.t('no_jobs')}</h3>
+                <p class="empty-state-message">${i18n.t('no_jobs_desc')}</p>
                 <button class="empty-state-action" id="postFirstJobBtn">
                     <i class="fas fa-plus"></i>
-                    Post Your First Job
+                    ${i18n.t('post_first_job')}
                 </button>
             </div>
         `;
@@ -985,50 +970,56 @@ function createJobCard(job) {
     card.dataset.id = job.id;
     
     const statusClass = `status-${job.status}`;
-    const statusText = job.status === 'in-progress' ? 'In Progress' : 
-                      job.status === 'completed' ? 'Completed' : 'Open';
+    const statusText = job.status === 'open' ? i18n.t('status_pending') : 
+                      job.status === 'in-progress' ? i18n.t('status_hired') : 
+                      job.status === 'completed' ? i18n.t('status_completed') : job.status;
+    
+    const pendingCount = job.applications?.pending || 0;
+    const acceptedCount = job.applications?.accepted || 0;
+    const hiredCount = job.applications?.hired || 0;
+    const totalApps = job.applications?.total || 0;
     
     card.innerHTML = `
         <div class="job-header">
             <div>
-                <h3 class="job-title">${job.title}</h3>
-                <p class="job-employer">👨‍💼 ${job.employerName}</p>
-                <p class="job-location">📍 ${job.location}</p>
+                <h3 class="job-title">${job.title || 'Untitled'}</h3>
+                <p class="job-employer">👨‍💼 ${job.employerName || window.employerData?.firstName + ' ' + window.employerData?.lastName || 'You'}</p>
+                <p class="job-location">📍 ${job.location || 'Unknown'}</p>
             </div>
             <span class="job-status ${statusClass}">${statusText}</span>
         </div>
         <div class="job-details">
             <div class="job-detail">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Address: ${job.workAddress}</span>
+                <span>${i18n.t('work_address')}: ${job.workAddress || 'Not specified'}</span>
             </div>
             <div class="job-detail">
                 <i class="fas fa-tools"></i>
-                <span>Work Type: ${job.workType}</span>
+                <span>${i18n.t('work_type')}: ${job.work_type || 'Not specified'}</span>
             </div>
             <div class="job-detail">
                 <i class="fas fa-money-bill-wave"></i>
-                <span>Pay: ₹${job.pay}</span>
+                <span>${i18n.t('payment')}: ₹${job.pay?.toLocaleString('en-IN') || 0}</span>
             </div>
             <div class="job-detail">
                 <i class="fas fa-clock"></i>
-                <span>Time: ${job.time} hours</span>
+                <span>${i18n.t('time_required')}: ${job.time || 0} hours</span>
             </div>
             <div class="job-detail">
                 <i class="fas fa-tools"></i>
-                <span>Skills: ${job.skills.join(', ')}</span>
+                <span>${i18n.t('required_skills')}: ${job.skills?.join(', ') || 'Not specified'}</span>
             </div>
             <div class="job-detail">
-                <i class="fas fa-toolbox"></i>
-                <span>Tools: ${job.toolsAvailable ? 'Available' : 'Not Available'}</span>
+                <i class="fas fa-users"></i>
+                <span>${i18n.t('total_applications')}: ${totalApps} (${i18n.t('pending')}: ${pendingCount}, ${i18n.t('accepted')}: ${acceptedCount}, ${i18n.t('hired')}: ${hiredCount})</span>
             </div>
         </div>
         <div class="job-actions">
             <button class="small-btn view-applicants-btn" onclick="viewApplicants(${job.id})">
-                <i class="fas fa-users"></i> View Applicants
+                <i class="fas fa-users"></i> ${i18n.t('view_accepted_workers')}
             </button>
             <button class="small-btn delete-job-btn" onclick="confirmDeleteJob(${job.id})">
-                <i class="fas fa-trash"></i> Delete
+                <i class="fas fa-trash"></i> ${i18n.t('delete')}
             </button>
         </div>
     `;
@@ -1037,7 +1028,7 @@ function createJobCard(job) {
 }
 
 // ============================================
-// Render Accepted Workers
+// Render Accepted Workers (Applications with status 'accepted')
 // ============================================
 function renderAcceptedWorkers() {
     if (!DOM.acceptedWorkersContainer) return;
@@ -1047,53 +1038,40 @@ function renderAcceptedWorkers() {
     // Apply search filter
     if (state.filters.search) {
         const searchTerm = state.filters.search.toLowerCase();
-        workers = workers.filter(worker => 
-            worker.name.toLowerCase().includes(searchTerm) ||
-            worker.skills.some(skill => skill.toLowerCase().includes(searchTerm)) ||
-            worker.rating.toString().includes(searchTerm) ||
-            worker.expectedPrice.toString().includes(searchTerm)
+        workers = workers.filter(app => 
+            (app.worker?.name || '').toLowerCase().includes(searchTerm) ||
+            (app.worker?.skills || []).some(skill => (skill || '').toLowerCase().includes(searchTerm)) ||
+            (app.worker?.rating || 0).toString().includes(searchTerm) ||
+            (app.expected_price || 0).toString().includes(searchTerm)
         );
     }
     
-    // Apply nested filter sorting (all active sorts combined)
+    // Apply nested filter sorting
     const activeSorts = Object.values(state.filters.activeSorts);
     
     if (activeSorts.length > 0) {
         workers.sort((a, b) => {
-            // Apply multiple sorts in priority order
             for (const sort of activeSorts) {
                 let comparison = 0;
                 
                 switch(sort) {
-                    case 'distance-asc':
-                        comparison = a.distance - b.distance;
-                        break;
-                    case 'distance-desc':
-                        comparison = b.distance - a.distance;
-                        break;
                     case 'name-asc':
-                        comparison = a.name.localeCompare(b.name);
+                        comparison = (a.worker?.name || '').localeCompare(b.worker?.name || '');
                         break;
                     case 'name-desc':
-                        comparison = b.name.localeCompare(a.name);
+                        comparison = (b.worker?.name || '').localeCompare(a.worker?.name || '');
                         break;
                     case 'price-asc':
-                        comparison = (a.negotiatedPrice || a.expectedPrice) - (b.negotiatedPrice || b.expectedPrice);
+                        comparison = (a.expected_price || 0) - (b.expected_price || 0);
                         break;
                     case 'price-desc':
-                        comparison = (b.negotiatedPrice || b.expectedPrice) - (a.negotiatedPrice || a.expectedPrice);
+                        comparison = (b.expected_price || 0) - (a.expected_price || 0);
                         break;
                     case 'rating-desc':
-                        comparison = b.rating - a.rating;
+                        comparison = (b.worker?.rating || 0) - (a.worker?.rating || 0);
                         break;
                     case 'rating-asc':
-                        comparison = a.rating - b.rating;
-                        break;
-                    case 'time-asc':
-                        comparison = new Date(a.jobAcceptanceTime) - new Date(b.jobAcceptanceTime);
-                        break;
-                    case 'time-desc':
-                        comparison = new Date(b.jobAcceptanceTime) - new Date(a.jobAcceptanceTime);
+                        comparison = (a.worker?.rating || 0) - (b.worker?.rating || 0);
                         break;
                 }
                 
@@ -1114,15 +1092,15 @@ function renderAcceptedWorkers() {
                 <div class="empty-state-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <h3 class="empty-state-title">No Workers Found</h3>
-                <p class="empty-state-message">${state.filters.search ? 'Try adjusting your search criteria' : 'Post a job to start receiving applications'}</p>
+                <h3 class="empty-state-title">${i18n.t('no_workers')}</h3>
+                <p class="empty-state-message">${state.filters.search ? i18n.t('no_workers_desc') : i18n.t('no_jobs_desc')}</p>
             </div>
         `;
         return;
     }
     
-    workers.forEach(worker => {
-        const workerCard = createWorkerCard(worker, 'accepted');
+    workers.forEach(application => {
+        const workerCard = createApplicationCard(application, 'accepted');
         DOM.acceptedWorkersContainer.appendChild(workerCard);
     });
 }
@@ -1141,84 +1119,86 @@ function renderHiredWorkers() {
                 <div class="empty-state-icon">
                     <i class="fas fa-user-check"></i>
                 </div>
-                <h3 class="empty-state-title">No Hired Workers Yet</h3>
-                <p class="empty-state-message">Hire workers from your accepted applicants</p>
+                <h3 class="empty-state-title">${i18n.t('no_hired_workers')}</h3>
+                <p class="empty-state-message">${i18n.t('no_hired_workers_desc')}</p>
             </div>
         `;
         return;
     }
     
-    state.hiredWorkers.forEach(worker => {
-        const workerCard = createWorkerCard(worker, 'hired');
+    state.hiredWorkers.forEach(application => {
+        const workerCard = createApplicationCard(application, 'hired');
         DOM.hiredWorkersContainer.appendChild(workerCard);
     });
 }
 
 // ============================================
-// Create Worker Card
+// Create Application Card
 // ============================================
-function createWorkerCard(worker, type) {
+function createApplicationCard(application, type) {
     const card = document.createElement('div');
     card.className = 'worker-card';
-    card.dataset.id = worker.id;
+    card.dataset.id = application.id;
+    card.dataset.workerId = application.worker?.id;
     
-    const price = worker.negotiatedPrice || worker.expectedPrice;
-    const time = worker.negotiatedTime || worker.time || 0;
-    
-    // Format acceptance time
-    const acceptanceTime = new Date(worker.jobAcceptanceTime);
-    const formattedTime = acceptanceTime.toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const worker = application.worker || {};
+    const price = application.expected_price || 0;
     
     // Create stars for rating
     let starsHTML = '';
-    const fullStars = Math.floor(worker.rating);
-    const hasHalfStar = worker.rating % 1 >= 0.5;
+    const rating = worker.rating || 0;
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
     
     for (let i = 1; i <= 5; i++) {
         if (i <= fullStars) {
-            starsHTML += '★';
+            starsHTML += '<i class="fas fa-star"></i>';
         } else if (i === fullStars + 1 && hasHalfStar) {
-            starsHTML += '★';
+            starsHTML += '<i class="fas fa-star-half-alt"></i>';
         } else {
-            starsHTML += '☆';
+            starsHTML += '<i class="far fa-star"></i>';
         }
     }
     
     let actionsHTML = '';
     
-    if (type === 'accepted') {
+    if (type === 'pending') {
         actionsHTML = `
-            <button class="action-btn-small chat-btn" onclick="openChat(${worker.id})">
-                <i class="fas fa-comment"></i> Chat
+            <button class="action-btn-small profile-btn" onclick="viewWorkerProfile(${worker.id})">
+                <i class="fas fa-user"></i> ${i18n.t('view_profile')}
             </button>
-            <button class="action-btn-small profile-btn" onclick="redirectToProfile(${worker.id})">
-                <i class="fas fa-user"></i> Profile
+            <button class="action-btn-small hire-btn" onclick="acceptApplication(${application.id})">
+                <i class="fas fa-check"></i> ${i18n.t('accept')}
             </button>
-            <button class="action-btn-small hire-btn" onclick="hireWorker(${worker.id})">
-                <i class="fas fa-user-check"></i> Hire
+            <button class="action-btn-small reject-btn" onclick="rejectApplication(${application.id})">
+                <i class="fas fa-times"></i> ${i18n.t('reject')}
             </button>
-            <button class="action-btn-small remove-btn" onclick="confirmRemoveWorker(${worker.id})">
-                <i class="fas fa-times"></i> Remove
+        `;
+    } else if (type === 'accepted') {
+        actionsHTML = `
+            <button class="action-btn-small chat-btn" onclick="openChat(${application.id})">
+                <i class="fas fa-comment"></i> ${i18n.t('chat')}
+            </button>
+            <button class="action-btn-small profile-btn" onclick="viewWorkerProfile(${worker.id})">
+                <i class="fas fa-user"></i> ${i18n.t('view_profile')}
+            </button>
+            <button class="action-btn-small hire-btn" onclick="hireWorker(${application.id})">
+                <i class="fas fa-user-check"></i> ${i18n.t('hire')}
+            </button>
+            <button class="action-btn-small reject-btn" onclick="rejectApplication(${application.id})">
+                <i class="fas fa-times"></i> ${i18n.t('reject')}
             </button>
         `;
     } else if (type === 'hired') {
-        const isCompleted = worker.status === 'completed';
         actionsHTML = `
-            <button class="action-btn-small chat-btn" onclick="openChat(${worker.id})">
-                <i class="fas fa-comment"></i> Chat
+            <button class="action-btn-small chat-btn" onclick="openChat(${application.id})">
+                <i class="fas fa-comment"></i> ${i18n.t('chat')}
             </button>
-            <button class="action-btn-small profile-btn" onclick="redirectToProfile(${worker.id})">
-                <i class="fas fa-user"></i> Profile
+            <button class="action-btn-small profile-btn" onclick="viewWorkerProfile(${worker.id})">
+                <i class="fas fa-user"></i> ${i18n.t('view_profile')}
             </button>
-            <button class="action-btn-small complete-btn ${isCompleted ? 'disabled' : ''}" 
-                    onclick="${isCompleted ? '' : `confirmCompleteWork(${worker.id})`}"
-                    ${isCompleted ? 'disabled' : ''}>
-                <i class="fas fa-check-circle"></i> ${isCompleted ? 'Completed' : 'Mark Complete'}
+            <button class="action-btn-small complete-btn" onclick="confirmCompleteWork(${application.id})">
+                <i class="fas fa-check-circle"></i> ${i18n.t('mark_complete')}
             </button>
         `;
     }
@@ -1226,56 +1206,56 @@ function createWorkerCard(worker, type) {
     card.innerHTML = `
         <div class="worker-header">
             <div class="worker-photo">
-                <img src="${worker.photo}" alt="${worker.name}">
+                <img src="${worker.photo || 'https://randomuser.me/api/portraits/men/1.jpg'}" alt="${worker.name || 'Worker'}">
             </div>
             <div class="worker-name-container">
-                <h3 class="worker-name">${worker.name}</h3>
-                <div class="worker-rating" title="Rating: ${worker.rating}">
-                    ${starsHTML} <span>${worker.rating}</span>
+                <h3 class="worker-name">${worker.name || 'Unknown Worker'}</h3>
+                <div class="worker-rating" title="${i18n.t('rating')}: ${rating}">
+                    ${starsHTML} <span>${rating}</span>
                 </div>
             </div>
         </div>
         <div class="worker-details">
             <div class="worker-detail">
-                <span class="detail-label">Age:</span>
-                <span class="detail-value">${worker.age} years</span>
+                <span class="detail-label">${i18n.t('job_title')}:</span>
+                <span class="detail-value">${application.job_title || 'Unknown'}</span>
             </div>
             <div class="worker-detail">
-                <span class="detail-label">Gender:</span>
-                <span class="detail-value">${worker.gender}</span>
+                <span class="detail-label">${i18n.t('profession')}:</span>
+                <span class="detail-value">${worker.profession || 'Not specified'}</span>
             </div>
             <div class="worker-detail">
-                <span class="detail-label">Skills:</span>
-                <span class="detail-value">${worker.skills.join(', ')}</span>
+                <span class="detail-label">${i18n.t('skills')}:</span>
+                <span class="detail-value">${worker.skills?.join(', ') || 'Not specified'}</span>
             </div>
             <div class="worker-detail">
-                <span class="detail-label">Address:</span>
-                <span class="detail-value">${worker.address}</span>
+                <span class="detail-label">${i18n.t('location')}:</span>
+                <span class="detail-value">${worker.city || 'Not specified'}</span>
             </div>
             <div class="worker-detail">
-                <span class="detail-label">Distance:</span>
-                <span class="detail-value">${worker.distance} km</span>
+                <span class="detail-label">${i18n.t('expected_price')}:</span>
+                <span class="detail-value">₹${price.toLocaleString('en-IN')}</span>
             </div>
             <div class="worker-detail">
-                <span class="detail-label">Expected Price:</span>
-                <span class="detail-value">₹${price}</span>
+                <span class="detail-label">${i18n.t('availability')}:</span>
+                <span class="detail-value">${application.availability || 'immediate'}</span>
             </div>
+            ${application.cover_message ? `
             <div class="worker-detail">
-                <span class="detail-label">Accepted:</span>
-                <span class="detail-value">${formattedTime}</span>
-            </div>
-            ${worker.negotiatedPrice ? `
-            <div class="worker-detail">
-                <span class="detail-label">Negotiated Price:</span>
-                <span class="detail-value negotiated">₹${worker.negotiatedPrice}</span>
+                <span class="detail-label">${i18n.t('cover_message')}:</span>
+                <span class="detail-value">"${application.cover_message}"</span>
             </div>
             ` : ''}
-            ${worker.negotiatedTime ? `
             <div class="worker-detail">
-                <span class="detail-label">Negotiated Time:</span>
-                <span class="detail-value negotiated">${worker.negotiatedTime} hours</span>
+                <span class="detail-label">${i18n.t('applied_date')}:</span>
+                <span class="detail-value">${new Date(application.applied_date).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</span>
             </div>
-            ` : ''}
         </div>
         <div class="worker-actions">
             ${actionsHTML}
@@ -1297,9 +1277,9 @@ function renderWorkHistory() {
     if (state.historyFilters.search) {
         const searchTerm = state.historyFilters.search.toLowerCase();
         history = history.filter(item => 
-            item.workerName.toLowerCase().includes(searchTerm) ||
-            item.jobTitle.toLowerCase().includes(searchTerm) ||
-            item.payment.toString().includes(searchTerm)
+            (item.workerName || '').toLowerCase().includes(searchTerm) ||
+            (item.jobTitle || '').toLowerCase().includes(searchTerm) ||
+            (item.payment || 0).toString().includes(searchTerm)
         );
     }
     
@@ -1313,22 +1293,22 @@ function renderWorkHistory() {
                 
                 switch(sort) {
                     case 'date-desc':
-                        comparison = new Date(b.completionDate) - new Date(a.completionDate);
+                        comparison = new Date(b.completionDate || 0) - new Date(a.completionDate || 0);
                         break;
                     case 'date-asc':
-                        comparison = new Date(a.completionDate) - new Date(b.completionDate);
+                        comparison = new Date(a.completionDate || 0) - new Date(b.completionDate || 0);
                         break;
                     case 'rating-desc':
-                        comparison = b.rating - a.rating;
+                        comparison = (b.rating || 0) - (a.rating || 0);
                         break;
                     case 'rating-asc':
-                        comparison = a.rating - b.rating;
+                        comparison = (a.rating || 0) - (b.rating || 0);
                         break;
                     case 'price-desc':
-                        comparison = b.payment - a.payment;
+                        comparison = (b.payment || 0) - (a.payment || 0);
                         break;
                     case 'price-asc':
-                        comparison = a.payment - b.payment;
+                        comparison = (a.payment || 0) - (b.payment || 0);
                         break;
                 }
                 
@@ -1347,10 +1327,12 @@ function renderWorkHistory() {
         DOM.workHistoryContainer.innerHTML = `
             <tr>
                 <td colspan="6" style="text-align: center; padding: 40px;">
-                    <div style="text-align: center;">
-                        <i class="fas fa-history" style="font-size: 48px; color: #01A060; margin-bottom: 20px;"></i>
-                        <h3 style="color: #666; margin-bottom: 10px;">No Work History Yet</h3>
-                        <p style="color: #888;">Complete jobs to build your work history</p>
+                    <div class="empty-state-container">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3 class="empty-state-title">${i18n.t('no_work_history')}</h3>
+                        <p class="empty-state-message">${i18n.t('no_work_history_desc')}</p>
                     </div>
                 </td>
             </tr>
@@ -1369,8 +1351,9 @@ function createWorkHistoryRow(history) {
     
     // Create stars for rating
     let starsHTML = '';
+    const rating = history.rating || 0;
     for (let i = 1; i <= 5; i++) {
-        if (i <= history.rating) {
+        if (i <= rating) {
             starsHTML += '<i class="fas fa-star" style="color: #FFD700;"></i>';
         } else {
             starsHTML += '<i class="far fa-star" style="color: #ddd;"></i>';
@@ -1380,12 +1363,12 @@ function createWorkHistoryRow(history) {
     row.innerHTML = `
         <td>
             <div style="display: flex; align-items: center; gap: 10px;">
-                <img src="${history.workerPhoto}" alt="${history.workerName}" style="width: 40px; height: 40px; border-radius: 50%;">
-                ${history.workerName}
+                <img src="${history.workerPhoto || 'https://randomuser.me/api/portraits/men/1.jpg'}" alt="${history.workerName}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                ${history.workerName || 'Unknown'}
             </div>
         </td>
-        <td>${history.jobTitle}</td>
-        <td>${new Date(history.completionDate).toLocaleDateString('en-IN', {
+        <td>${history.jobTitle || 'Unknown'}</td>
+        <td>${new Date(history.completionDate || new Date()).toLocaleDateString('en-IN', {
             day: 'numeric',
             month: 'short',
             year: 'numeric'
@@ -1393,13 +1376,13 @@ function createWorkHistoryRow(history) {
         <td>
             <div class="rating-stars">
                 ${starsHTML}
-                <span style="margin-left: 5px;">(${history.rating})</span>
+                <span style="margin-left: 5px;">(${rating})</span>
             </div>
         </td>
-        <td>₹${history.payment}</td>
+        <td>₹${(history.payment || 0).toLocaleString('en-IN')}</td>
         <td>
             <button class="small-btn view-applicants-btn" onclick="viewWorkHistoryDetails(${history.id})">
-                <i class="fas fa-eye"></i> View
+                <i class="fas fa-eye"></i> ${i18n.t('view')}
             </button>
         </td>
     `;
@@ -1412,28 +1395,19 @@ function createWorkHistoryRow(history) {
 // ============================================
 function setupEventListeners() {
     // Sidebar functionality
-    if (DOM.hamburgerBtn) {
-        DOM.hamburgerBtn.addEventListener('click', () => {
-            DOM.sidebar.classList.add('active');
-            DOM.sidebarOverlay.classList.add('active');
-        });
-    }
+    DOM.hamburgerBtn?.addEventListener('click', () => {
+        DOM.sidebar?.classList.add('active');
+        DOM.sidebarOverlay?.classList.add('active');
+    });
     
-    if (DOM.sidebarClose) {
-        DOM.sidebarClose.addEventListener('click', closeSidebar);
-    }
-    
-    if (DOM.sidebarOverlay) {
-        DOM.sidebarOverlay.addEventListener('click', closeSidebar);
-    }
+    DOM.sidebarClose?.addEventListener('click', closeSidebar);
+    DOM.sidebarOverlay?.addEventListener('click', closeSidebar);
     
     // Settings dropdown
-    if (DOM.sidebarSettingsIcon) {
-        DOM.sidebarSettingsIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            DOM.settingsDropdown.classList.toggle('active');
-        });
-    }
+    DOM.sidebarSettingsIcon?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        DOM.settingsDropdown?.classList.toggle('active');
+    });
     
     // Close settings dropdown when clicking outside
     document.addEventListener('click', (e) => {
@@ -1445,63 +1419,46 @@ function setupEventListeners() {
     });
     
     // Language and theme settings
-    if (DOM.languageOptions) {
-        DOM.languageOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                DOM.languageOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                i18n.saveLanguage(option.dataset.lang);
-                state.settings.language = option.dataset.lang;
-                saveSettings();
-            });
+    DOM.languageOptions?.forEach(option => {
+        option.addEventListener('click', () => {
+            DOM.languageOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            i18n.saveLanguage(option.dataset.lang);
+            state.settings.language = option.dataset.lang;
+            saveSettings();
         });
-    }
+    });
     
-    if (DOM.themeOptions) {
-        DOM.themeOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                DOM.themeOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                state.settings.theme = option.dataset.theme;
-                applyTheme();
-                saveSettings();
-            });
+    DOM.themeOptions?.forEach(option => {
+        option.addEventListener('click', () => {
+            DOM.themeOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            state.settings.theme = option.dataset.theme;
+            applyTheme();
+            saveSettings();
         });
-    }
+    });
 
-    // Menu item clicks - Update AI Assistant handling
-    if (DOM.menuItems) {
-        DOM.menuItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = item.dataset.section;
-                
-                if (section === 'ai-assistant') {
-                    handleAIAccess('sidebar');
-                } else {
-                    setActiveSection(section);
-                    closeSidebar();
-                }
-            });
+    // Menu item clicks
+    DOM.menuItems?.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const section = item.dataset.section;
+            setActiveSection(section);
+            closeSidebar();
         });
-    }
+    });
 
-    // Global navigation strip - Update AI Assistant handling
-    if (DOM.navStripBtns) {
-        DOM.navStripBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = btn.dataset.section;
-                if (section) {
-                    if (section === 'ai-assistant') {
-                        handleAIAccess('quick-links');
-                    } else {
-                        setActiveSection(section);
-                    }
-                }
-            });
+    // Global navigation strip
+    DOM.navStripBtns?.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const section = btn.dataset.section;
+            if (section) {
+                setActiveSection(section);
+            }
         });
-    }
+    });
     
     // Post job buttons
     [DOM.postJobBtn, DOM.addJobBtn].forEach(btn => {
@@ -1511,25 +1468,10 @@ function setupEventListeners() {
     });
     
     // Quick action buttons
-    if (DOM.viewAcceptedBtn) {
-        DOM.viewAcceptedBtn.addEventListener('click', () => setActiveSection('accepted-workers'));
-    }
-
-    if (DOM.viewHiredBtn) {
-        DOM.viewHiredBtn.addEventListener('click', () => setActiveSection('hired-workers'));
-    }
-
-    // AI Assistant - Use centralized controller
-    if (DOM.aiAssistantBtn) {
-        DOM.aiAssistantBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            handleAIAccess('dashboard');
-        });
-    }
-
-    if (DOM.workHistoryBtn) {
-        DOM.workHistoryBtn.addEventListener('click', () => setActiveSection('work-history'));
-    }
+    DOM.viewAcceptedBtn?.addEventListener('click', () => setActiveSection('accepted-workers'));
+    DOM.viewHiredBtn?.addEventListener('click', () => setActiveSection('hired-workers'));
+    DOM.aiAssistantBtn?.addEventListener('click', () => setActiveSection('ai-assistant'));
+    DOM.workHistoryBtn?.addEventListener('click', () => setActiveSection('work-history'));
     
     // Logout buttons
     [DOM.logoutBtn, DOM.quickLogoutBtn, DOM.stripLogoutBtn].forEach(btn => {
@@ -1547,100 +1489,76 @@ function setupEventListeners() {
     
     closeButtons.forEach(btn => {
         if (btn) {
-            btn.addEventListener('click', () => {
-                closeAllModals();
-            });
+            btn.addEventListener('click', closeAllModals);
         }
     });
     
     // Close modal on outside click
-    if (DOM.modals) {
-        DOM.modals.forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeAllModals();
-                }
-            });
+    DOM.modals?.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeAllModals();
+            }
         });
-    }
+    });
     
     // Job form submission
-    if (DOM.submitJobBtn) {
-        DOM.submitJobBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            submitJob();
-        });
-    }
+    DOM.submitJobBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        submitJob();
+    });
     
     // Enter key in job form
-    if (DOM.jobForm) {
-        DOM.jobForm.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                submitJob();
-            }
-        });
-    }
+    DOM.jobForm?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submitJob();
+        }
+    });
     
     // Search functionality
-    if (DOM.workerSearch) {
-        DOM.workerSearch.addEventListener('input', (e) => {
-            state.filters.search = e.target.value;
-            renderAcceptedWorkers();
-        });
-    }
+    DOM.workerSearch?.addEventListener('input', (e) => {
+        state.filters.search = e.target.value;
+        renderAcceptedWorkers();
+    });
     
-    if (DOM.historySearch) {
-        DOM.historySearch.addEventListener('input', (e) => {
-            state.historyFilters.search = e.target.value;
-            renderWorkHistory();
-        });
-    }
+    DOM.historySearch?.addEventListener('input', (e) => {
+        state.historyFilters.search = e.target.value;
+        renderWorkHistory();
+    });
     
     // AI Assistant
-    if (DOM.aiSendBtn) {
-        DOM.aiSendBtn.addEventListener('click', () => sendAIMessage(DOM.aiInput, DOM.aiChatMessages));
-    }
+    DOM.aiSendBtn?.addEventListener('click', () => sendAIMessage(DOM.aiInput, DOM.aiChatMessages));
+    DOM.aiInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendAIMessage(DOM.aiInput, DOM.aiChatMessages);
+        }
+    });
     
-    if (DOM.aiInput) {
-        DOM.aiInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendAIMessage(DOM.aiInput, DOM.aiChatMessages);
-            }
-        });
-    }
-    
-    if (DOM.aiModalSendBtn) {
-        DOM.aiModalSendBtn.addEventListener('click', () => sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages));
-    }
-    
-    if (DOM.aiModalInput) {
-        DOM.aiModalInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages);
-            }
-        });
-    }
+    DOM.aiModalSendBtn?.addEventListener('click', () => sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages));
+    DOM.aiModalInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages);
+        }
+    });
     
     // AI suggestion buttons
-    if (DOM.suggestionBtns) {
-        DOM.suggestionBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const suggestion = btn.dataset.suggestion;
-                if (state.currentSection === 'ai-assistant') {
-                    if (DOM.aiInput) {
-                        DOM.aiInput.value = suggestion;
-                        sendAIMessage(DOM.aiInput, DOM.aiChatMessages);
-                    }
-                } else {
-                    if (DOM.aiModalInput) {
-                        DOM.aiModalInput.value = suggestion;
-                        sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages);
-                    }
+    DOM.suggestionBtns?.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const suggestion = btn.dataset.suggestion;
+            if (state.currentSection === 'ai-assistant') {
+                if (DOM.aiInput) {
+                    DOM.aiInput.value = suggestion;
+                    sendAIMessage(DOM.aiInput, DOM.aiChatMessages);
                 }
-            });
+            } else {
+                if (DOM.aiModalInput) {
+                    DOM.aiModalInput.value = suggestion;
+                    sendAIMessage(DOM.aiModalInput, DOM.aiModalMessages);
+                }
+            }
         });
-    }
+    });
     
     // AI file upload
     [DOM.aiFileUploadBtn, DOM.aiPageFileUploadBtn].forEach(btn => {
@@ -1661,35 +1579,22 @@ function setupEventListeners() {
     });
     
     // Chat functionality
-    if (DOM.chatSendBtn) {
-        DOM.chatSendBtn.addEventListener('click', sendChatMessage);
-    }
-    
-    if (DOM.chatInput) {
-        DOM.chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendChatMessage();
-            }
-        });
-    }
+    DOM.chatSendBtn?.addEventListener('click', sendChatMessage);
+    DOM.chatInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
     
     // Chat file upload
-    if (DOM.fileUploadBtn) {
-        DOM.fileUploadBtn.addEventListener('click', () => {
-            if (DOM.fileInput) {
-                DOM.fileInput.click();
-            }
-        });
-    }
+    DOM.fileUploadBtn?.addEventListener('click', () => {
+        DOM.fileInput?.click();
+    });
     
-    if (DOM.fileInput) {
-        DOM.fileInput.addEventListener('change', handleChatFileUpload);
-    }
+    DOM.fileInput?.addEventListener('change', handleChatFileUpload);
     
     // Voice message button
-    if (DOM.voiceMessageBtn) {
-        DOM.voiceMessageBtn.addEventListener('click', handleVoiceMessage);
-    }
+    DOM.voiceMessageBtn?.addEventListener('click', handleVoiceMessage);
     
     // Negotiation buttons
     document.querySelectorAll('.negotiation-btn').forEach(btn => {
@@ -1701,54 +1606,33 @@ function setupEventListeners() {
     });
     
     // Rating stars
-    if (DOM.stars) {
-        DOM.stars.forEach(star => {
-            star.addEventListener('click', () => {
-                const rating = parseInt(star.dataset.rating);
-                setRating(rating);
-            });
-            
-            star.addEventListener('mouseover', () => {
-                const rating = parseInt(star.dataset.rating);
-                highlightStars(rating);
-            });
-            
-            star.addEventListener('mouseout', () => {
-                const currentRating = parseInt(DOM.ratingSelectedValue.textContent);
-                highlightStars(currentRating);
-            });
+    DOM.stars?.forEach(star => {
+        star.addEventListener('click', () => {
+            const rating = parseInt(star.dataset.rating);
+            setRating(rating);
         });
-    }
+        
+        star.addEventListener('mouseover', () => {
+            const rating = parseInt(star.dataset.rating);
+            highlightStars(rating);
+        });
+        
+        star.addEventListener('mouseout', () => {
+            const currentRating = parseInt(DOM.ratingSelectedValue?.textContent || '0');
+            highlightStars(currentRating);
+        });
+    });
     
     // Submit rating
-    if (DOM.submitRatingBtn) {
-        DOM.submitRatingBtn.addEventListener('click', submitRating);
-    }
+    DOM.submitRatingBtn?.addEventListener('click', submitRating);
     
     // Confirmation buttons
-    if (DOM.cancelDeleteBtn) {
-        DOM.cancelDeleteBtn.addEventListener('click', () => closeAllModals());
-    }
-    
-    if (DOM.confirmDeleteBtn) {
-        DOM.confirmDeleteBtn.addEventListener('click', deleteJobConfirmed);
-    }
-    
-    if (DOM.cancelCompleteBtn) {
-        DOM.cancelCompleteBtn.addEventListener('click', () => closeAllModals());
-    }
-    
-    if (DOM.confirmCompleteBtn) {
-        DOM.confirmCompleteBtn.addEventListener('click', completeWorkConfirmed);
-    }
-    
-    if (DOM.cancelRemoveBtn) {
-        DOM.cancelRemoveBtn.addEventListener('click', () => closeAllModals());
-    }
-    
-    if (DOM.confirmRemoveBtn) {
-        DOM.confirmRemoveBtn.addEventListener('click', removeWorkerConfirmed);
-    }
+    DOM.cancelDeleteBtn?.addEventListener('click', closeAllModals);
+    DOM.confirmDeleteBtn?.addEventListener('click', deleteJobConfirmed);
+    DOM.cancelCompleteBtn?.addEventListener('click', closeAllModals);
+    DOM.confirmCompleteBtn?.addEventListener('click', completeWorkConfirmed);
+    DOM.cancelRemoveBtn?.addEventListener('click', closeAllModals);
+    DOM.confirmRemoveBtn?.addEventListener('click', removeWorkerConfirmed);
     
     setupFilterEventListeners();
     
@@ -1769,9 +1653,9 @@ function setupEventListeners() {
 // Sidebar Functions
 // ============================================
 function closeSidebar() {
-    if (DOM.sidebar) DOM.sidebar.classList.remove('active');
-    if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.remove('active');
-    if (DOM.settingsDropdown) DOM.settingsDropdown.classList.remove('active');
+    DOM.sidebar?.classList.remove('active');
+    DOM.sidebarOverlay?.classList.remove('active');
+    DOM.settingsDropdown?.classList.remove('active');
 }
 
 // ============================================
@@ -1781,24 +1665,21 @@ function loadSettings() {
     const savedSettings = localStorage.getItem('shramikconnect_settings');
     if (savedSettings) {
         try {
-            state.settings = JSON.parse(savedSettings);
+            const settings = JSON.parse(savedSettings);
+            state.settings = { ...state.settings, ...settings };
         } catch (e) {
             console.error('Error parsing settings', e);
         }
     }
     
     // Apply settings
-    if (DOM.languageOptions) {
-        DOM.languageOptions.forEach(option => {
-            option.classList.toggle('active', option.dataset.lang === state.settings.language);
-        });
-    }
+    DOM.languageOptions?.forEach(option => {
+        option.classList.toggle('active', option.dataset.lang === state.settings.language);
+    });
     
-    if (DOM.themeOptions) {
-        DOM.themeOptions.forEach(option => {
-            option.classList.toggle('active', option.dataset.theme === state.settings.theme);
-        });
-    }
+    DOM.themeOptions?.forEach(option => {
+        option.classList.toggle('active', option.dataset.theme === state.settings.theme);
+    });
     
     applyTheme();
 }
@@ -1826,44 +1707,35 @@ function setActiveSection(sectionId) {
     state.currentSection = sectionId;
     
     // Update menu items
-    if (DOM.menuItems) {
-        DOM.menuItems.forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.section === sectionId) {
-                item.classList.add('active');
-            }
-        });
-    }
+    DOM.menuItems?.forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.section === sectionId) {
+            item.classList.add('active');
+        }
+    });
     
     // Update nav links
-    if (DOM.navLinks) {
-        DOM.navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.dataset.section === sectionId) {
-                link.classList.add('active');
-            }
-        });
-    }
+    DOM.navLinks?.forEach(link => {
+        if (link.dataset.section === 'help' || link.dataset.section === 'about') return;
+        link.classList.remove('active');
+        if (link.dataset.section === 'dashboard') link.classList.add('active');
+    });
     
     // Update global navigation strip
-    if (DOM.navStripBtns) {
-        DOM.navStripBtns.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.section === sectionId) {
-                btn.classList.add('active');
-            }
-        });
-    }
+    DOM.navStripBtns?.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.section === sectionId) {
+            btn.classList.add('active');
+        }
+    });
     
     // Update content sections
-    if (DOM.contentSections) {
-        DOM.contentSections.forEach(section => {
-            section.classList.remove('active');
-            if (section.id === sectionId) {
-                section.classList.add('active');
-            }
-        });
-    }
+    DOM.contentSections?.forEach(section => {
+        section.classList.remove('active');
+        if (section.id === sectionId) {
+            section.classList.add('active');
+        }
+    });
     
     // Show/hide global navigation strip
     if (DOM.globalNavStrip) {
@@ -1890,28 +1762,21 @@ function openModal(modal) {
 }
 
 function closeAllModals() {
-    if (DOM.modals) {
-        DOM.modals.forEach(modal => modal.classList.remove('active'));
-    }
+    DOM.modals?.forEach(modal => modal.classList.remove('active'));
     document.body.style.overflow = 'auto';
-    if (DOM.settingsDropdown) {
-        DOM.settingsDropdown.classList.remove('active');
-    }
+    DOM.settingsDropdown?.classList.remove('active');
 }
 
 // ============================================
 // Job Functions
 // ============================================
-function submitJob() {
-    if (!DOM.employerNameInput || !DOM.workAddressInput || !DOM.jobTitleInput || 
-        !DOM.workTypeInput || !DOM.jobDescriptionInput || !DOM.requiredSkillsInput || 
-        !DOM.jobLocationInput || !DOM.jobPayInput || !DOM.workTimeInput) {
+async function submitJob() {
+    if (!DOM.jobTitleInput || !DOM.workTypeInput || !DOM.jobDescriptionInput || 
+        !DOM.requiredSkillsInput || !DOM.jobLocationInput || !DOM.jobPayInput || !DOM.workTimeInput) {
         showNotification('Form inputs not found', 'error');
         return;
     }
     
-    const employerName = DOM.employerNameInput.value.trim();
-    const workAddress = DOM.workAddressInput.value.trim();
     const title = DOM.jobTitleInput.value.trim();
     const workType = DOM.workTypeInput.value.trim();
     const description = DOM.jobDescriptionInput.value.trim();
@@ -1926,47 +1791,62 @@ function submitJob() {
     }
     
     const location = DOM.jobLocationInput.value.trim();
+    const workAddress = DOM.workAddressInput?.value.trim() || location;
     const pay = parseInt(DOM.jobPayInput.value);
     const time = parseInt(DOM.workTimeInput.value);
     const toolsAvailable = DOM.toolsAvailableInput ? DOM.toolsAvailableInput.checked : false;
-    const latitude = parseFloat(DOM.latitudeInput ? DOM.latitudeInput.value : 0);
-    const longitude = parseFloat(DOM.longitudeInput ? DOM.longitudeInput.value : 0);
+    const latitude = DOM.latitudeInput ? parseFloat(DOM.latitudeInput.value) : 19.0760;
+    const longitude = DOM.longitudeInput ? parseFloat(DOM.longitudeInput.value) : 72.8777;
     
-    if (!employerName || !workAddress || !title || !workType || !description || selectedSkills.length === 0 || !location || !pay || !time) {
+    if (!title || !workType || !description || selectedSkills.length === 0 || !location || !pay || !time) {
         showNotification('Please fill in all required fields', 'error');
         return;
     }
     
-    const newJob = {
-        id: Date.now(),
-        employerName,
-        workAddress,
-        latitude,
-        longitude,
+    const jobData = {
         title,
         workType,
         description,
         skills: selectedSkills,
         location,
+        workAddress,
+        latitude,
+        longitude,
         pay,
         time,
-        toolsAvailable,
-        status: 'open',
-        postedDate: new Date().toISOString().split('T')[0]
+        toolsAvailable
     };
     
-    state.jobs.unshift(newJob);
-    renderJobs();
-    updateStats();
-    
-    // Reset form (including multi-select)
-    if (DOM.jobForm) {
-        DOM.jobForm.reset();
+    try {
+        const response = await fetch('/api/employer/create-job/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(jobData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            await loadEmployerJobs();
+            renderJobs();
+            updateStats();
+            
+            // Reset form
+            if (DOM.jobForm) {
+                DOM.jobForm.reset();
+            }
+            closeAllModals();
+            showNotification('Job posted successfully!', 'success');
+        } else {
+            showNotification(data.message || 'Failed to post job', 'error');
+        }
+    } catch (error) {
+        console.error('Error posting job:', error);
+        showNotification('Network error. Please try again.', 'error');
     }
-    closeAllModals();
-    
-    // Show success message
-    showNotification('Job posted successfully!', 'success');
 }
 
 function confirmDeleteJob(jobId) {
@@ -1978,79 +1858,252 @@ function confirmDeleteJob(jobId) {
         DOM.deleteConfirmTitle.textContent = i18n.t('delete_job_confirm');
     }
     if (DOM.deleteConfirmMessage) {
-        DOM.deleteConfirmMessage.textContent = `Job: ${job.title}`;
+        DOM.deleteConfirmMessage.textContent = `${i18n.t('job_title')}: ${job.title}`;
     }
     openModal(DOM.deleteConfirmModal);
 }
 
-function deleteJobConfirmed() {
+async function deleteJobConfirmed() {
     if (!state.pendingDeleteJobId) return;
     
-    state.jobs = state.jobs.filter(job => job.id !== state.pendingDeleteJobId);
-    renderJobs();
-    updateStats();
-    closeAllModals();
-    showNotification('Job deleted successfully', 'success');
+    try {
+        const response = await fetch(`/api/employer/delete-job/${state.pendingDeleteJobId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            state.jobs = state.jobs.filter(job => job.id !== state.pendingDeleteJobId);
+            renderJobs();
+            updateStats();
+            closeAllModals();
+            showNotification('Job deleted successfully', 'success');
+        } else {
+            showNotification(data.message || 'Failed to delete job', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting job:', error);
+        showNotification('Network error. Please try again.', 'error');
+    }
+    
     state.pendingDeleteJobId = null;
 }
 
 function viewApplicants(jobId) {
+    // Filter applications for this job
+    const jobApplications = state.applications.filter(app => app.job_id === jobId && app.status !== 'rejected');
+    
+    // Update state to show only these applications
+    // For now, just navigate to accepted workers section
     setActiveSection('accepted-workers');
 }
 
 // ============================================
-// Worker Functions
+// Application Management Functions
 // ============================================
-function openChat(workerId) {
-    const worker = [...state.acceptedWorkers, ...state.hiredWorkers].find(w => w.id === workerId);
-    if (!worker) return;
+async function updateApplicationStatus(applicationId, newStatus) {
+    try {
+        const response = await fetch('/api/employer/update-application-status/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                application_id: applicationId,
+                status: newStatus
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            await loadApplications();
+            await loadEmployerJobs(); // Update job counts
+            
+            renderPendingApplications();
+            renderAcceptedWorkers();
+            renderHiredWorkers();
+            renderJobs();
+            updateStats();
+            
+            showNotification(data.message || `Application ${newStatus} successfully!`, 'success');
+        } else {
+            showNotification(data.message || 'Failed to update application', 'error');
+        }
+    } catch (error) {
+        console.error('Error updating application:', error);
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+
+function hireWorker(applicationId) {
+    updateApplicationStatus(applicationId, 'hired');
+}
+
+function acceptApplication(applicationId) {
+    updateApplicationStatus(applicationId, 'accepted');
+}
+
+function rejectApplication(applicationId) {
+    updateApplicationStatus(applicationId, 'rejected');
+}
+
+function confirmRemoveWorker(workerId) {
+    const application = state.acceptedWorkers.find(app => app.id === workerId);
+    if (!application) return;
     
-    state.currentWorkerId = workerId;
-    state.currentChatWorker = worker;
-    if (DOM.chatWorkerName) {
-        DOM.chatWorkerName.textContent = worker.name;
+    state.pendingRemoveWorkerId = workerId;
+    openModal(DOM.removeWorkerModal);
+}
+
+function removeWorkerConfirmed() {
+    if (!state.pendingRemoveWorkerId) return;
+    rejectApplication(state.pendingRemoveWorkerId);
+    closeAllModals();
+    state.pendingRemoveWorkerId = null;
+}
+
+function confirmCompleteWork(applicationId) {
+    const application = state.hiredWorkers.find(app => app.id === applicationId);
+    if (!application) return;
+    
+    state.pendingCompleteApplicationId = applicationId;
+    if (DOM.ratingWorkerName) {
+        DOM.ratingWorkerName.textContent = application.worker?.name || 'Worker';
+    }
+    openModal(DOM.workCompleteModal);
+}
+
+async function completeWorkConfirmed() {
+    if (!state.pendingCompleteApplicationId) return;
+    
+    closeAllModals();
+    openModal(DOM.ratingModal);
+}
+
+// ============================================
+// Rating Functions
+// ============================================
+function setRating(rating) {
+    if (DOM.ratingSelectedValue) {
+        DOM.ratingSelectedValue.textContent = rating;
+    }
+    highlightStars(rating);
+    if (DOM.submitRatingBtn) {
+        DOM.submitRatingBtn.disabled = rating === 0;
+    }
+}
+
+function highlightStars(rating) {
+    DOM.stars?.forEach(star => {
+        if (parseInt(star.dataset.rating) <= rating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+async function submitRating() {
+    if (!DOM.ratingSelectedValue) return;
+    
+    const rating = parseInt(DOM.ratingSelectedValue.textContent);
+    if (rating === 0) return;
+    
+    const feedback = DOM.ratingFeedback?.value || '';
+    
+    try {
+        const response = await fetch('/api/employer/complete-work/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                application_id: state.pendingCompleteApplicationId,
+                rating: rating,
+                feedback: feedback
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            await loadApplications();
+            await loadEmployerJobs();
+            await loadWorkHistory();
+            
+            organizeApplications();
+            renderPendingApplications();
+            renderAcceptedWorkers();
+            renderHiredWorkers();
+            renderWorkHistory();
+            updateStats();
+            renderRatingStars();
+            
+            closeAllModals();
+            showNotification('Work completed and rated successfully!', 'success');
+        } else {
+            showNotification(data.message || 'Failed to complete work', 'error');
+        }
+    } catch (error) {
+        console.error('Error completing work:', error);
+        showNotification('Network error. Please try again.', 'error');
     }
     
-    // Load chat messages
-    loadChatMessages(workerId);
+    state.pendingCompleteApplicationId = null;
+}
+
+// ============================================
+// Chat Functions
+// ============================================
+function openChat(applicationId) {
+    const application = [...state.pendingApplications, ...state.acceptedWorkers, ...state.hiredWorkers].find(app => app.id === applicationId);
+    if (!application || !application.worker) return;
+    
+    state.currentApplicationId = applicationId;
+    state.currentChatWorker = application.worker;
+    
+    if (DOM.chatWorkerName) {
+        DOM.chatWorkerName.textContent = application.worker.name;
+    }
+    
+    // Load chat messages (to be implemented)
+    loadChatMessages(applicationId);
     
     openModal(DOM.chatModal);
 }
 
-function loadChatMessages(workerId) {
-    const messages = mockData.chatMessages[workerId] || [];
+function loadChatMessages(applicationId) {
     if (!DOM.chatMessages) return;
     
-    DOM.chatMessages.innerHTML = '';
-    
-    messages.forEach(msg => {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${msg.sender === 'employer' ? 'sent' : 'received'}`;
-        
-        const time = msg.time || new Date().toLocaleTimeString('en-IN', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        messageDiv.innerHTML = `
+    // For now, show placeholder
+    DOM.chatMessages.innerHTML = `
+        <div class="chat-message received">
             <div class="message-bubble">
-                <p>${msg.text}</p>
-                <small style="opacity: 0.7; font-size: 11px;">${time}</small>
+                <p>Hello! I'm interested in this job.</p>
+                <small>10:30 AM</small>
             </div>
-        `;
-        
-        DOM.chatMessages.appendChild(messageDiv);
-    });
-    
-    // Scroll to bottom
-    DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
+        </div>
+        <div class="chat-message sent">
+            <div class="message-bubble">
+                <p>Hi! Can you tell me about your experience?</p>
+                <small>10:32 AM</small>
+            </div>
+        </div>
+    `;
 }
 
 function sendChatMessage() {
     if (!DOM.chatInput || !DOM.chatMessages) return;
     
     const message = DOM.chatInput.value.trim();
-    if (!message || !state.currentWorkerId) return;
+    if (!message || !state.currentApplicationId) return;
     
     // Add message to UI
     const messageDiv = document.createElement('div');
@@ -2064,7 +2117,7 @@ function sendChatMessage() {
     messageDiv.innerHTML = `
         <div class="message-bubble">
             <p>${message}</p>
-            <small style="opacity: 0.7; font-size: 11px;">${time}</small>
+            <small>${time}</small>
         </div>
     `;
     
@@ -2073,37 +2126,6 @@ function sendChatMessage() {
     
     // Scroll to bottom
     DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
-    
-    // Simulate reply
-    setTimeout(() => {
-        const replies = [
-            "Yes, I can do that.",
-            "Okay, let's discuss the price.",
-            "I'll be available at that time.",
-            "Can we negotiate the price?",
-            "Thank you for the opportunity."
-        ];
-        
-        const reply = replies[Math.floor(Math.random() * replies.length)];
-        
-        const replyDiv = document.createElement('div');
-        replyDiv.className = 'chat-message received';
-        
-        const replyTime = new Date().toLocaleTimeString('en-IN', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        replyDiv.innerHTML = `
-            <div class="message-bubble">
-                <p>${reply}</p>
-                <small style="opacity: 0.7; font-size: 11px;">${replyTime}</small>
-            </div>
-        `;
-        
-        DOM.chatMessages.appendChild(replyDiv);
-        DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
-    }, 1000);
 }
 
 function handleChatFileUpload(e) {
@@ -2122,7 +2144,7 @@ function handleChatFileUpload(e) {
     messageDiv.innerHTML = `
         <div class="message-bubble">
             <p><i class="fas fa-paperclip"></i> ${file.name} (${(file.size / 1024).toFixed(1)} KB)</p>
-            <small style="opacity: 0.7; font-size: 11px;">${time}</small>
+            <small>${time}</small>
         </div>
     `;
     
@@ -2157,7 +2179,7 @@ function handleVoiceMessage() {
         messageDiv.innerHTML = `
             <div class="message-bubble">
                 <p><i class="fas fa-microphone"></i> Voice message (0:15)</p>
-                <small style="opacity: 0.7; font-size: 11px;">${time}</small>
+                <small>${time}</small>
             </div>
         `;
         
@@ -2167,182 +2189,43 @@ function handleVoiceMessage() {
 }
 
 function handleNegotiation(type, value) {
-    if (!state.currentWorkerId) return;
+    if (!state.currentApplicationId || !state.currentChatWorker) return;
     
-    const worker = state.acceptedWorkers.find(w => w.id === state.currentWorkerId);
-    if (!worker || !DOM.chatMessages) return;
+    if (!DOM.chatMessages) return;
     
+    // Add negotiation message to chat
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message sent';
+    
+    const time = new Date().toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    let message = '';
     if (type === 'price') {
-        worker.negotiatedPrice = (worker.negotiatedPrice || worker.expectedPrice) + value;
-        
-        // Add negotiation message to chat
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'chat-message sent';
-        
-        const time = new Date().toLocaleTimeString('en-IN', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
         const action = value > 0 ? 'increased' : 'decreased';
-        messageDiv.innerHTML = `
-            <div class="message-bubble">
-                <p>I have ${action} the price by ₹${Math.abs(value)}. New price: ₹${worker.negotiatedPrice}</p>
-                <small style="opacity: 0.7; font-size: 11px;">${time}</small>
-            </div>
-        `;
-        
-        DOM.chatMessages.appendChild(messageDiv);
-        
-        // Update worker card
-        renderAcceptedWorkers();
-        
-        showNotification(`Price ${action} to ₹${worker.negotiatedPrice}`, 'success');
+        message = `I have ${action} the price by ₹${Math.abs(value)}.`;
+    } else if (type === 'time') {
+        const action = value > 0 ? 'increased' : 'decreased';
+        message = `I have ${action} the time by ${Math.abs(value)} hour.`;
     }
     
-    // Scroll to bottom
+    messageDiv.innerHTML = `
+        <div class="message-bubble">
+            <p>${message}</p>
+            <small>${time}</small>
+        </div>
+    `;
+    
+    DOM.chatMessages.appendChild(messageDiv);
     DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
+    
+    showNotification(`Negotiation sent`, 'success');
 }
 
-function redirectToProfile(workerId) {
-    showNotification('Redirecting to worker profile page...', 'info');
-}
-
-function hireWorker(workerId) {
-    const workerIndex = state.acceptedWorkers.findIndex(w => w.id === workerId);
-    if (workerIndex === -1) return;
-    
-    const worker = state.acceptedWorkers[workerIndex];
-    
-    // Move worker from accepted to hired
-    state.acceptedWorkers.splice(workerIndex, 1);
-    state.hiredWorkers.push({
-        ...worker,
-        hiredDate: new Date().toISOString().split('T')[0],
-        status: 'in-progress'
-    });
-    
-    // Update UI
-    renderAcceptedWorkers();
-    renderHiredWorkers();
-    updateStats();
-    
-    showNotification(`${worker.name} hired successfully!`, 'success');
-}
-
-function confirmRemoveWorker(workerId) {
-    const worker = state.acceptedWorkers.find(w => w.id === workerId);
-    if (!worker) return;
-    
-    state.pendingRemoveWorkerId = workerId;
-    openModal(DOM.removeWorkerModal);
-}
-
-function removeWorkerConfirmed() {
-    if (!state.pendingRemoveWorkerId) return;
-    
-    state.acceptedWorkers = state.acceptedWorkers.filter(w => w.id !== state.pendingRemoveWorkerId);
-    renderAcceptedWorkers();
-    closeAllModals();
-    showNotification('Worker removed', 'success');
-    state.pendingRemoveWorkerId = null;
-}
-
-function confirmCompleteWork(workerId) {
-    const worker = state.hiredWorkers.find(w => w.id === workerId);
-    if (!worker) return;
-    
-    state.pendingCompleteWorkerId = workerId;
-    openModal(DOM.workCompleteModal);
-}
-
-function completeWorkConfirmed() {
-    if (!state.pendingCompleteWorkerId) return;
-    
-    const workerIndex = state.hiredWorkers.findIndex(w => w.id === state.pendingCompleteWorkerId);
-    if (workerIndex === -1) return;
-    
-    const worker = state.hiredWorkers[workerIndex];
-    state.currentWorkerId = worker.id;
-    if (DOM.ratingWorkerName) {
-        DOM.ratingWorkerName.textContent = worker.name;
-    }
-    
-    closeAllModals();
-    openModal(DOM.ratingModal);
-    state.pendingCompleteWorkerId = null;
-}
-
-// ============================================
-// Rating Functions
-// ============================================
-function setRating(rating) {
-    if (DOM.ratingSelectedValue) {
-        DOM.ratingSelectedValue.textContent = rating;
-    }
-    highlightStars(rating);
-    if (DOM.submitRatingBtn) {
-        DOM.submitRatingBtn.disabled = rating === 0;
-    }
-}
-
-function highlightStars(rating) {
-    if (!DOM.stars) return;
-    
-    DOM.stars.forEach(star => {
-        if (parseInt(star.dataset.rating) <= rating) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-}
-
-function submitRating() {
-    if (!DOM.ratingSelectedValue) return;
-    
-    const rating = parseInt(DOM.ratingSelectedValue.textContent);
-    if (rating === 0) return;
-    
-    const workerIndex = state.hiredWorkers.findIndex(w => w.id === state.currentWorkerId);
-    if (workerIndex === -1) return;
-    
-    const worker = state.hiredWorkers[workerIndex];
-    const job = state.jobs.find(j => j.id === worker.jobId);
-    
-    // Move to work history
-    const workHistory = {
-        id: Date.now(),
-        workerId: worker.id,
-        workerName: worker.name,
-        workerPhoto: worker.photo,
-        employerName: job?.employerName || 'Rajesh Sharma',
-        jobId: worker.jobId,
-        jobTitle: job?.title || 'Unknown Job',
-        workAddress: job?.workAddress || 'Unknown',
-        completionDate: new Date().toISOString().split('T')[0],
-        rating: rating,
-        payment: worker.negotiatedPrice || worker.expectedPrice,
-        feedback: DOM.ratingFeedback ? DOM.ratingFeedback.value || 'Work completed successfully' : 'Work completed successfully',
-        workType: job?.workType || 'Unknown',
-        toolsAvailable: job?.toolsAvailable || false,
-        jobDescription: job?.description || '',
-        requiredSkills: job?.skills || [],
-        workTime: job?.time || 0,
-        jobLocation: job?.location || ''
-    };
-    
-    state.workHistory.unshift(workHistory);
-    state.hiredWorkers.splice(workerIndex, 1);
-    
-    // Update UI
-    renderHiredWorkers();
-    renderWorkHistory();
-    updateStats();
-    renderRatingStars();
-    
-    closeAllModals();
-    showNotification(`Work completed and ${worker.name} rated ${rating} stars!`, 'success');
+function viewWorkerProfile(workerId) {
+    showNotification('Worker profile feature coming soon!', 'info');
 }
 
 // ============================================
@@ -2419,42 +2302,35 @@ function generateAIResponse(message) {
     const lowerMessage = message.toLowerCase();
     
     if (lowerMessage.includes('best worker') || lowerMessage.includes('find worker')) {
-        return `Based on your job requirements, I've analyzed all available workers and found the top candidates. Here are my recommendations:
-
-1. **Ramesh Kumar** (Rating: 4.5/5) - Best match for electrical work. Has 8+ years experience in house wiring and is located just 2.5km from your job site.
-
-2. **Arun Singh** (Rating: 4.7/5) - Top choice for plumbing jobs. Specializes in bathroom renovations and pipe fitting with excellent customer feedback.
-
-3. **Vikram Joshi** (Rating: 4.8/5) - Highly skilled carpenter with expertise in custom furniture making. Has completed 25+ similar projects.
-
-I've displayed detailed suggestions in the right panel. You can filter workers by skills, rating, or distance to find the perfect match.`;
+        const topWorkers = state.acceptedWorkers
+            .sort((a, b) => (b.worker?.rating || 0) - (a.worker?.rating || 0))
+            .slice(0, 3);
+        
+        if (topWorkers.length > 0) {
+            let response = "Based on your job requirements, here are the top candidates:\n\n";
+            topWorkers.forEach((app, i) => {
+                response += `${i+1}. **${app.worker?.name}** (Rating: ${app.worker?.rating}/5) - ₹${app.expected_price}\n`;
+                response += `   Skills: ${app.worker?.skills?.join(', ')}\n\n`;
+            });
+            return response;
+        }
+        return `I've analyzed all available workers but couldn't find any matching your criteria. Try adjusting your filters or post a new job to attract workers.`;
     } else if (lowerMessage.includes('plumbing') || lowerMessage.includes('plumber')) {
-        return `For plumbing jobs, I recommend these workers:
-
-1. **Arun Singh** (4.7/5 rating) - Specializes in bathroom plumbing and pipe fitting. 12 years experience.
-
-2. **Ajay Verma** (4.9/5 rating) - Expert in advanced plumbing systems. Currently hired for your Pune project.
-
-Key factors considered: Experience with bathroom renovations, leak repair skills, customer ratings, and proximity to your location.`;
-    } else if (lowerMessage.includes('electric') || lowerMessage.includes('wiring')) {
-        return `For electrical work, here are the top workers:
-
-1. **Ramesh Kumar** (4.5/5) - 8 years experience, specializes in house wiring and circuit repair.
-
-2. **Suresh Patel** (4.2/5) - Strong troubleshooting skills, 5 years experience.
-
-3. **Priya Sharma** (4.3/5) - Excellent safety record, specializes in electrical maintenance.
-
-All are available in Mumbai and have experience with residential electrical work.`;
+        const plumbers = state.applications.filter(app => 
+            app.worker?.skills?.some(s => s.toLowerCase().includes('plumb'))
+        );
+        if (plumbers.length > 0) {
+            return `Found ${plumbers.length} workers with plumbing skills. Check the accepted workers section to review them.`;
+        }
+        return `No workers with plumbing skills found in current applications.`;
     } else {
         return `I understand you're looking for workers. To help you better, please specify:
 
-- What type of job (electrical, plumbing, carpentry, etc.)
-- Location preferences
+- What type of worker (electrical, plumbing, carpentry, etc.)
 - Budget range
 - Required experience level
 
-For example, try: "Find best worker for electrical wiring in Mumbai" or "Show me carpenters with 5+ years experience".`;
+For example, try: "Find best electrician" or "Show me workers with 5+ years experience".`;
     }
 }
 
@@ -2468,38 +2344,43 @@ function generateAISuggestions(message) {
     
     if (lowerMessage.includes('best worker') || lowerMessage.includes('find worker')) {
         suggestedWorkers = state.acceptedWorkers
-            .sort((a, b) => b.rating - a.rating)
+            .sort((a, b) => (b.worker?.rating || 0) - (a.worker?.rating || 0))
             .slice(0, 5);
     } else if (lowerMessage.includes('electric') || lowerMessage.includes('wiring')) {
         suggestedWorkers = state.acceptedWorkers
-            .filter(w => w.skills.some(s => s.toLowerCase().includes('electric') || s.toLowerCase().includes('wiring')))
-            .sort((a, b) => b.rating - a.rating)
+            .filter(app => app.worker?.skills?.some(s => 
+                s.toLowerCase().includes('electric') || s.toLowerCase().includes('wiring')
+            ))
+            .sort((a, b) => (b.worker?.rating || 0) - (a.worker?.rating || 0))
             .slice(0, 5);
     } else if (lowerMessage.includes('plumb')) {
         suggestedWorkers = state.acceptedWorkers
-            .filter(w => w.skills.some(s => s.toLowerCase().includes('plumb') || s.toLowerCase().includes('pipe')))
-            .sort((a, b) => b.rating - a.rating)
+            .filter(app => app.worker?.skills?.some(s => 
+                s.toLowerCase().includes('plumb') || s.toLowerCase().includes('pipe')
+            ))
+            .sort((a, b) => (b.worker?.rating || 0) - (a.worker?.rating || 0))
             .slice(0, 5);
     } else {
         suggestedWorkers = state.acceptedWorkers
-            .sort((a, b) => b.rating - a.rating)
+            .sort((a, b) => (b.worker?.rating || 0) - (a.worker?.rating || 0))
             .slice(0, 3);
     }
     
-    suggestedWorkers.forEach(worker => {
+    suggestedWorkers.forEach(app => {
+        const worker = app.worker;
         const suggestionCard = document.createElement('div');
         suggestionCard.className = 'ai-suggestion-card';
         
         suggestionCard.innerHTML = `
-            <h4>${worker.name}</h4>
-            <p>${worker.skills.slice(0, 3).join(' • ')}</p>
+            <h4>${worker?.name || 'Unknown'}</h4>
+            <p>${worker?.skills?.slice(0, 3).join(' • ') || 'No skills'}</p>
             <div class="worker-info">
-                <span>⭐ ${worker.rating}/5</span>
-                <span>📍 ${worker.distance} km</span>
-                <span>₹${worker.expectedPrice}</span>
+                <span>⭐ ${worker?.rating || 0}/5</span>
+                <span>📍 ${worker?.city || 'Unknown'}</span>
+                <span>₹${app.expected_price}</span>
             </div>
-            <button class="small-btn hire-btn" onclick="hireWorker(${worker.id})" style="margin-top: 10px; width: 100%;">
-                Hire ${worker.name.split(' ')[0]}
+            <button class="small-btn hire-btn" onclick="hireWorker(${app.id})" style="margin-top: 10px; width: 100%;">
+                ${i18n.t('hire')} ${worker?.name?.split(' ')[0] || 'Worker'}
             </button>
         `;
         
@@ -2516,8 +2397,9 @@ function viewWorkHistoryDetails(historyId) {
     
     // Create stars for rating
     let starsHTML = '';
+    const rating = history.rating || 0;
     for (let i = 1; i <= 5; i++) {
-        if (i <= history.rating) {
+        if (i <= rating) {
             starsHTML += '<i class="fas fa-star" style="color: #FFD700;"></i>';
         } else {
             starsHTML += '<i class="far fa-star" style="color: #ddd;"></i>';
@@ -2526,78 +2408,78 @@ function viewWorkHistoryDetails(historyId) {
     
     DOM.workHistoryDetails.innerHTML = `
         <div class="detail-section">
-            <h3>Employer Details</h3>
+            <h3>${i18n.t('employer_details')}</h3>
             <div class="detail-row">
-                <span class="detail-label">Name</span>
-                <span class="detail-value">${history.employerName}</span>
+                <span class="detail-label">${i18n.t('name')}</span>
+                <span class="detail-value">${history.employerName || 'You'}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Work Address</span>
-                <span class="detail-value">${history.workAddress}</span>
+                <span class="detail-label">${i18n.t('work_address')}</span>
+                <span class="detail-value">${history.workAddress || 'Not specified'}</span>
             </div>
         </div>
         
         <div class="detail-section">
-            <h3>Worker Details</h3>
+            <h3>${i18n.t('worker_details')}</h3>
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                <img src="${history.workerPhoto}" alt="${history.workerName}" style="width: 60px; height: 60px; border-radius: 50%;">
+                <img src="${history.workerPhoto || 'https://randomuser.me/api/portraits/men/1.jpg'}" alt="${history.workerName}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
                 <div>
-                    <div style="font-weight: 600; font-size: 18px;">${history.workerName}</div>
-                    <div style="color: #666; font-size: 14px;">Completed on ${new Date(history.completionDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                    <div style="font-weight: 600; font-size: 18px;">${history.workerName || 'Unknown'}</div>
+                    <div style="color: #666; font-size: 14px;">${i18n.t('completed_on')} ${new Date(history.completionDate || new Date()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                 </div>
             </div>
         </div>
         
         <div class="detail-section">
-            <h3>Job Details</h3>
+            <h3>${i18n.t('job_details')}</h3>
             <div class="detail-row">
-                <span class="detail-label">Job Title</span>
-                <span class="detail-value">${history.jobTitle}</span>
+                <span class="detail-label">${i18n.t('job_title')}</span>
+                <span class="detail-value">${history.jobTitle || 'Unknown'}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Work Type</span>
-                <span class="detail-value">${history.workType}</span>
+                <span class="detail-label">${i18n.t('work_type')}</span>
+                <span class="detail-value">${history.workType || 'Not specified'}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Job Description</span>
+                <span class="detail-label">${i18n.t('job_description')}</span>
                 <span class="detail-value">${history.jobDescription || 'Not specified'}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Required Skills</span>
+                <span class="detail-label">${i18n.t('required_skills')}</span>
                 <span class="detail-value">${Array.isArray(history.requiredSkills) ? history.requiredSkills.join(', ') : history.requiredSkills || 'Not specified'}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Location</span>
+                <span class="detail-label">${i18n.t('location')}</span>
                 <span class="detail-value">${history.jobLocation || 'Not specified'}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Work Time</span>
+                <span class="detail-label">${i18n.t('work_time')}</span>
                 <span class="detail-value">${history.workTime || 0} hours</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Tools Provided</span>
-                <span class="detail-value">${history.toolsAvailable ? 'Yes' : 'No'}</span>
+                <span class="detail-label">${i18n.t('tools_available')}</span>
+                <span class="detail-value">${history.toolsAvailable ? i18n.t('yes') : i18n.t('no')}</span>
             </div>
         </div>
         
         <div class="detail-section">
-            <h3>Payment & Rating</h3>
+            <h3>${i18n.t('payment_rating')}</h3>
             <div class="detail-row">
-                <span class="detail-label">Payment</span>
-                <span class="detail-value" style="color: #01A060; font-size: 20px;">₹${history.payment}</span>
+                <span class="detail-label">${i18n.t('payment')}</span>
+                <span class="detail-value" style="color: #01A060; font-size: 20px;">₹${(history.payment || 0).toLocaleString('en-IN')}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Rating</span>
+                <span class="detail-label">${i18n.t('rating')}</span>
                 <span class="detail-value">
                     <div style="display: flex; align-items: center; gap: 5px;">
                         ${starsHTML}
-                        <span style="font-weight: 600; margin-left: 10px;">${history.rating}/5</span>
+                        <span style="font-weight: 600; margin-left: 10px;">${rating}/5</span>
                     </div>
                 </span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Feedback</span>
-                <span class="detail-value">${history.feedback || 'No feedback provided'}</span>
+                <span class="detail-label">${i18n.t('feedback')}</span>
+                <span class="detail-value">${history.feedback || i18n.t('no_feedback')}</span>
             </div>
         </div>
     `;
@@ -2645,28 +2527,6 @@ function showNotification(message, type = 'success') {
             }
         }, 300);
     }, 3000);
-}
-
-// ============================================
-// AI Assistant Access Controller
-// ============================================
-function handleAIAccess(source) {
-    console.log(`AI Access from: ${source}`);
-    
-    if (source === 'dashboard' || source === 'sidebar') {
-        setActiveSection('ai-assistant');
-        if (DOM.globalNavStrip) {
-            DOM.globalNavStrip.classList.add('active');
-        }
-        return;
-    }
-    
-    if (source === 'quick-links' || source === 'modal' || source === 'other') {
-        openModal(DOM.aiAssistantModal);
-        return;
-    }
-    
-    openModal(DOM.aiAssistantModal);
 }
 
 // ============================================
@@ -2760,18 +2620,8 @@ function setupFilterEventListeners() {
             renderWorkHistory();
         });
     }
-    
-    // Close filters when clicking outside
-    document.addEventListener('click', () => {
-        state.filters.activeFilterType = null;
-        state.historyFilters.activeFilterType = null;
-        updateFilterUI();
-    });
 }
 
-// ============================================
-// Filter UI Management
-// ============================================
 function closeAllFilterOptions(isHistory = false) {
     const allNestedOptions = document.querySelectorAll('.filter-nested-options');
     allNestedOptions.forEach(options => {
@@ -2847,11 +2697,6 @@ function handleLogout() {
 }
 
 // ============================================
-// Initialize the application
-// ============================================
-document.addEventListener('DOMContentLoaded', init);
-
-// ============================================
 // Add animation styles
 // ============================================
 const style = document.createElement('style');
@@ -2886,6 +2731,7 @@ style.textContent = `
         background: #F8F8F8;
         border-radius: 16px;
         border: 2px dashed rgba(1, 160, 96, 0.2);
+        width: 100%;
     }
     
     .empty-state-icon {
@@ -2923,5 +2769,28 @@ style.textContent = `
         background: #018049;
         transform: translateY(-2px);
     }
+    
+    .worker-rating i {
+        color: #FFD700;
+        margin-right: 2px;
+    }
+    
+    .worker-rating span {
+        margin-left: 5px;
+        font-weight: 600;
+    }
+    
+    .reject-btn {
+        background-color: #DC2626 !important;
+    }
+    
+    .reject-btn:hover {
+        background-color: #B91C1C !important;
+    }
 `;
 document.head.appendChild(style);
+
+// ============================================
+// Initialize the application
+// ============================================
+document.addEventListener('DOMContentLoaded', init);

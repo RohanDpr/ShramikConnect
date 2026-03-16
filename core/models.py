@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
-import os
 from datetime import timedelta
 from django.utils import timezone
 import random
@@ -10,7 +9,7 @@ import string
 
 class Employer(models.Model):
     """Model to store employer registration data"""
-    # ... (existing Employer model code remains same)
+    
     GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
@@ -128,7 +127,7 @@ class Employer(models.Model):
 
 
 # ============================================
-# WORKER MODEL - ADD THIS
+# WORKER MODEL
 # ============================================
 
 class Worker(models.Model):
@@ -301,6 +300,10 @@ class EmailOTP(models.Model):
         return ''.join(random.choices(string.digits, k=6))
 
 
+# ============================================
+# JOB MODEL
+# ============================================
+
 class Job(models.Model):
     """Model to store job posts"""
     
@@ -331,17 +334,24 @@ class Job(models.Model):
     
     class Meta:
         ordering = ['-posted_date']
+    
+    def __str__(self):
+        return f"{self.title} - {self.employer.get_full_name()}"
 
+
+# ============================================
+# JOB APPLICATION MODEL (UPDATED)
+# ============================================
 
 class JobApplication(models.Model):
     """Model to store job applications"""
     
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
-        ('hired', 'Hired'),
-        ('completed', 'Completed'),
+        ('pending', 'Pending'),      # Applied but not yet reviewed
+        ('accepted', 'Accepted'),     # Employer ne accept kiya but hired nahi
+        ('rejected', 'Rejected'),     # Rejected
+        ('hired', 'Hired'),           # Final selection
+        ('completed', 'Completed'),   # Work done + rating
     ]
     
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
@@ -355,9 +365,24 @@ class JobApplication(models.Model):
     hired_date = models.DateTimeField(null=True, blank=True)
     completion_date = models.DateTimeField(null=True, blank=True)
     
+    # Read status fields
+    employer_read = models.BooleanField(default=False)  # Employer ne application dekha?
+    worker_read = models.BooleanField(default=False)    # Worker ne status update dekha?
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-applied_date']
+        unique_together = ['job', 'worker']  # Ek worker ek job par ek baar apply kar sakta hai
+    
+    def __str__(self):
+        return f"{self.worker.get_full_name()} - {self.job.title} - {self.status}"
 
+
+# ============================================
+# WORK HISTORY MODEL
+# ============================================
 
 class WorkHistory(models.Model):
     """Model to store completed work history"""
@@ -384,7 +409,17 @@ class WorkHistory(models.Model):
     job_location = models.CharField(max_length=200)
     
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-completion_date']
+    
+    def __str__(self):
+        return f"{self.job_title} - {self.worker_name} - {self.completion_date}"
 
+
+# ============================================
+# CHAT MESSAGE MODEL
+# ============================================
 
 class ChatMessage(models.Model):
     """Model to store chat messages"""
@@ -403,3 +438,6 @@ class ChatMessage(models.Model):
     
     class Meta:
         ordering = ['created_at']
+    
+    def __str__(self):
+        return f"{self.sender}: {self.message[:50]}"

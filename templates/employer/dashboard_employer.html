@@ -75,6 +75,10 @@
                     <i class="fas fa-briefcase"></i>
                     <span data-i18n="job_posts">Job Posts</span>
                 </a>
+                <a href="#" class="menu-item-box" data-section="pending-applications">
+                    <i class="fas fa-inbox"></i>
+                    <span data-i18n="pending_applications">Pending Applications</span>
+                </a>
                 <a href="#" class="menu-item-box" data-section="accepted-workers">
                     <i class="fas fa-users"></i>
                     <span data-i18n="accepted_workers">Accepted Workers</span>
@@ -134,6 +138,7 @@
     <div class="global-nav-strip" id="globalNavStrip">
         <button class="nav-strip-btn" data-section="dashboard" data-i18n="dashboard">Dashboard</button>
         <button class="nav-strip-btn" data-section="job-posts" data-i18n="job_posts">Job Posts</button>
+        <button class="nav-strip-btn" data-section="pending-applications" data-i18n="pending_applications">Pending Applications</button>
         <button class="nav-strip-btn" data-section="accepted-workers" data-i18n="accepted_workers">Accepted Workers</button>
         <button class="nav-strip-btn" data-section="hired-workers" data-i18n="hired_workers">Hired Workers</button>
         <button class="nav-strip-btn" data-section="work-history" data-i18n="work_history">Work History</button>
@@ -691,6 +696,21 @@
                     </div>
                 </div>
 
+                <!-- Card 2.5: Pending Applications -->
+                <div class="stat-card clickable" onclick="setActiveSection('pending-applications')">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title" data-i18n="pending_applications">Pending Applications</h3>
+                        <div class="stat-value" id="totalPending">0</div>
+                        <div class="stat-label" data-i18n="pending">Awaiting Review</div>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+
                 <!-- Card 3: Average Rating -->
                 <div class="stat-card clickable" onclick="setActiveSection('work-history')">
                     <div class="stat-icon">
@@ -719,6 +739,10 @@
                     <button class="action-btn" id="postJobBtn">
                         <i class="fas fa-plus-circle"></i>
                         <span data-i18n="post_new_job">Post New Job</span>
+                    </button>
+                    <button class="action-btn" onclick="setActiveSection('pending-applications')">
+                        <i class="fas fa-inbox"></i>
+                        <span data-i18n="pending_applications">Pending Applications</span>
                     </button>
                     <button class="action-btn" id="viewAcceptedBtn">
                         <i class="fas fa-users"></i>
@@ -756,6 +780,16 @@
 
             <div class="jobs-list" id="jobsContainer">
                 <!-- Job cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Pending Applications Section -->
+        <section id="pending-applications" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="pending_applications">Pending Applications</h2>
+            </div>
+            <div class="workers-grid" id="pendingApplicationsContainer">
+                <!-- Pending application cards will be populated by JavaScript -->
             </div>
         </section>
 

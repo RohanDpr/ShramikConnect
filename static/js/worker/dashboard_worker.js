@@ -1,69 +1,25 @@
 /**
  * ShramikConnect - Worker Dashboard
- * COMPLETE WORKING VERSION
+ * COMPLETE WORKING VERSION WITH ALL APIS
  */
 
 // ============================================
-// APPLICATION STATE
+// CSRF TOKEN HELPER
 // ============================================
-const AppState = {
-    workerId: null,
-    worker: {
-        id: null,
-        firstName: '',
-        lastName: '',
-        email: '',
-        mobile: '',
-        profession: '',
-        profilePhoto: null
-    },
-    activeSection: 'dashboard',
-    previousSection: null,
-    sidebarOpen: false,
-    settingsDropdownOpen: false,
-    activeModals: [],
-    jobFilters: {
-        search: '',
-        activeSort: null,
-        selectedSkill: null
-    },
-    appliedFilters: {
-        search: '',
-        activeSort: null,
-        status: null
-    },
-    historyFilters: {
-        search: '',
-        activeSort: null
-    },
-    settings: {
-        language: 'en',
-        theme: 'light'
-    },
-    currentJob: null,
-    currentChat: {
-        employer: null,
-        messages: []
-    },
-    currentFile: null,
-    confirmationData: {
-        jobId: null,
-        callback: null
-    },
-    jobs: [],
-    appliedJobs: [],
-    activeJobs: [],
-    workHistory: [],
-    allSkills: [
-        'Electrician', 'Plumber', 'Welder', 'Mason', 'Painter', 
-        'Carpenter', 'Tile Fitter', 'Helper', 'AC Technician', 
-        'Refrigerator Technician', 'RO Technician', 'CCTV Installer',
-        'Solar Technician', 'Driver (LMV)', 'Heavy Driver', 
-        'Machine Operator', 'Factory Worker', 'Housekeeping', 
-        'Security Guard', 'Gardener', 'Construction Supervisor', 
-        'Crane Operator', 'Forklift Operator'
-    ]
-};
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 // ============================================
 // i18n TRANSLATIONS
@@ -151,7 +107,36 @@ const translations = {
         privacy: "Privacy Policy",
         terms: "Terms & Conditions",
         copyright: "© 2025 ShramikConnect. All rights reserved.",
-        add_message_for_employer: "Add a message for the employer..."
+        add_message_for_employer: "Add a message for the employer...",
+        total_earnings: "Total Earnings",
+        completed_jobs: "Completed Jobs",
+        from_completed_jobs: "From Completed Jobs",
+        successfully_delivered: "Successfully Delivered",
+        no_jobs_found: "No Jobs Found",
+        no_jobs_found_desc: "Check back later for new job postings",
+        no_applied_jobs: "No Applied Jobs",
+        no_applied_jobs_desc: "You haven't applied to any jobs yet",
+        no_active_jobs: "No Active Jobs",
+        no_active_jobs_desc: "You don't have any active jobs at the moment",
+        no_work_history: "No Work History",
+        no_work_history_desc: "Complete jobs will appear here",
+        view: "View",
+        chat: "Chat",
+        details: "Details",
+        apply: "Apply",
+        applied: "Applied",
+        accepted: "Accepted",
+        rejected: "Rejected",
+        hired: "Hired",
+        completed: "Completed",
+        pending: "Pending",
+        job_pay: "Job Pay",
+        your_expected: "Your Expected",
+        applied_on: "Applied on",
+        started_on: "Started on",
+        mark_complete: "Mark Complete",
+        clear_skill_filter: "Clear Skill Filter",
+        clear_status_filter: "Clear Status Filter"
     },
     hi: {
         menu: "मेनू",
@@ -235,7 +220,36 @@ const translations = {
         privacy: "गोपनीयता नीति",
         terms: "नियम और शर्तें",
         copyright: "© 2025 श्रमिककनेक्ट। सर्वाधिकार सुरक्षित।",
-        add_message_for_employer: "नियोक्ता के लिए एक संदेश जोड़ें..."
+        add_message_for_employer: "नियोक्ता के लिए एक संदेश जोड़ें...",
+        total_earnings: "कुल कमाई",
+        completed_jobs: "पूर्ण की गई नौकरियां",
+        from_completed_jobs: "पूर्ण की गई नौकरियों से",
+        successfully_delivered: "सफलतापूर्वक वितरित",
+        no_jobs_found: "कोई नौकरी नहीं मिली",
+        no_jobs_found_desc: "नई नौकरी पोस्ट के लिए बाद में देखें",
+        no_applied_jobs: "कोई आवेदित नौकरी नहीं",
+        no_applied_jobs_desc: "आपने अभी तक किसी नौकरी के लिए आवेदन नहीं किया है",
+        no_active_jobs: "कोई सक्रिय नौकरी नहीं",
+        no_active_jobs_desc: "फिलहाल आपके पास कोई सक्रिय नौकरी नहीं है",
+        no_work_history: "कोई कार्य इतिहास नहीं",
+        no_work_history_desc: "पूर्ण की गई नौकरियां यहां दिखाई देंगी",
+        view: "देखें",
+        chat: "चैट",
+        details: "विवरण",
+        apply: "आवेदन करें",
+        applied: "आवेदित",
+        accepted: "स्वीकृत",
+        rejected: "अस्वीकृत",
+        hired: "किराए पर लिया गया",
+        completed: "पूर्ण",
+        pending: "लंबित",
+        job_pay: "नौकरी का भुगतान",
+        your_expected: "आपकी अपेक्षा",
+        applied_on: "आवेदन तिथि",
+        started_on: "प्रारंभ तिथि",
+        mark_complete: "पूर्ण चिह्नित करें",
+        clear_skill_filter: "कौशल फ़िल्टर साफ़ करें",
+        clear_status_filter: "स्थिति फ़िल्टर साफ़ करें"
     },
     mr: {
         menu: "मेनू",
@@ -319,7 +333,36 @@ const translations = {
         privacy: "गोपनीयता धोरण",
         terms: "अटी आणि नियम",
         copyright: "© 2025 श्रमिककनेक्ट. सर्व हक्क राखीव.",
-        add_message_for_employer: "नियोक्त्यासाठी एक संदेश जोडा..."
+        add_message_for_employer: "नियोक्त्यासाठी एक संदेश जोडा...",
+        total_earnings: "एकूण कमाई",
+        completed_jobs: "पूर्ण केलेल्या नोकऱ्या",
+        from_completed_jobs: "पूर्ण केलेल्या नोकऱ्यांमधून",
+        successfully_delivered: "यशस्वीरित्या वितरित",
+        no_jobs_found: "कोणतीही नोकरी सापडली नाही",
+        no_jobs_found_desc: "नवीन नोकरी पोस्टसाठी नंतर तपासा",
+        no_applied_jobs: "कोणत्याही अर्ज केलेल्या नोकऱ्या नाहीत",
+        no_applied_jobs_desc: "तुम्ही अद्याप कोणत्याही नोकरीसाठी अर्ज केलेला नाही",
+        no_active_jobs: "कोणत्याही सक्रिय नोकऱ्या नाहीत",
+        no_active_jobs_desc: "सध्या तुमच्याकडे कोणतीही सक्रिय नोकरी नाही",
+        no_work_history: "कोणताही कामाचा इतिहास नाही",
+        no_work_history_desc: "पूर्ण केलेल्या नोकऱ्या येथे दिसतील",
+        view: "पहा",
+        chat: "चॅट",
+        details: "तपशील",
+        apply: "अर्ज करा",
+        applied: "अर्ज केले",
+        accepted: "स्वीकृत",
+        rejected: "नकारले",
+        hired: "भाड्याने घेतले",
+        completed: "पूर्ण",
+        pending: "प्रलंबित",
+        job_pay: "नोकरीचे पेमेंट",
+        your_expected: "तुमची अपेक्षा",
+        applied_on: "अर्ज तारीख",
+        started_on: "सुरू तारीख",
+        mark_complete: "पूर्ण चिन्हांकित करा",
+        clear_skill_filter: "कौशल्य फिल्टर साफ करा",
+        clear_status_filter: "स्थिती फिल्टर साफ करा"
     }
 };
 
@@ -461,22 +504,66 @@ const DOM = {
 };
 
 // ============================================
-// CSRF TOKEN HELPER
+// APPLICATION STATE
 // ============================================
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+const AppState = {
+    workerId: null,
+    worker: {
+        id: null,
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobile: '',
+        profession: '',
+        profilePhoto: null
+    },
+    activeSection: 'dashboard',
+    previousSection: null,
+    sidebarOpen: false,
+    settingsDropdownOpen: false,
+    activeModals: [],
+    jobFilters: {
+        search: '',
+        activeSort: null,
+        selectedSkill: null
+    },
+    appliedFilters: {
+        search: '',
+        activeSort: null,
+        status: null
+    },
+    historyFilters: {
+        search: '',
+        activeSort: null
+    },
+    settings: {
+        language: 'en',
+        theme: 'light'
+    },
+    currentJob: null,
+    currentChat: {
+        employer: null,
+        messages: []
+    },
+    currentFile: null,
+    confirmationData: {
+        jobId: null,
+        callback: null
+    },
+    jobs: [],
+    appliedJobs: [],
+    activeJobs: [],
+    workHistory: [],
+    allSkills: [
+        'Electrician', 'Plumber', 'Welder', 'Mason', 'Painter', 
+        'Carpenter', 'Tile Fitter', 'Helper', 'AC Technician', 
+        'Refrigerator Technician', 'RO Technician', 'CCTV Installer',
+        'Solar Technician', 'Driver (LMV)', 'Heavy Driver', 
+        'Machine Operator', 'Factory Worker', 'Housekeeping', 
+        'Security Guard', 'Gardener', 'Construction Supervisor', 
+        'Crane Operator', 'Forklift Operator'
+    ]
+};
 
 // ============================================
 // INITIALIZATION
@@ -559,6 +646,16 @@ async function loadDashboardData() {
                 AppState.worker = window.workerData;
                 AppState.workerId = window.workerData.id;
             }
+            
+            console.log('Dashboard data loaded:', {
+                jobs: AppState.jobs.length,
+                applied: AppState.appliedJobs.length,
+                active: AppState.activeJobs.length,
+                history: AppState.workHistory.length
+            });
+        } else {
+            console.error('Failed to load dashboard data:', data.message);
+            showNotification('Failed to load data', 'error');
         }
     } catch (error) {
         console.error('Error loading dashboard data:', error);
@@ -1124,7 +1221,7 @@ function renderSkillFilters() {
     
     const clearBtn = document.createElement('button');
     clearBtn.className = 'filter-nested-btn';
-    clearBtn.innerHTML = `<i class="fas fa-times-circle"></i> <span>Clear Skill Filter</span>`;
+    clearBtn.innerHTML = `<i class="fas fa-times-circle"></i> <span>${translations[AppState.settings.language].clear_skill_filter || 'Clear Skill Filter'}</span>`;
     clearBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         AppState.jobFilters.selectedSkill = null;
@@ -1271,9 +1368,9 @@ function renderFindJobs() {
         DOM.findJobsContainer.innerHTML = `
             <div class="empty-state-container">
                 <div class="empty-state-icon"><i class="fas fa-search"></i></div>
-                <h3 class="empty-state-title">No Jobs Found</h3>
-                <p class="empty-state-message">${AppState.jobFilters.search || AppState.jobFilters.selectedSkill ? 'Try adjusting your search criteria' : 'Check back later for new job postings'}</p>
-                ${AppState.jobFilters.selectedSkill ? `<button class="small-btn" id="clearSkillFilterBtn" style="margin-top:15px;"><i class="fas fa-times"></i> Clear Skill Filter</button>` : ''}
+                <h3 class="empty-state-title">${translations[AppState.settings.language].no_jobs_found || 'No Jobs Found'}</h3>
+                <p class="empty-state-message">${(AppState.jobFilters.search || AppState.jobFilters.selectedSkill) ? (translations[AppState.settings.language].no_workers_desc || 'Try adjusting your search criteria') : (translations[AppState.settings.language].no_jobs_found_desc || 'Check back later for new job postings')}</p>
+                ${AppState.jobFilters.selectedSkill ? `<button class="small-btn" id="clearSkillFilterBtn" style="margin-top:15px;"><i class="fas fa-times"></i> ${translations[AppState.settings.language].clear_skill_filter || 'Clear Skill Filter'}</button>` : ''}
             </div>
         `;
         
@@ -1293,6 +1390,8 @@ function createJobCard(job) {
     card.className = 'job-card';
     card.dataset.id = job.id;
     
+    const lang = AppState.settings.language;
+    
     card.innerHTML = `
         <div class="job-header">
             <div>
@@ -1302,14 +1401,14 @@ function createJobCard(job) {
             </div>
         </div>
         <div class="job-details">
-            <div class="job-detail"><i class="fas fa-money-bill-wave"></i><span>Pay: ₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
-            <div class="job-detail"><i class="fas fa-clock"></i><span>Time: ${job.time || 0} hours</span></div>
-            <div class="job-detail"><i class="fas fa-tools"></i><span>Skills: ${(job.skills || []).join(', ')}</span></div>
+            <div class="job-detail"><i class="fas fa-money-bill-wave"></i><span>${translations[lang].payment || 'Pay'}: ₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+            <div class="job-detail"><i class="fas fa-clock"></i><span>${translations[lang].time_required || 'Time'}: ${job.time || 0} hours</span></div>
+            <div class="job-detail"><i class="fas fa-tools"></i><span>${translations[lang].skills || 'Skills'}: ${(job.skills || []).join(', ')}</span></div>
         </div>
         <div class="job-actions">
-            <button class="small-btn apply-btn"><i class="fas fa-paper-plane"></i> Apply</button>
-            <button class="small-btn chat-job-btn"><i class="fas fa-comment"></i> Chat</button>
-            <button class="small-btn view-details-btn"><i class="fas fa-eye"></i> Details</button>
+            <button class="small-btn apply-btn"><i class="fas fa-paper-plane"></i> ${translations[lang].apply || 'Apply'}</button>
+            <button class="small-btn chat-job-btn"><i class="fas fa-comment"></i> ${translations[lang].chat || 'Chat'}</button>
+            <button class="small-btn view-details-btn"><i class="fas fa-eye"></i> ${translations[lang].details || 'Details'}</button>
         </div>
     `;
     
@@ -1328,15 +1427,15 @@ function applyForJob(jobId) {
     
     DOM.jobPreviewContent.innerHTML = `
         <h3>${job.title}</h3>
-        <div class="preview-detail"><span class="preview-label">Employer:</span><span class="preview-value">${job.employerName}</span></div>
-        <div class="preview-detail"><span class="preview-label">Location:</span><span class="preview-value">${job.location}</span></div>
-        <div class="preview-detail"><span class="preview-label">Job Pay:</span><span class="preview-value">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
-        <div class="preview-detail"><span class="preview-label">Time Required:</span><span class="preview-value">${job.time || 0} hours</span></div>
-        <div class="preview-detail"><span class="preview-label">Skills Required:</span><span class="preview-value">${(job.skills || []).join(', ')}</span></div>
+        <div class="preview-detail"><span class="preview-label">${translations[AppState.settings.language].employer_name || 'Employer'}:</span><span class="preview-value">${job.employerName}</span></div>
+        <div class="preview-detail"><span class="preview-label">${translations[AppState.settings.language].location || 'Location'}:</span><span class="preview-value">${job.location}</span></div>
+        <div class="preview-detail"><span class="preview-label">${translations[AppState.settings.language].job_pay || 'Job Pay'}:</span><span class="preview-value">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+        <div class="preview-detail"><span class="preview-label">${translations[AppState.settings.language].time_required || 'Time Required'}:</span><span class="preview-value">${job.time || 0} hours</span></div>
+        <div class="preview-detail"><span class="preview-label">${translations[AppState.settings.language].skills || 'Skills Required'}:</span><span class="preview-value">${(job.skills || []).join(', ')}</span></div>
     `;
     
     DOM.expectedPriceInput.value = Math.round((job.pay || 0) * 0.9);
-    DOM.availabilityText.innerHTML = `<i class="fas fa-calendar availability-icon"></i><span class="availability-label">Select availability</span>`;
+    DOM.availabilityText.innerHTML = `<i class="fas fa-calendar availability-icon"></i><span class="availability-label">${translations[AppState.settings.language].select_availability || 'Select availability'}</span>`;
     DOM.availabilityInput.value = '';
     DOM.customDateContainer.style.display = 'none';
     DOM.customDateInput.value = '';
@@ -1402,34 +1501,36 @@ function viewJobDetails(jobId) {
     const job = AppState.jobs.find(j => j.id === jobId);
     if (!job) return;
     
+    const lang = AppState.settings.language;
+    
     DOM.jobDetailsContent.innerHTML = `
         <div class="detail-section">
-            <h3>Job Details</h3>
-            <div class="detail-row"><span class="detail-label">Job Title</span><span class="detail-value">${job.title}</span></div>
-            <div class="detail-row"><span class="detail-label">Work Type</span><span class="detail-value">${job.workType}</span></div>
-            <div class="detail-row"><span class="detail-label">Job Description</span><span class="detail-value">${job.description}</span></div>
-            <div class="detail-row"><span class="detail-label">Required Skills</span><span class="detail-value">${(job.skills || []).join(', ')}</span></div>
-            <div class="detail-row"><span class="detail-label">Location</span><span class="detail-value">${job.location} ${job.distance ? `(${job.distance} km from you)` : ''}</span></div>
-            <div class="detail-row"><span class="detail-label">Time Required</span><span class="detail-value">${job.time || 0} hours</span></div>
-            <div class="detail-row"><span class="detail-label">Posted Date</span><span class="detail-value">${new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
-            <div class="detail-row"><span class="detail-label">Employer Name</span><span class="detail-value">${job.employerName}</span></div>
-            <div class="detail-row"><span class="detail-label">Payment</span><span class="detail-value">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+            <h3>${translations[lang].job_details || 'Job Details'}</h3>
+            <div class="detail-row"><span class="detail-label">${translations[lang].job_title || 'Job Title'}:</span><span class="detail-value">${job.title}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].work_type || 'Work Type'}:</span><span class="detail-value">${job.workType}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].job_description || 'Job Description'}:</span><span class="detail-value">${job.description}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].required_skills || 'Required Skills'}:</span><span class="detail-value">${(job.skills || []).join(', ')}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].location || 'Location'}:</span><span class="detail-value">${job.location} ${job.distance ? `(${job.distance} km from you)` : ''}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].time_required || 'Time Required'}:</span><span class="detail-value">${job.time || 0} hours</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].posted_date || 'Posted Date'}:</span><span class="detail-value">${new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].employer_name || 'Employer Name'}:</span><span class="detail-value">${job.employerName}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].payment || 'Payment'}:</span><span class="detail-value">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
         </div>
         <div class="detail-section">
-            <h3>Employer Details</h3>
+            <h3>${translations[lang].employer_details || 'Employer Details'}</h3>
             <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px;">
-                <img src="${job.employerPhoto || 'https://randomuser.me/api/portraits/men/1.jpg'}" alt="${job.employerName}" style="width:60px;height:60px;border-radius:50%;">
+                <img src="${job.employerPhoto || 'https://randomuser.me/api/portraits/men/1.jpg'}" alt="${job.employerName}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
                 <div><div style="font-weight:600;font-size:18px;">${job.employerName}</div><div style="color:#666;">${job.workType} Employer</div></div>
             </div>
         </div>
         <div class="detail-section">
-            <h3>Payment Details</h3>
-            <div class="detail-row"><span class="detail-label">Job Pay</span><span class="detail-value" style="color:#4362C9;font-size:24px;">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
-            <div class="detail-row"><span class="detail-label">Payment Terms</span><span class="detail-value">Payment upon completion of work</span></div>
+            <h3>${translations[lang].payment_details || 'Payment Details'}</h3>
+            <div class="detail-row"><span class="detail-label">${translations[lang].job_pay || 'Job Pay'}:</span><span class="detail-value" style="color:#4362C9;font-size:24px;">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].payment_terms || 'Payment Terms'}:</span><span class="detail-value">${translations[lang].payment_upon_completion || 'Payment upon completion of work'}</span></div>
         </div>
         <div style="display:flex;gap:15px;margin-top:20px;">
-            <button class="submit-job-btn" id="applyFromDetailsBtn"><i class="fas fa-paper-plane"></i> Apply Now</button>
-            <button class="small-btn chat-job-btn" style="padding:15px 20px;" id="chatFromDetailsBtn"><i class="fas fa-comment"></i> Chat</button>
+            <button class="submit-job-btn" id="applyFromDetailsBtn"><i class="fas fa-paper-plane"></i> ${translations[lang].apply_now || 'Apply Now'}</button>
+            <button class="small-btn chat-job-btn" style="padding:15px 20px;" id="chatFromDetailsBtn"><i class="fas fa-comment"></i> ${translations[lang].chat || 'Chat'}</button>
         </div>
     `;
     
@@ -1486,9 +1587,9 @@ function renderAppliedJobs() {
         DOM.appliedJobsContainer.innerHTML = `
             <div class="empty-state-container">
                 <div class="empty-state-icon"><i class="fas fa-file-alt"></i></div>
-                <h3 class="empty-state-title">No Applied Jobs</h3>
-                <p class="empty-state-message">${AppState.appliedFilters.search || AppState.appliedFilters.status ? 'Try adjusting your search criteria' : 'You haven\'t applied to any jobs yet'}</p>
-                ${AppState.appliedFilters.status ? `<button class="small-btn" id="clearStatusFilterBtn" style="margin-top:15px;"><i class="fas fa-times"></i> Clear Status Filter</button>` : ''}
+                <h3 class="empty-state-title">${translations[AppState.settings.language].no_applied_jobs || 'No Applied Jobs'}</h3>
+                <p class="empty-state-message">${(AppState.appliedFilters.search || AppState.appliedFilters.status) ? (translations[AppState.settings.language].no_workers_desc || 'Try adjusting your search criteria') : (translations[AppState.settings.language].no_applied_jobs_desc || "You haven't applied to any jobs yet")}</p>
+                ${AppState.appliedFilters.status ? `<button class="small-btn" id="clearStatusFilterBtn" style="margin-top:15px;"><i class="fas fa-times"></i> ${translations[AppState.settings.language].clear_status_filter || 'Clear Status Filter'}</button>` : ''}
             </div>
         `;
         
@@ -1507,12 +1608,16 @@ function createAppliedJobCard(job) {
     card.className = 'applied-job-card';
     card.dataset.id = job.id;
     
+    const lang = AppState.settings.language;
+    
     let statusClass = '', statusText = '', statusIcon = '';
     switch(job.status) {
-        case 'applied': statusClass = 'status-applied'; statusText = 'Applied'; statusIcon = 'fa-paper-plane'; break;
-        case 'accepted': statusClass = 'status-accepted'; statusText = 'Accepted'; statusIcon = 'fa-check'; break;
-        case 'rejected': statusClass = 'status-rejected'; statusText = 'Rejected'; statusIcon = 'fa-times'; break;
-        default: statusClass = 'status-applied'; statusText = 'Applied'; statusIcon = 'fa-paper-plane';
+        case 'pending': statusClass = 'status-applied'; statusText = translations[lang].pending || 'Pending'; statusIcon = 'fa-paper-plane'; break;
+        case 'accepted': statusClass = 'status-accepted'; statusText = translations[lang].accepted || 'Accepted'; statusIcon = 'fa-check'; break;
+        case 'rejected': statusClass = 'status-rejected'; statusText = translations[lang].rejected || 'Rejected'; statusIcon = 'fa-times'; break;
+        case 'hired': statusClass = 'status-hired'; statusText = translations[lang].hired || 'Hired'; statusIcon = 'fa-user-check'; break;
+        case 'completed': statusClass = 'status-completed'; statusText = translations[lang].completed || 'Completed'; statusIcon = 'fa-check-circle'; break;
+        default: statusClass = 'status-applied'; statusText = translations[lang].applied || 'Applied'; statusIcon = 'fa-paper-plane';
     }
     
     card.innerHTML = `
@@ -1525,13 +1630,13 @@ function createAppliedJobCard(job) {
             <div class="status-badge ${statusClass}"><i class="fas ${statusIcon}"></i> ${statusText}</div>
         </div>
         <div class="job-details">
-            <div class="job-detail"><i class="fas fa-money-bill-wave"></i><span>Job Pay: ₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
-            <div class="job-detail"><i class="fas fa-rupee-sign"></i><span>Your Expected: ₹${(job.expectedPrice || 0).toLocaleString('en-IN')}</span></div>
-            <div class="job-detail"><i class="fas fa-calendar"></i><span>Applied: ${new Date(job.appliedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+            <div class="job-detail"><i class="fas fa-money-bill-wave"></i><span>${translations[lang].job_pay || 'Job Pay'}: ₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+            <div class="job-detail"><i class="fas fa-rupee-sign"></i><span>${translations[lang].your_expected || 'Your Expected'}: ₹${(job.expectedPrice || 0).toLocaleString('en-IN')}</span></div>
+            <div class="job-detail"><i class="fas fa-calendar"></i><span>${translations[lang].applied_on || 'Applied on'}: ${new Date(job.appliedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
         </div>
         <div class="job-actions">
-            <button class="small-btn chat-job-btn"><i class="fas fa-comment"></i> Chat</button>
-            <button class="small-btn view-details-btn"><i class="fas fa-eye"></i> View Details</button>
+            <button class="small-btn chat-job-btn"><i class="fas fa-comment"></i> ${translations[lang].chat || 'Chat'}</button>
+            <button class="small-btn view-details-btn"><i class="fas fa-eye"></i> ${translations[lang].view || 'View'}</button>
         </div>
     `;
     
@@ -1539,6 +1644,38 @@ function createAppliedJobCard(job) {
     card.querySelector('.view-details-btn').addEventListener('click', () => viewAppliedJobDetails(job.id));
     
     return card;
+}
+
+function viewAppliedJobDetails(jobId) {
+    const job = AppState.appliedJobs.find(j => j.id === jobId);
+    if (!job) return;
+    
+    const lang = AppState.settings.language;
+    
+    DOM.jobDetailsContent.innerHTML = `
+        <div class="detail-section">
+            <h3>${translations[lang].job_details || 'Job Details'}</h3>
+            <div class="detail-row"><span class="detail-label">${translations[lang].job_title || 'Job Title'}:</span><span class="detail-value">${job.jobTitle}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].employer_name || 'Employer Name'}:</span><span class="detail-value">${job.employerName}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].location || 'Location'}:</span><span class="detail-value">${job.location}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].job_pay || 'Job Pay'}:</span><span class="detail-value">₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].your_expected || 'Your Expected'}:</span><span class="detail-value">₹${(job.expectedPrice || 0).toLocaleString('en-IN')}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].availability || 'Availability'}:</span><span class="detail-value">${job.availability || 'immediate'}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].cover_message || 'Cover Message'}:</span><span class="detail-value">${job.cover_message || 'No message'}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].status || 'Status'}:</span><span class="detail-value status-${job.status}">${job.status}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].applied_on || 'Applied on'}:</span><span class="detail-value">${new Date(job.appliedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+        </div>
+        <div style="display:flex;gap:15px;margin-top:20px;">
+            <button class="submit-job-btn" id="chatFromDetailsBtn"><i class="fas fa-comment"></i> ${translations[lang].chat || 'Chat'}</button>
+        </div>
+    `;
+    
+    document.getElementById('chatFromDetailsBtn').addEventListener('click', () => {
+        closeModal(DOM.jobDetailsModal);
+        openChatFromAppliedJob(job.id);
+    });
+    
+    openModal(DOM.jobDetailsModal);
 }
 
 // ============================================
@@ -1553,9 +1690,9 @@ function renderActiveJobs() {
         DOM.activeJobsContainer.innerHTML = `
             <div class="empty-state-container">
                 <div class="empty-state-icon"><i class="fas fa-briefcase"></i></div>
-                <h3 class="empty-state-title">No Active Jobs</h3>
-                <p class="empty-state-message">You don't have any active jobs at the moment</p>
-                <button class="small-btn" id="findJobsBtn" style="margin-top:15px;"><i class="fas fa-search"></i> Find Jobs</button>
+                <h3 class="empty-state-title">${translations[AppState.settings.language].no_active_jobs || 'No Active Jobs'}</h3>
+                <p class="empty-state-message">${translations[AppState.settings.language].no_active_jobs_desc || "You don't have any active jobs at the moment"}</p>
+                <button class="small-btn" id="findJobsBtn" style="margin-top:15px;"><i class="fas fa-search"></i> ${translations[AppState.settings.language].find_jobs || 'Find Jobs'}</button>
             </div>
         `;
         
@@ -1571,6 +1708,8 @@ function createActiveJobCard(job) {
     card.className = 'active-job-card';
     card.dataset.id = job.id;
     
+    const lang = AppState.settings.language;
+    
     card.innerHTML = `
         <div class="employer-profile">
             <div class="employer-photo"><img src="${job.employerPhoto || 'https://randomuser.me/api/portraits/men/1.jpg'}" alt="${job.employerName}"></div>
@@ -1578,12 +1717,12 @@ function createActiveJobCard(job) {
         </div>
         <div class="job-details">
             <div class="job-detail"><i class="fas fa-briefcase"></i><span>${job.jobTitle}</span></div>
-            <div class="job-detail"><i class="fas fa-money-bill-wave"></i><span>Payment: ₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
-            <div class="job-detail"><i class="fas fa-calendar"></i><span>Started: ${new Date(job.hiredDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+            <div class="job-detail"><i class="fas fa-money-bill-wave"></i><span>${translations[lang].payment || 'Payment'}: ₹${(job.pay || 0).toLocaleString('en-IN')}</span></div>
+            <div class="job-detail"><i class="fas fa-calendar"></i><span>${translations[lang].started_on || 'Started on'}: ${new Date(job.hiredDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
         </div>
         <div class="active-job-actions">
-            <button class="action-btn-small chat-btn"><i class="fas fa-comment"></i> Chat</button>
-            <button class="action-btn-small request-completion-btn"><i class="fas fa-check-circle"></i> Mark Complete</button>
+            <button class="action-btn-small chat-btn"><i class="fas fa-comment"></i> ${translations[lang].chat || 'Chat'}</button>
+            <button class="action-btn-small request-completion-btn"><i class="fas fa-check-circle"></i> ${translations[lang].mark_complete || 'Mark Complete'}</button>
         </div>
     `;
     
@@ -1634,8 +1773,8 @@ function renderWorkHistory() {
             <tr><td colspan="6" style="text-align:center;padding:40px;">
                 <div class="empty-state-container">
                     <div class="empty-state-icon"><i class="fas fa-history"></i></div>
-                    <h3 class="empty-state-title">No Work History</h3>
-                    <p class="empty-state-message">${AppState.historyFilters.search ? 'Try adjusting your search criteria' : 'Complete jobs will appear here'}</p>
+                    <h3 class="empty-state-title">${translations[AppState.settings.language].no_work_history || 'No Work History'}</h3>
+                    <p class="empty-state-message">${(AppState.historyFilters.search) ? (translations[AppState.settings.language].no_workers_desc || 'Try adjusting your search criteria') : (translations[AppState.settings.language].no_work_history_desc || 'Complete jobs will appear here')}</p>
                 </div>
             </td></tr>
         `;
@@ -1656,18 +1795,75 @@ function createWorkHistoryRow(job) {
     if (hasHalfStar) starsHTML += '<i class="fas fa-star-half-alt rating-star"></i>';
     for (let i = 0; i < 5 - fullStars - (hasHalfStar ? 1 : 0); i++) starsHTML += '<i class="far fa-star rating-star empty"></i>';
     
+    const lang = AppState.settings.language;
+    
     row.innerHTML = `
         <td>${job.employerName || 'Unknown'}</td>
         <td>${job.jobTitle || 'Untitled'}</td>
         <td>${new Date(job.completionDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
         <td>₹${(job.payment || 0).toLocaleString('en-IN')}</td>
         <td><div class="rating-stars">${starsHTML}<span class="rating-value">${rating.toFixed(1)}</span></div></td>
-        <td><button class="small-btn view-details-btn"><i class="fas fa-eye"></i> View</button></td>
+        <td><button class="small-btn view-details-btn"><i class="fas fa-eye"></i> ${translations[lang].view || 'View'}</button></td>
     `;
     
     row.querySelector('.view-details-btn').addEventListener('click', () => viewWorkHistoryDetails(job.id));
     
     return row;
+}
+
+function viewWorkHistoryDetails(historyId) {
+    const history = AppState.workHistory.find(h => h.id === historyId);
+    if (!history || !DOM.workHistoryContent) return;
+    
+    const lang = AppState.settings.language;
+    const rating = history.rating || 0;
+    
+    // Create stars for rating
+    let starsHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            starsHTML += '<i class="fas fa-star" style="color: #FFD700;"></i>';
+        } else {
+            starsHTML += '<i class="far fa-star" style="color: #ddd;"></i>';
+        }
+    }
+    
+    DOM.workHistoryContent.innerHTML = `
+        <div class="detail-section">
+            <h3>${translations[lang].employer_details || 'Employer Details'}</h3>
+            <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px;">
+                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="${history.employerName}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
+                <div><div style="font-weight:600;font-size:18px;">${history.employerName || 'Unknown'}</div></div>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h3>${translations[lang].job_details || 'Job Details'}</h3>
+            <div class="detail-row"><span class="detail-label">${translations[lang].job_title || 'Job Title'}:</span><span class="detail-value">${history.jobTitle || 'Unknown'}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].location || 'Location'}:</span><span class="detail-value">${history.location || 'Not specified'}</span></div>
+            <div class="detail-row"><span class="detail-label">${translations[lang].completion_date || 'Completion Date'}:</span><span class="detail-value">${new Date(history.completionDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div>
+        </div>
+        
+        <div class="detail-section">
+            <h3>${translations[lang].payment_rating || 'Payment & Rating'}</h3>
+            <div class="detail-row"><span class="detail-label">${translations[lang].payment_earned || 'Payment Earned'}:</span><span class="detail-value" style="color: #01A060; font-size: 20px;">₹${(history.payment || 0).toLocaleString('en-IN')}</span></div>
+            <div class="detail-row">
+                <span class="detail-label">${translations[lang].rating || 'Rating'}:</span>
+                <span class="detail-value">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        ${starsHTML}
+                        <span style="font-weight: 600; margin-left: 10px;">${rating}/5</span>
+                    </div>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">${translations[lang].feedback || 'Feedback'}:</span>
+                <span class="detail-value">${history.feedback || translations[lang].no_feedback || 'No feedback provided'}</span>
+            </div>
+        </div>
+    `;
+    
+    openModal(DOM.workHistoryModal);
 }
 
 // ============================================
@@ -1760,6 +1956,21 @@ function sendChatMessage() {
     }, 1000);
 }
 
+function handleChatFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    showNotification(`File "${file.name}" uploaded`, 'success');
+}
+
+function toggleVoiceRecording() {
+    showNotification('Voice message recording started', 'info');
+    
+    setTimeout(() => {
+        showNotification('Voice message sent', 'success');
+    }, 2000);
+}
+
 // ============================================
 // CONFIRMATION FUNCTIONS
 // ============================================
@@ -1788,16 +1999,10 @@ async function completeWork(jobId) {
         
         const job = AppState.activeJobs[jobIndex];
         
-        // Remove from active jobs
-        AppState.activeJobs.splice(jobIndex, 1);
+        // For now, just show success message
+        showNotification('Work completion requested. Employer will review.', 'success');
+        closeModal(DOM.confirmationModal);
         
-        // Refresh data
-        await loadDashboardData();
-        renderActiveJobs();
-        renderWorkHistory();
-        updateStats();
-        
-        showNotification('Job marked as completed!', 'success');
     } catch (error) {
         console.error('Error completing work:', error);
         showNotification('Error completing work. Please try again.', 'error');
@@ -1831,6 +2036,13 @@ function addAIMessage(sender, text, container) {
     container.scrollTop = container.scrollHeight;
 }
 
+function handleAIFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    showNotification(`File "${file.name}" uploaded for AI analysis`, 'success');
+}
+
 function generateAIResponse(userMessage) {
     const lowerMessage = userMessage.toLowerCase();
     const currentLang = AppState.settings.language;
@@ -1848,7 +2060,7 @@ function generateAIResponse(userMessage) {
                 ? `आपके कौशल "${AppState.worker.profession}" के आधार पर, मैं "${job.title}" नौकरी की सिफारिश करता हूं जो ${job.location} में है। यह ₹${job.pay} का भुगतान करती है।`
                 : currentLang === 'mr'
                 ? `तुमच्या कौशल्य "${AppState.worker.profession}" वर आधारित, मी "${job.title}" नोकरीची शिफारस करतो जी ${job.location} मध्ये आहे.`
-                : `Based on your skills as a ${AppState.worker.profession}, I recommend the "${job.title}" job in ${job.location}.`;
+                : `Based on your skills as a ${AppState.worker.profession}, I recommend the "${job.title}" job in ${job.location} paying ₹${job.pay}.`;
         } else {
             return currentLang === 'hi'
                 ? `मुझे "${AppState.worker.profession}" से मेल खाती कोई नौकरी नहीं मिली।`
@@ -1948,12 +2160,1462 @@ function handleLogout() {
 // ============================================
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .notification { position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 350px; }
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 350px;
+        min-width: 300px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification.success {
+        background: #01A060;
+        color: white;
+    }
+    
+    .notification.error {
+        background: #DC2626;
+        color: white;
+    }
+    
+    .notification.warning {
+        background: #F59E0B;
+        color: white;
+    }
+    
+    .notification.info {
+        background: #3B82F6;
+        color: white;
+    }
+    
+    .notification-icon {
+        font-size: 24px;
+    }
+    
+    .notification-content {
+        flex: 1;
+    }
+    
+    .notification-content h4 {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .notification-content p {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+    
+    .notification-close:hover {
+        opacity: 1;
+    }
+    
+    .empty-state-container {
+        text-align: center;
+        padding: 40px 20px;
+        background: #F8F8F8;
+        border-radius: 16px;
+        border: 2px dashed rgba(1, 160, 96, 0.2);
+        width: 100%;
+    }
+    
+    .empty-state-icon {
+        font-size: 48px;
+        color: #01A060;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state-title {
+        font-size: 20px;
+        color: #1A1A1A;
+        margin-bottom: 10px;
+    }
+    
+    .empty-state-message {
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .status-applied {
+        background: #E3F2FD;
+        color: #1976D2;
+    }
+    
+    .status-accepted {
+        background: #E8F5E9;
+        color: #2E7D32;
+    }
+    
+    .status-rejected {
+        background: #FFEBEE;
+        color: #C62828;
+    }
+    
+    .status-hired {
+        background: #FFF3E0;
+        color: #F57C00;
+    }
+    
+    .status-completed {
+        background: #E0F7FA;
+        color: #00838F;
+    }
+    
+        .rating-star {
+        color: #FFD700;
+        margin-right: 2px;
+    }
+    
+    .rating-star.empty {
+        color: #E0E0E0;
+    }
+    
+    .rating-value {
+        margin-left: 5px;
+        font-weight: 600;
+        color: #1A1A1A;
+    }
+    
+    .detail-section {
+        background: #F8F8F8;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .detail-section h3 {
+        margin: 0 0 15px 0;
+        color: #1A1A1A;
+        font-size: 18px;
+    }
+    
+    .detail-row {
+        display: flex;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .detail-label {
+        width: 140px;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .detail-value {
+        flex: 1;
+        color: #1A1A1A;
+        font-weight: 500;
+    }
+    
+    .preview-detail {
+        display: flex;
+        margin-bottom: 10px;
+        padding: 8px;
+        background: #F5F5F5;
+        border-radius: 8px;
+    }
+    
+    .preview-label {
+        width: 120px;
+        color: #666;
+        font-size: 13px;
+    }
+    
+    .preview-value {
+        flex: 1;
+        color: #1A1A1A;
+        font-weight: 500;
+    }
+    
+    .filter-nested-options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        padding: 10px;
+        min-width: 200px;
+        z-index: 1000;
+        margin-top: 5px;
+    }
+    
+    .filter-nested-options.show {
+        display: block;
+    }
+    
+    .filter-nested-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 15px;
+        border: none;
+        background: none;
+        color: #1A1A1A;
+        font-size: 14px;
+        text-align: left;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+    
+    .filter-nested-btn:hover {
+        background: rgba(1, 160, 96, 0.1);
+    }
+    
+    .filter-nested-btn.active {
+        background: #01A060;
+        color: white;
+    }
+    
+    .filter-nested-btn i {
+        width: 16px;
+    }
+    
+    .filter-parent-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        background: white;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 30px;
+        color: #1A1A1A;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-parent-btn:hover {
+        background: rgba(1, 160, 96, 0.1);
+        border-color: #01A060;
+    }
+    
+    .filter-parent-btn.active {
+        background: #01A060;
+        color: white;
+        border-color: #01A060;
+    }
+    
+    .filter-group {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .filter-strip-horizontal {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        padding: 15px 0;
+    }
+    
+    .filter-clear-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 10px 15px;
+        background: #F8F8F8;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 30px;
+        color: #666;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-clear-btn:hover {
+        background: #FFEBEE;
+        border-color: #DC2626;
+        color: #DC2626;
+    }
+    
+    .search-container {
+        flex: 1;
+        max-width: 300px;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 10px 15px 10px 40px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 30px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: #01A060;
+        box-shadow: 0 0 0 3px rgba(1, 160, 96, 0.1);
+    }
+    
+    .section-header.with-filters {
+        margin-bottom: 20px;
+    }
+    
+    .workers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .worker-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .worker-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(1, 160, 96, 0.15);
+        border-color: #01A060;
+    }
+    
+    .worker-header {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .worker-photo {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #01A060;
+    }
+    
+    .worker-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .worker-name-container {
+        flex: 1;
+    }
+    
+    .worker-name {
+        margin: 0 0 5px 0;
+        font-size: 18px;
+        color: #1A1A1A;
+    }
+    
+    .worker-details {
+        margin-bottom: 15px;
+    }
+    
+    .worker-detail {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .detail-label {
+        width: 100px;
+        color: #666;
+    }
+    
+    .detail-value {
+        flex: 1;
+        color: #1A1A1A;
+        font-weight: 500;
+    }
+    
+    .worker-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn-small {
+        flex: 1;
+        min-width: 80px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    .chat-btn {
+        background: #E3F2FD;
+        color: #1976D2;
+    }
+    
+    .chat-btn:hover {
+        background: #1976D2;
+        color: white;
+    }
+    
+    .profile-btn {
+        background: #F3E5F5;
+        color: #7B1FA2;
+    }
+    
+    .profile-btn:hover {
+        background: #7B1FA2;
+        color: white;
+    }
+    
+    .hire-btn {
+        background: #E8F5E9;
+        color: #2E7D32;
+    }
+    
+    .hire-btn:hover {
+        background: #2E7D32;
+        color: white;
+    }
+    
+    .reject-btn {
+        background: #FFEBEE;
+        color: #C62828;
+    }
+    
+    .reject-btn:hover {
+        background: #C62828;
+        color: white;
+    }
+    
+    .complete-btn {
+        background: #E0F7FA;
+        color: #00838F;
+    }
+    
+    .complete-btn:hover {
+        background: #00838F;
+        color: white;
+    }
+    
+    .small-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #F0F0F0;
+        color: #333;
+    }
+    
+    .small-btn:hover {
+        background: #01A060;
+        color: white;
+    }
+    
+    .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .job-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .job-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(1, 160, 96, 0.15);
+        border-color: #01A060;
+    }
+    
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+    
+    .job-title {
+        margin: 0 0 5px 0;
+        font-size: 18px;
+        color: #1A1A1A;
+    }
+    
+    .job-employer {
+        margin: 0 0 5px 0;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .job-location {
+        margin: 0;
+        font-size: 14px;
+        color: #888;
+    }
+    
+    .job-status {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .status-open {
+        background: #E8F5E9;
+        color: #2E7D32;
+    }
+    
+    .status-in-progress {
+        background: #FFF3E0;
+        color: #F57C00;
+    }
+    
+    .status-completed {
+        background: #E0F7FA;
+        color: #00838F;
+    }
+    
+    .job-details {
+        margin-bottom: 15px;
+    }
+    
+    .job-detail {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #666;
+    }
+    
+    .job-detail i {
+        width: 16px;
+        color: #01A060;
+    }
+    
+    .job-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .applied-jobs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .applied-job-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .active-jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .active-job-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .employer-profile {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .employer-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    
+    .employer-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .employer-name {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+    }
+    
+    .active-job-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .history-table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+    
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    
+    .history-table th {
+        background: #F5F5F5;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #1A1A1A;
+    }
+    
+    .history-table td {
+        padding: 15px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+    
+    /* Modal Styles */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .popup-overlay.active {
+        display: flex;
+    }
+    
+    .popup-container {
+        background: white;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalSlideIn 0.3s ease;
+    }
+    
+    @keyframes modalSlideIn {
+        from {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .popup-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        background: white;
+        border-radius: 20px 20px 0 0;
+        z-index: 10;
+    }
+    
+    .popup-header h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #1A1A1A;
+    }
+    
+    .popup-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #666;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .popup-close:hover {
+        background: rgba(0,0,0,0.05);
+        color: #DC2626;
+    }
+    
+    .popup-content {
+        padding: 20px;
+    }
+    
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #1A1A1A;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        z-index: 1;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s;
+        background: white;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #01A060;
+        box-shadow: 0 0 0 3px rgba(1, 160, 96, 0.1);
+    }
+    
+    .form-input.textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+    
+    .submit-job-btn {
+        width: 100%;
+        padding: 15px;
+        background: #01A060;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .submit-job-btn:hover {
+        background: #018049;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(1, 160, 96, 0.3);
+    }
+    
+    .submit-job-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    /* Chat Modal Styles */
+    .chat-modal {
+        max-width: 500px;
+    }
+    
+    .chat-messages {
+        height: 400px;
+        overflow-y: auto;
+        padding: 15px;
+        background: #F5F5F5;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .chat-message {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    
+    .chat-message.sent {
+        justify-content: flex-end;
+    }
+    
+    .chat-message.received {
+        justify-content: flex-start;
+    }
+    
+    .message-bubble {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        position: relative;
+    }
+    
+    .sent .message-bubble {
+        background: #01A060;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+    
+    .received .message-bubble {
+        background: white;
+        color: #1A1A1A;
+        border-bottom-left-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .message-bubble small {
+        display: block;
+        font-size: 10px;
+        opacity: 0.7;
+        margin-top: 5px;
+    }
+    
+    .chat-input-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .chat-attachments {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .attachment-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: #F0F0F0;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .attachment-btn:hover {
+        background: #01A060;
+        color: white;
+    }
+    
+    .chat-send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: #01A060;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .chat-send-btn:hover {
+        background: #018049;
+        transform: scale(1.1);
+    }
+    
+    .negotiation-options {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .negotiation-options h4 {
+        margin: 0 0 10px 0;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .negotiation-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .negotiation-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px;
+        border: 1px solid #01A060;
+        background: white;
+        color: #01A060;
+        border-radius: 8px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    .negotiation-btn:hover {
+        background: #01A060;
+        color: white;
+    }
+    
+    /* Rating Modal Styles */
+    .rating-popup {
+        max-width: 400px;
+    }
+    
+    .rating-worker-info {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .rating-worker-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #F0F0F0;
+        margin: 0 auto 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: #666;
+    }
+    
+    .rating-worker-info h3 {
+        margin: 0 0 5px 0;
+        font-size: 18px;
+    }
+    
+    .rating-worker-job {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .rating-instruction {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #666;
+    }
+    
+    .rating-stars-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .stars-rating {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .stars-rating .star {
+        font-size: 30px;
+        cursor: pointer;
+        color: #ddd;
+        transition: all 0.3s;
+    }
+    
+    .stars-rating .star.active,
+    .stars-rating .star:hover {
+        color: #FFD700;
+    }
+    
+    .rating-value-display {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1A1A1A;
+    }
+    
+    .rating-feedback {
+        margin-bottom: 20px;
+    }
+    
+    .rating-feedback label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    
+    .submit-rating-btn {
+        width: 100%;
+        padding: 15px;
+        background: #01A060;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .submit-rating-btn:hover:not(:disabled) {
+        background: #018049;
+    }
+    
+    .submit-rating-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    /* AI Assistant Styles */
+    .ai-modal {
+        max-width: 500px;
+    }
+    
+    .ai-chat-container {
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .ai-chat-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: #F5F5F5;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .ai-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #01A060;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+    
+    .ai-chat-header h3 {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+    }
+    
+    .ai-chat-header p {
+        margin: 0;
+        font-size: 13px;
+        color: #666;
+    }
+    
+    .ai-chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #F9F9F9;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .ai-message {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .ai-message.user-message {
+        justify-content: flex-end;
+    }
+    
+    .ai-message.user-message .message-avatar {
+        order: 2;
+    }
+    
+    .message-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #01A060;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+    }
+    
+    .ai-message.user-message .message-avatar {
+        background: #4362C9;
+    }
+    
+    .message-content {
+        max-width: 70%;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .ai-message.user-message .message-content {
+        background: #01A060;
+        color: white;
+    }
+    
+    .message-content p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    .ai-chat-input {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .ai-send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: #01A060;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .ai-send-btn:hover {
+        background: #018049;
+        transform: scale(1.1);
+    }
+    
+    .ai-quick-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .suggestion-btn {
+        padding: 8px 15px;
+        background: #F0F0F0;
+        border: none;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .suggestion-btn:hover {
+        background: #01A060;
+        color: white;
+    }
+    
+    .ai-suggestions-container {
+        margin-top: 20px;
+    }
+    
+    .ai-suggestions-container h3 {
+        margin: 0 0 15px 0;
+        font-size: 16px;
+    }
+    
+    .ai-suggestions-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    
+    .ai-suggestion-card {
+        background: #F5F5F5;
+        border-radius: 12px;
+        padding: 15px;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .ai-suggestion-card h4 {
+        margin: 0 0 5px 0;
+        font-size: 14px;
+    }
+    
+    .ai-suggestion-card p {
+        margin: 0 0 10px 0;
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .ai-suggestion-card .worker-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #888;
+        margin-bottom: 10px;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .workers-grid,
+        .jobs-grid,
+        .active-jobs-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .filter-strip-horizontal {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .filter-group {
+            width: 100%;
+        }
+        
+        .filter-parent-btn {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .filter-nested-options {
+            width: 100%;
+            position: static;
+            margin-top: 5px;
+        }
+        
+        .search-container {
+            max-width: 100%;
+        }
+        
+        .worker-actions {
+            flex-direction: column;
+        }
+        
+        .action-btn-small {
+            width: 100%;
+        }
+        
+        .negotiation-buttons {
+            flex-direction: column;
+        }
+        
+        .negotiation-btn {
+            width: 100%;
+        }
+        
+        .popup-container {
+            width: 95%;
+            margin: 10px;
+        }
+    }
+    
+    /* Dark Theme Support */
+    .dark-theme {
+        background: #1A1A1A;
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .navbar {
+        background: #2D2D2D;
+        border-bottom-color: #404040;
+    }
+    
+    .dark-theme .sidebar {
+        background: #2D2D2D;
+    }
+    
+    .dark-theme .stat-card {
+        background: #2D2D2D;
+        border-color: #404040;
+    }
+    
+    .dark-theme .job-card,
+    .dark-theme .worker-card,
+    .dark-theme .applied-job-card,
+    .dark-theme .active-job-card {
+        background: #2D2D2D;
+        border-color: #404040;
+    }
+    
+    .dark-theme .filter-parent-btn {
+        background: #2D2D2D;
+        border-color: #404040;
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .filter-nested-options {
+        background: #2D2D2D;
+        border: 1px solid #404040;
+    }
+    
+    .dark-theme .popup-container {
+        background: #2D2D2D;
+    }
+    
+    .dark-theme .popup-header {
+        background: #2D2D2D;
+        border-bottom-color: #404040;
+    }
+    
+    .dark-theme .form-input {
+        background: #1A1A1A;
+        border-color: #404040;
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .chat-messages {
+        background: #1A1A1A;
+    }
+    
+    .dark-theme .received .message-bubble {
+        background: #2D2D2D;
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .history-table {
+        background: #2D2D2D;
+    }
+    
+    .dark-theme .history-table th {
+        background: #1A1A1A;
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .history-table td {
+        border-bottom-color: #404040;
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .empty-state-container {
+        background: #2D2D2D;
+    }
+    
+    .dark-theme .empty-state-title {
+        color: #FFFFFF;
+    }
+    
+    .dark-theme .empty-state-message {
+        color: #AAAAAA;
+    }
 `;
+
 document.head.appendChild(style);
 
 // ============================================
-// INITIALIZE APP
+// Initialize the application
 // ============================================
 document.addEventListener('DOMContentLoaded', initializeApp);
