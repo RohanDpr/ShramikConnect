@@ -1,2 +1,5 @@
 Email Send Grid API Key:
 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
+
+mailtrap Ket:
+996f986944f5a3316c3c06bf9dd44131

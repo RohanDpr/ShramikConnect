@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    # 'sendgrid_django',
 ]
 
 MIDDLEWARE = [
@@ -149,17 +150,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL CONFIGURATION FOR OTP VERIFICATION
 # ============================================
 
-# ✅ SENDGRID CONFIGURATION FOR RENDER
+# ============================================
+# EMAIL CONFIGURATION - MAILTRAP (WORKING)
+# ============================================
+
+# ============================================
+# EMAIL CONFIGURATION - SENDGRID
+# ============================================
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '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'  # This is literally the string 'apikey' - don't change
-EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'team.shramikconnect@gmail.com')
-
-# For local development/testing (prints emails to console)
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+DEFAULT_FROM_EMAIL = 'team.shramikconnect@gmail.com'
 
 # OTP Settings
 OTP_EXPIRY_MINUTES = 5
