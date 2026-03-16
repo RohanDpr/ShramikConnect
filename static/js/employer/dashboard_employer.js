@@ -644,6 +644,11 @@ const state = {
         activeSorts: {},
         activeFilterType: null
     },
+    pendingFilters: {
+        search: '',
+        activeSorts: {},
+        activeFilterType: null
+    },
     historyFilters: {
         search: '',
         activeSorts: {},
@@ -652,7 +657,9 @@ const state = {
     settings: {
         language: 'en',
         theme: 'light'
-    }
+    },
+    pollingInterval: null,
+    isPolling: false
 };
 
 // ============================================
@@ -690,6 +697,9 @@ async function init() {
     initMap();
     
     console.log('Enhanced ShramikConnect Dashboard initialized - Data loaded from server');
+    
+    // Start auto-refresh polling
+    startPolling();
 }
 
 // ============================================
@@ -762,28 +772,85 @@ function organizeApplications() {
 }
 
 // ============================================
-// Render Pending Applications (NEW - Main Fix)
+// Render Pending Applications with Filters
 // ============================================
 function renderPendingApplications() {
     const container = document.getElementById('pendingApplicationsContainer');
     if (!container) return;
-    
+
+    let workers = [...state.pendingApplications];
+
+    // Apply search
+    if (state.pendingFilters.search) {
+        const searchTerm = state.pendingFilters.search.toLowerCase();
+        workers = workers.filter(app =>
+            (app.worker?.name || '').toLowerCase().includes(searchTerm) ||
+            (app.worker?.skills || []).some(skill => (skill || '').toLowerCase().includes(searchTerm)) ||
+            (app.worker?.rating || 0).toString().includes(searchTerm) ||
+            (app.expected_price || 0).toString().includes(searchTerm)
+        );
+    }
+
+    // Apply sorting
+    const activeSorts = Object.values(state.pendingFilters.activeSorts);
+    if (activeSorts.length > 0) {
+        workers.sort((a, b) => {
+            for (const sort of activeSorts) {
+                let comparison = 0;
+                switch (sort) {
+                    case 'distance-asc':
+                        comparison = (a.worker?.distance ?? 9999) - (b.worker?.distance ?? 9999);
+                        break;
+                    case 'distance-desc':
+                        comparison = (b.worker?.distance ?? 9999) - (a.worker?.distance ?? 9999);
+                        break;
+                    case 'name-asc':
+                        comparison = (a.worker?.name || '').localeCompare(b.worker?.name || '');
+                        break;
+                    case 'name-desc':
+                        comparison = (b.worker?.name || '').localeCompare(a.worker?.name || '');
+                        break;
+                    case 'price-asc':
+                        comparison = (a.expected_price || 0) - (b.expected_price || 0);
+                        break;
+                    case 'price-desc':
+                        comparison = (b.expected_price || 0) - (a.expected_price || 0);
+                        break;
+                    case 'rating-desc':
+                        comparison = (b.worker?.rating || 0) - (a.worker?.rating || 0);
+                        break;
+                    case 'rating-asc':
+                        comparison = (a.worker?.rating || 0) - (b.worker?.rating || 0);
+                        break;
+                    case 'date-desc':
+                        comparison = new Date(b.applied_date || 0) - new Date(a.applied_date || 0);
+                        break;
+                    case 'date-asc':
+                        comparison = new Date(a.applied_date || 0) - new Date(b.applied_date || 0);
+                        break;
+                }
+                if (comparison !== 0) return comparison;
+            }
+            return 0;
+        });
+    }
+
     container.innerHTML = '';
-    
-    if (state.pendingApplications.length === 0) {
+
+    if (workers.length === 0) {
         container.innerHTML = `
             <div class="empty-state-container">
                 <div class="empty-state-icon">
                     <i class="fas fa-inbox"></i>
                 </div>
                 <h3 class="empty-state-title">${i18n.t('no_pending')}</h3>
-                <p class="empty-state-message">${i18n.t('no_pending_desc')}</p>
+                <p class="empty-state-message">${state.pendingFilters.search ? i18n.t('no_workers_desc') : i18n.t('no_pending_desc')}</p>
             </div>
         `;
         return;
     }
-    
-    state.pendingApplications.forEach(application => {
+
+    workers.forEach(application => {
         const card = createApplicationCard(application, 'pending');
         container.appendChild(card);
     });
@@ -812,6 +879,158 @@ async function loadWorkHistory() {
         state.workHistory = [];
     }
 }
+
+// ============================================
+// SMART AUTO-REFRESH POLLING SYSTEM
+// ============================================
+
+function startPolling() {
+    // Clear any existing interval
+    if (state.pollingInterval) {
+        clearInterval(state.pollingInterval);
+    }
+    // Poll every 15 seconds
+    state.pollingInterval = setInterval(pollForUpdates, 15000);
+    console.log('Auto-refresh polling started (every 15s)');
+}
+
+function stopPolling() {
+    if (state.pollingInterval) {
+        clearInterval(state.pollingInterval);
+        state.pollingInterval = null;
+    }
+}
+
+async function pollForUpdates() {
+    // Don't poll if already polling (prevents overlapping requests)
+    if (state.isPolling) return;
+    
+    // Don't poll if any modal is open (user is doing something)
+    const anyModalOpen = document.querySelector('.popup-overlay.active');
+    if (anyModalOpen) return;
+    
+    state.isPolling = true;
+    
+    try {
+        // Fetch fresh data silently
+        const [jobsRes, appsRes, historyRes] = await Promise.all([
+            fetch('/api/employer/get-my-jobs/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
+            fetch('/api/employer/get-applications/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
+            fetch('/api/employer/work-history/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        ]);
+
+        const [jobsData, appsData, historyData] = await Promise.all([
+            jobsRes.json(),
+            appsRes.json(),
+            historyRes.json()
+        ]);
+
+        let hasChanges = false;
+        let changeMessages = [];
+
+        // ---- Check Jobs ----
+        if (jobsData.success) {
+            const newJobs = jobsData.jobs || [];
+            if (newJobs.length !== state.jobs.length) {
+                hasChanges = true;
+            }
+            state.jobs = newJobs;
+        }
+
+        // ---- Check Applications ----
+        if (appsData.success) {
+            const newApps = appsData.applications || [];
+
+            // Count pending before update
+            const oldPendingCount = state.pendingApplications.length;
+            const oldAcceptedCount = state.acceptedWorkers.length;
+            const oldHiredCount = state.hiredWorkers.length;
+
+            state.applications = newApps;
+            organizeApplications();
+
+            const newPendingCount = state.pendingApplications.length;
+            const newAcceptedCount = state.acceptedWorkers.length;
+            const newHiredCount = state.hiredWorkers.length;
+
+            if (newPendingCount > oldPendingCount) {
+                const diff = newPendingCount - oldPendingCount;
+                changeMessages.push(`${diff} new application${diff > 1 ? 's' : ''} received!`);
+                hasChanges = true;
+            }
+            if (newAcceptedCount !== oldAcceptedCount) hasChanges = true;
+            if (newHiredCount !== oldHiredCount) hasChanges = true;
+        }
+
+        // ---- Check Work History ----
+        if (historyData.success) {
+            const newHistory = historyData.work_history || [];
+            if (newHistory.length !== state.workHistory.length) {
+                hasChanges = true;
+            }
+            state.workHistory = newHistory;
+        }
+
+        // ---- If changes found, update only current visible section ----
+        if (hasChanges) {
+            const currentSection = state.currentSection;
+
+            // Always update stats silently
+            updateStats();
+            renderRatingStars();
+
+            // Re-render only the section user is currently viewing
+            // so no jarring full-page update happens
+            if (currentSection === 'pending-applications') {
+                renderPendingApplications();
+            } else if (currentSection === 'accepted-workers') {
+                renderAcceptedWorkers();
+            } else if (currentSection === 'hired-workers') {
+                renderHiredWorkers();
+            } else if (currentSection === 'work-history') {
+                renderWorkHistory();
+            } else if (currentSection === 'job-posts') {
+                renderJobs();
+            } else if (currentSection === 'dashboard') {
+                // Dashboard stats already updated above
+            }
+
+            // Always re-render other sections in background too
+            // so when user navigates there, data is fresh
+            renderPendingApplications();
+            renderAcceptedWorkers();
+            renderHiredWorkers();
+            renderWorkHistory();
+            renderJobs();
+
+            // Show notification only for important changes
+            if (changeMessages.length > 0) {
+                changeMessages.forEach(msg => showNotification(msg, 'info'));
+            }
+
+            console.log('Auto-refresh: Changes detected and UI updated');
+        }
+
+    } catch (error) {
+        // Silent fail - don't show error to user for background polling
+        console.log('Auto-refresh: Network error (silent):', error.message);
+    } finally {
+        state.isPolling = false;
+    }
+}
+
+// Stop polling when page is hidden (user switched tab) to save resources
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopPolling();
+        console.log('Polling paused - tab hidden');
+    } else {
+        // Resume polling and immediately fetch when user comes back
+        startPolling();
+        pollForUpdates();
+        console.log('Polling resumed - tab visible');
+    }
+});
 
 // ============================================
 // Update Profile Information
@@ -1521,7 +1740,15 @@ function setupEventListeners() {
         state.filters.search = e.target.value;
         renderAcceptedWorkers();
     });
-    
+
+    const pendingSearchEl = document.getElementById('pendingSearch');
+    if (pendingSearchEl) {
+        pendingSearchEl.addEventListener('input', (e) => {
+            state.pendingFilters.search = e.target.value;
+            renderPendingApplications();
+        });
+    }
+
     DOM.historySearch?.addEventListener('input', (e) => {
         state.historyFilters.search = e.target.value;
         renderWorkHistory();
@@ -2533,88 +2760,92 @@ function showNotification(message, type = 'success') {
 // Setup Nested Filter Event Listeners
 // ============================================
 function setupFilterEventListeners() {
-    // Parent filter buttons for accepted workers
     const parentFilterBtns = document.querySelectorAll('.filter-parent-btn[data-filter-type]');
     parentFilterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const filterType = btn.dataset.filterType;
             const isHistory = btn.closest('#work-history') !== null;
-            
-            // Close other open filters
-            closeAllFilterOptions(isHistory);
-            
-            // Toggle current filter
+            const isPending = btn.closest('#pending-applications') !== null;
+
+            closeAllFilterOptions();
+
             if (isHistory) {
-                state.historyFilters.activeFilterType = 
+                state.historyFilters.activeFilterType =
                     state.historyFilters.activeFilterType === filterType ? null : filterType;
+            } else if (isPending) {
+                state.pendingFilters.activeFilterType =
+                    state.pendingFilters.activeFilterType === filterType ? null : filterType;
             } else {
-                state.filters.activeFilterType = 
+                state.filters.activeFilterType =
                     state.filters.activeFilterType === filterType ? null : filterType;
             }
-            
+
             updateFilterUI();
         });
     });
-    
-    // Nested filter buttons
+
     const nestedBtns = document.querySelectorAll('.filter-nested-btn[data-sort]');
     nestedBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const sortValue = btn.dataset.sort;
             const isHistory = btn.closest('#work-history') !== null;
+            const isPending = btn.closest('#pending-applications') !== null;
             const filterGroup = btn.closest('.filter-group');
             const filterType = filterGroup.querySelector('.filter-parent-btn').dataset.filterType;
-            
-            // Set active sort for this filter type
+
             if (isHistory) {
                 state.historyFilters.activeSorts[filterType] = sortValue;
+                state.historyFilters.activeFilterType = null;
+            } else if (isPending) {
+                state.pendingFilters.activeSorts[filterType] = sortValue;
+                state.pendingFilters.activeFilterType = null;
             } else {
                 state.filters.activeSorts[filterType] = sortValue;
-            }
-            
-            // Close filter options
-            if (isHistory) {
-                state.historyFilters.activeFilterType = null;
-            } else {
                 state.filters.activeFilterType = null;
             }
-            
+
             updateFilterUI();
-            
-            // Apply filters immediately
+
             if (isHistory) {
                 renderWorkHistory();
+            } else if (isPending) {
+                renderPendingApplications();
             } else {
                 renderAcceptedWorkers();
             }
         });
     });
-    
-    // Clear all filters
+
+    // Clear accepted workers filters
     const clearAllFiltersBtn = document.getElementById('clearAllFilters');
     if (clearAllFiltersBtn) {
         clearAllFiltersBtn.addEventListener('click', () => {
-            state.filters = {
-                search: '',
-                activeSorts: {},
-                activeFilterType: null
-            };
+            state.filters = { search: '', activeSorts: {}, activeFilterType: null };
             if (DOM.workerSearch) DOM.workerSearch.value = '';
             updateFilterUI();
             renderAcceptedWorkers();
         });
     }
-    
+
+    // Clear pending filters
+    const clearPendingFiltersBtn = document.getElementById('clearPendingFilters');
+    if (clearPendingFiltersBtn) {
+        clearPendingFiltersBtn.addEventListener('click', () => {
+            state.pendingFilters = { search: '', activeSorts: {}, activeFilterType: null };
+            const pendingSearchEl = document.getElementById('pendingSearch');
+            if (pendingSearchEl) pendingSearchEl.value = '';
+            updateFilterUI();
+            renderPendingApplications();
+        });
+    }
+
+    // Clear history filters
     const clearHistoryFiltersBtn = document.getElementById('clearHistoryFilters');
     if (clearHistoryFiltersBtn) {
         clearHistoryFiltersBtn.addEventListener('click', () => {
-            state.historyFilters = {
-                search: '',
-                activeSorts: {},
-                activeFilterType: null
-            };
+            state.historyFilters = { search: '', activeSorts: {}, activeFilterType: null };
             if (DOM.historySearch) DOM.historySearch.value = '';
             updateFilterUI();
             renderWorkHistory();
@@ -2650,14 +2881,35 @@ function updateFilterUI() {
         options.classList.toggle('show', state.filters.activeFilterType === filterType);
     });
     
-    // Update nested button active states for accepted workers
     const nestedBtns = document.querySelectorAll('#accepted-workers .filter-nested-btn');
     nestedBtns.forEach(btn => {
         const sortValue = btn.dataset.sort;
         const filterGroup = btn.closest('.filter-group');
         const filterType = filterGroup.querySelector('.filter-parent-btn').dataset.filterType;
-        
         btn.classList.toggle('active', state.filters.activeSorts[filterType] === sortValue);
+    });
+
+    // Update pending applications filters
+    const pendingParentBtns = document.querySelectorAll('#pending-applications .filter-parent-btn');
+    const pendingNestedOptions = document.querySelectorAll('#pending-applications .filter-nested-options');
+
+    pendingParentBtns.forEach(btn => {
+        const filterType = btn.dataset.filterType;
+        btn.classList.toggle('active', state.pendingFilters.activeFilterType === filterType);
+    });
+
+    pendingNestedOptions.forEach(options => {
+        const filterGroup = options.closest('.filter-group');
+        const filterType = filterGroup.querySelector('.filter-parent-btn').dataset.filterType;
+        options.classList.toggle('show', state.pendingFilters.activeFilterType === filterType);
+    });
+
+    const pendingNestedBtns = document.querySelectorAll('#pending-applications .filter-nested-btn');
+    pendingNestedBtns.forEach(btn => {
+        const sortValue = btn.dataset.sort;
+        const filterGroup = btn.closest('.filter-group');
+        const filterType = filterGroup.querySelector('.filter-parent-btn').dataset.filterType;
+        btn.classList.toggle('active', state.pendingFilters.activeSorts[filterType] === sortValue);
     });
     
     // Update work history filters
@@ -2675,13 +2927,11 @@ function updateFilterUI() {
         options.classList.toggle('show', state.historyFilters.activeFilterType === filterType);
     });
     
-    // Update nested button active states for work history
     const historyNestedBtns = document.querySelectorAll('#work-history .filter-nested-btn');
     historyNestedBtns.forEach(btn => {
         const sortValue = btn.dataset.sort;
         const filterGroup = btn.closest('.filter-group');
         const filterType = filterGroup.querySelector('.filter-parent-btn').dataset.filterType;
-        
         btn.classList.toggle('active', state.historyFilters.activeSorts[filterType] === sortValue);
     });
 }

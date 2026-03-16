@@ -554,6 +554,8 @@ const AppState = {
     appliedJobs: [],
     activeJobs: [],
     workHistory: [],
+    pollingInterval: null,
+    isPolling: false,
     allSkills: [
         'Electrician', 'Plumber', 'Welder', 'Mason', 'Painter', 
         'Carpenter', 'Tile Fitter', 'Helper', 'AC Technician', 
@@ -600,6 +602,9 @@ async function initializeApp() {
     setupCustomDropdown();
     
     console.log('Worker Dashboard initialized successfully');
+    
+    // Start auto-refresh polling
+    startPolling();
 }
 
 async function checkAuth() {
@@ -662,6 +667,145 @@ async function loadDashboardData() {
         showNotification('Error loading data. Please refresh.', 'error');
     }
 }
+
+// ============================================
+// SMART AUTO-REFRESH POLLING SYSTEM
+// ============================================
+
+function startPolling() {
+    if (AppState.pollingInterval) {
+        clearInterval(AppState.pollingInterval);
+    }
+    // Poll every 15 seconds
+    AppState.pollingInterval = setInterval(pollForUpdates, 15000);
+    console.log('Worker auto-refresh polling started (every 15s)');
+}
+
+function stopPolling() {
+    if (AppState.pollingInterval) {
+        clearInterval(AppState.pollingInterval);
+        AppState.pollingInterval = null;
+    }
+}
+
+async function pollForUpdates() {
+    // Don't poll if already running
+    if (AppState.isPolling) return;
+
+    // Don't poll if any modal is open
+    const anyModalOpen = document.querySelector('.popup-overlay.active');
+    if (anyModalOpen) return;
+
+    AppState.isPolling = true;
+
+    try {
+        const response = await fetch('/api/worker/dashboard-data/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            AppState.isPolling = false;
+            return;
+        }
+
+        const newJobs        = data.data.jobs         || [];
+        const newApplied     = data.data.applied_jobs  || [];
+        const newActive      = data.data.active_jobs   || [];
+        const newHistory     = data.data.work_history  || [];
+
+        let hasChanges = false;
+        let changeMessages = [];
+
+        // ---- Check available jobs ----
+        if (newJobs.length !== AppState.jobs.length) {
+            hasChanges = true;
+            const diff = newJobs.length - AppState.jobs.length;
+            if (diff > 0) {
+                changeMessages.push(`${diff} new job${diff > 1 ? 's' : ''} available!`);
+            }
+        }
+
+        // ---- Check applied jobs status changes ----
+        const oldAppliedMap = {};
+        AppState.appliedJobs.forEach(j => { oldAppliedMap[j.id] = j.status; });
+
+        newApplied.forEach(j => {
+            if (oldAppliedMap[j.id] && oldAppliedMap[j.id] !== j.status) {
+                // Status changed for an application
+                if (j.status === 'accepted') {
+                    changeMessages.push(`Your application for "${j.jobTitle || 'a job'}" was Accepted! ✅`);
+                } else if (j.status === 'rejected') {
+                    changeMessages.push(`Your application for "${j.jobTitle || 'a job'}" was Rejected.`);
+                }
+                hasChanges = true;
+            }
+        });
+
+        // ---- Check active jobs ----
+        if (newActive.length !== AppState.activeJobs.length) {
+            hasChanges = true;
+            if (newActive.length > AppState.activeJobs.length) {
+                changeMessages.push(`You have been Hired for a new job! 🎉`);
+            }
+        }
+
+        // ---- Check work history ----
+        if (newHistory.length !== AppState.workHistory.length) {
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            // Update state
+            AppState.jobs        = newJobs;
+            AppState.appliedJobs = newApplied;
+            AppState.activeJobs  = newActive;
+            AppState.workHistory = newHistory;
+
+            // Update stats silently
+            updateStats();
+
+            // Re-render only current visible section
+            const current = AppState.activeSection;
+            if (current === 'find-jobs')     renderFindJobs();
+            else if (current === 'applied-jobs')  renderAppliedJobs();
+            else if (current === 'active-jobs')   renderActiveJobs();
+            else if (current === 'work-history')  renderWorkHistory();
+
+            // Also refresh all sections in background so data is ready when user navigates
+            renderFindJobs();
+            renderAppliedJobs();
+            renderActiveJobs();
+            renderWorkHistory();
+
+            // Show important notifications
+            changeMessages.forEach(msg => {
+                const type = msg.includes('Rejected') ? 'error' : 'success';
+                showNotification(msg, type);
+            });
+
+            console.log('Worker auto-refresh: Changes detected and UI updated');
+        }
+
+    } catch (error) {
+        console.log('Worker auto-refresh: Network error (silent):', error.message);
+    } finally {
+        AppState.isPolling = false;
+    }
+}
+
+// Pause polling when tab is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopPolling();
+        console.log('Worker polling paused - tab hidden');
+    } else {
+        startPolling();
+        pollForUpdates(); // Immediate fetch when user comes back
+        console.log('Worker polling resumed - tab visible');
+    }
+});
 
 function updateWorkerInfo() {
     if (window.workerData) {
