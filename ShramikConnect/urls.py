@@ -93,6 +93,13 @@ urlpatterns = [
     # Complete Work + Rating
     path('api/employer/complete-work/', views.complete_work, name='complete_work'),
     path('api/employer/work-history/', views.get_employer_work_history, name='get_employer_work_history'),
+
+    # ============================================
+    # CHAT APIs
+    # ============================================
+    path('api/chat/<int:application_id>/messages/', views.get_messages, name='get_messages'),
+    path('api/chat/<int:application_id>/send/', views.send_message, name='send_message'),
+    path('api/chat/unread-count/', views.get_unread_count, name='get_unread_count'),
     
     # Email OTP verification
     path('api/send-email-otp/', views.send_email_otp, name='send_email_otp'),

@@ -785,6 +785,7 @@ async function pollForUpdates() {
                 showNotification(msg, type);
             });
 
+            updateUnreadChatBadge();
             console.log('Worker auto-refresh: Changes detected and UI updated');
         }
 
@@ -1236,6 +1237,12 @@ function closeModal(modal) {
     const index = AppState.activeModals.indexOf(modal.id);
     if (index > -1) AppState.activeModals.splice(index, 1);
     
+    // Stop chat polling if chat modal closed
+    if (modal.id === 'chatModal' && workerChatPollingInterval) {
+        clearInterval(workerChatPollingInterval);
+        workerChatPollingInterval = null;
+    }
+
     if (AppState.activeModals.length === 0) {
         document.body.style.overflow = 'auto';
         updateNavigationStrips(AppState.activeSection);
@@ -1247,6 +1254,11 @@ function closeAllModals() {
     AppState.activeModals = [];
     document.body.style.overflow = 'auto';
     updateNavigationStrips(AppState.activeSection);
+    // Stop chat polling
+    if (workerChatPollingInterval) {
+        clearInterval(workerChatPollingInterval);
+        workerChatPollingInterval = null;
+    }
 }
 
 // ============================================
@@ -2013,106 +2025,275 @@ function viewWorkHistoryDetails(historyId) {
 // ============================================
 // CHAT FUNCTIONS
 // ============================================
+// ============================================
+// Chat Time Helper — always uses user's local timezone
+// Works on localhost AND deployed Render site
+// ============================================
+function formatChatTime(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function formatChatDate(isoString) {
+    const date = new Date(isoString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return date.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
 function openChatFromJob(jobId) {
-    const job = AppState.jobs.find(j => j.id === jobId);
-    if (!job) return;
-    openChatModal({ name: job.employerName, id: job.id, photo: job.employerPhoto });
+    // Find jobs - worker ne apply kiya hoga tabhi chat khulegi
+    const applied = AppState.appliedJobs.find(j => j.jobId === jobId);
+    if (applied) {
+        openChatModal(applied.id, applied.employerName, applied.employerPhoto);
+        return;
+    }
+    const active = AppState.activeJobs.find(j => j.jobId === jobId);
+    if (active) {
+        openChatModal(active.id, active.employerName, active.employerPhoto);
+        return;
+    }
+    showNotification('Apply for this job first to chat with employer', 'info');
 }
 
 function openChatFromAppliedJob(appliedJobId) {
     const job = AppState.appliedJobs.find(j => j.id === appliedJobId);
     if (!job) return;
-    openChatModal({ name: job.employerName, id: job.jobId });
+    openChatModal(job.id, job.employerName, job.employerPhoto);
 }
 
 function openChatFromActiveJob(activeJobId) {
     const job = AppState.activeJobs.find(j => j.id === activeJobId);
     if (!job) return;
-    openChatModal({ name: job.employerName, id: job.jobId, photo: job.employerPhoto });
+    openChatModal(job.id, job.employerName, job.employerPhoto);
 }
 
-function openChatModal(employer) {
-    if (!employer) return;
-    
-    DOM.chatEmployerName.textContent = employer.name;
-    
-    AppState.currentChat = {
-        employer: employer,
-        messages: [
-            { id: 1, sender: 'employer', text: `Hello! I saw your profile and I'm interested in hiring you.`, time: '10:30 AM', date: 'Today' },
-            { id: 2, sender: 'worker', text: 'Hi! Thank you for your interest. Can you tell me more about the job requirements?', time: '10:32 AM', date: 'Today' },
-            { id: 3, sender: 'employer', text: 'Sure! It requires experience in this field.', time: '10:35 AM', date: 'Today' }
-        ]
-    };
-    
-    renderChatMessages();
+let workerChatPollingInterval = null;
+let currentChatApplicationId = null;
+
+function openChatModal(applicationId, employerName, employerPhoto) {
+    if (!applicationId) return;
+
+    currentChatApplicationId = applicationId;
+
+    if (DOM.chatEmployerName) {
+        DOM.chatEmployerName.textContent = employerName || 'Employer';
+    }
+
+    AppState.currentChat = { employer: { name: employerName, photo: employerPhoto } };
+
+    loadChatMessages(applicationId);
     openModal(DOM.chatModal);
+
+    // Poll every 5 seconds while chat open
+    if (workerChatPollingInterval) clearInterval(workerChatPollingInterval);
+    workerChatPollingInterval = setInterval(() => {
+        if (DOM.chatModal?.classList.contains('active')) {
+            loadChatMessages(applicationId, true);
+        } else {
+            clearInterval(workerChatPollingInterval);
+        }
+    }, 5000);
+}
+
+async function loadChatMessages(applicationId, silent = false) {
+    if (!DOM.chatMessages) return;
+
+    if (!silent) {
+        DOM.chatMessages.innerHTML = `
+            <div style="text-align:center; padding:30px; color:#999;">
+                <i class="fas fa-spinner fa-spin"></i> Loading messages...
+            </div>
+        `;
+    }
+
+    try {
+        const response = await fetch(`/api/chat/${applicationId}/messages/`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-User-Role': 'worker'
+            }
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            if (!silent) {
+                DOM.chatMessages.innerHTML = `<div style="text-align:center;padding:30px;color:#999;">Failed to load messages</div>`;
+            }
+            return;
+        }
+
+        // Use my_role from API response
+        const myRole = data.my_role || 'worker';
+
+        const wasAtBottom = DOM.chatMessages.scrollHeight - DOM.chatMessages.scrollTop <= DOM.chatMessages.clientHeight + 50;
+
+        DOM.chatMessages.innerHTML = '';
+
+        if (data.messages.length === 0) {
+            DOM.chatMessages.innerHTML = `
+                <div style="text-align:center; padding:40px; color:#999;">
+                    <i class="fas fa-comment-slash" style="font-size:32px; margin-bottom:10px; display:block;"></i>
+                    No messages yet. Start the conversation!
+                </div>
+            `;
+            return;
+        }
+
+        let lastDate = '';
+        data.messages.forEach(msg => {
+            const msgDate = formatChatDate(msg.created_at);
+            const msgTime = formatChatTime(msg.created_at);
+
+            if (msgDate !== lastDate) {
+                const dateSep = document.createElement('div');
+                dateSep.style.cssText = 'text-align:center; margin:10px 0; color:#999; font-size:12px;';
+                dateSep.textContent = msgDate;
+                DOM.chatMessages.appendChild(dateSep);
+                lastDate = msgDate;
+            }
+
+            // isSent = message sender matches my role
+            const isSent = msg.sender === myRole;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${isSent ? 'sent' : 'received'}`;
+            // Force alignment with inline styles regardless of CSS
+            msgDiv.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                align-items: ${isSent ? 'flex-end' : 'flex-start'};
+                margin-bottom: 10px;
+                width: 100%;
+            `;
+
+            let contentHTML = '';
+            if (msg.file_url) {
+                const isImage = msg.file_url.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+                if (isImage) {
+                    contentHTML += `<img src="${msg.file_url}" style="max-width:200px; border-radius:8px; display:block; margin-bottom:4px;" onclick="window.open('${msg.file_url}')">`;
+                } else {
+                    contentHTML += `<a href="${msg.file_url}" target="_blank" style="color:white; display:block; margin-bottom:4px;"><i class="fas fa-paperclip"></i> Download file</a>`;
+                }
+            }
+            if (msg.message) {
+                contentHTML += `<p style="margin:0;">${msg.message}</p>`;
+            }
+
+            msgDiv.innerHTML = `
+                <div class="message-bubble" style="
+                    max-width: 70%;
+                    padding: 10px 14px;
+                    border-radius: ${isSent ? '18px 18px 4px 18px' : '18px 18px 18px 4px'};
+                    background: ${isSent ? '#01A060' : '#f0f0f0'};
+                    color: ${isSent ? 'white' : '#1a1a1a'};
+                    word-break: break-word;
+                ">
+                    ${contentHTML}
+                    <small style="opacity:0.7; font-size:11px; display:block; margin-top:4px; text-align:right;">${msgTime} ${msg.is_read && isSent ? '✓✓' : isSent ? '✓' : ''}</small>
+                </div>
+            `;
+            DOM.chatMessages.appendChild(msgDiv);
+        });
+
+        if (!silent || wasAtBottom) {
+            DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
+        }
+
+    } catch (error) {
+        console.error('Error loading chat messages:', error);
+        if (!silent) {
+            DOM.chatMessages.innerHTML = `<div style="text-align:center;padding:30px;color:#999;">Error loading messages</div>`;
+        }
+    }
 }
 
 function renderChatMessages() {
-    if (!DOM.chatMessages) return;
-    
-    DOM.chatMessages.innerHTML = '';
-    
-    AppState.currentChat.messages.forEach(message => {
-        const messageElement = document.createElement('div');
-        messageElement.className = `chat-message ${message.sender === 'worker' ? 'sent' : 'received'}`;
-        messageElement.innerHTML = `<div class="message-bubble"><p>${message.text}</p><div class="message-time">${message.time}</div></div>`;
-        DOM.chatMessages.appendChild(messageElement);
-    });
-    
-    DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
+    // Legacy function - now handled by loadChatMessages
+    if (currentChatApplicationId) loadChatMessages(currentChatApplicationId);
 }
 
-function sendChatMessage() {
-    if (!DOM.chatInput || !DOM.chatInput.value.trim()) return;
-    
-    const messageText = DOM.chatInput.value.trim();
-    
-    AppState.currentChat.messages.push({
-        id: Date.now(),
-        sender: 'worker',
-        text: messageText,
-        time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-        date: 'Today'
-    });
-    
+async function sendChatMessage() {
+    if (!DOM.chatInput || !currentChatApplicationId) return;
+
+    const message = DOM.chatInput.value.trim();
+    if (!message) return;
+
     DOM.chatInput.value = '';
-    renderChatMessages();
-    
-    setTimeout(() => {
-        const replies = [
-            "Thanks for your message! Let me check the details.",
-            "That sounds good. When can you start?",
-            "I'll discuss with my partner and get back to you.",
-            "Can you share your previous work experience?",
-            "What's your availability next week?"
-        ];
-        
-        AppState.currentChat.messages.push({
-            id: Date.now() + 1,
-            sender: 'employer',
-            text: replies[Math.floor(Math.random() * replies.length)],
-            time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-            date: 'Today'
+    DOM.chatInput.disabled = true;
+
+    try {
+        const response = await fetch(`/api/chat/${currentChatApplicationId}/send/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-User-Role': 'worker'
+            },
+            body: JSON.stringify({ message })
         });
-        renderChatMessages();
-    }, 1000);
+
+        const data = await response.json();
+
+        if (data.success) {
+            await loadChatMessages(currentChatApplicationId, true);
+            DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
+        } else {
+            showNotification(data.message || 'Failed to send message', 'error');
+            DOM.chatInput.value = message;
+        }
+    } catch (error) {
+        showNotification('Network error. Try again.', 'error');
+        DOM.chatInput.value = message;
+    } finally {
+        DOM.chatInput.disabled = false;
+        DOM.chatInput.focus();
+    }
 }
 
-function handleChatFileUpload(e) {
+async function handleChatFileUpload(e) {
     const file = e.target.files[0];
-    if (!file) return;
-    
-    showNotification(`File "${file.name}" uploaded`, 'success');
+    if (!file || !currentChatApplicationId) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('message', '');
+
+    showNotification(`Uploading "${file.name}"...`, 'info');
+
+    try {
+        const response = await fetch(`/api/chat/${currentChatApplicationId}/send/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-User-Role': 'worker'
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            await loadChatMessages(currentChatApplicationId, true);
+            DOM.chatMessages.scrollTop = DOM.chatMessages.scrollHeight;
+            showNotification(`File "${file.name}" sent!`, 'success');
+        } else {
+            showNotification('Failed to upload file', 'error');
+        }
+    } catch (error) {
+        showNotification('Network error uploading file', 'error');
+    }
+
+    if (DOM.fileInput) DOM.fileInput.value = '';
 }
 
 function toggleVoiceRecording() {
-    showNotification('Voice message recording started', 'info');
-    
-    setTimeout(() => {
-        showNotification('Voice message sent', 'success');
-    }, 2000);
+    showNotification('Voice messages coming soon!', 'info');
 }
 
 // ============================================
@@ -2291,6 +2472,27 @@ function showNotification(message, type = 'info') {
 // ============================================
 // LOGOUT FUNCTION
 // ============================================
+// ============================================
+// Unread Chat Badge
+// ============================================
+async function updateUnreadChatBadge() {
+    try {
+        const response = await fetch('/api/chat/unread-count/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await response.json();
+        if (data.success) {
+            const badge = document.getElementById('chatUnreadBadge');
+            if (badge) {
+                badge.textContent = data.unread_count;
+                badge.style.display = data.unread_count > 0 ? 'inline-flex' : 'none';
+            }
+        }
+    } catch (e) {
+        // silent fail
+    }
+}
+
 function handleLogout() {
     if (confirm(AppState.settings.language === 'hi' ? 'क्या आप लॉगआउट करना चाहते हैं?' :
                 AppState.settings.language === 'mr' ? 'तुम्हाला लॉगआउट करायचे आहे का?' :

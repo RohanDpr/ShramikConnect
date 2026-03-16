@@ -1412,15 +1412,14 @@ def get_employer_work_history(request):
     """Get completed work history for employer"""
     if 'employer_id' not in request.session:
         return JsonResponse({'success': False, 'message': 'Not authenticated'}, status=401)
-    
+
     try:
         employer_id = int(request.session['employer_id'])
         employer = Employer.objects.get(id=employer_id)
-        
+
         work_histories = WorkHistory.objects.filter(employer=employer).order_by('-completion_date')
-        
         print(f"Work histories found for employer {employer_id}: {work_histories.count()}")
-        
+
         history_list = []
         for wh in work_histories:
             history_list.append({
@@ -1443,15 +1442,184 @@ def get_employer_work_history(request):
                 'workTime': wh.work_time or 0,
                 'jobLocation': wh.job_location or ''
             })
-        
+
         return JsonResponse({'success': True, 'work_history': history_list})
-        
+
     except Employer.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Employer not found'}, status=404)
     except Exception as e:
         import traceback
-        print("ERROR in get_employer_work_history:")
         print(traceback.format_exc())
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+# ============================================
+# CHAT APIs
+# ============================================
+
+@require_http_methods(["GET"])
+def get_messages(request, application_id):
+    """Get all messages for a specific application"""
+    try:
+        application = JobApplication.objects.get(id=application_id)
+
+        employer_id = request.session.get('employer_id')
+        worker_id = request.session.get('worker_id')
+
+        # Use X-User-Role header to resolve conflict when both sessions exist
+        user_role_hint = request.headers.get('X-User-Role', '')
+
+        sender_role = None
+
+        if employer_id and application.job.employer_id == int(employer_id) and user_role_hint != 'worker':
+            sender_role = 'employer'
+            ChatMessage.objects.filter(
+                application=application,
+                sender='worker',
+                is_read=False
+            ).update(is_read=True)
+        elif worker_id and application.worker_id == int(worker_id):
+            sender_role = 'worker'
+            ChatMessage.objects.filter(
+                application=application,
+                sender='employer',
+                is_read=False
+            ).update(is_read=True)
+        elif employer_id and application.job.employer_id == int(employer_id):
+            sender_role = 'employer'
+            ChatMessage.objects.filter(
+                application=application,
+                sender='worker',
+                is_read=False
+            ).update(is_read=True)
+        else:
+            return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+
+        messages_qs = ChatMessage.objects.filter(application=application).order_by('created_at')
+
+        messages_list = []
+        for msg in messages_qs:
+            messages_list.append({
+                'id': msg.id,
+                'sender': msg.sender,
+                'message': msg.message,
+                'file_url': msg.file.url if msg.file else None,
+                'is_read': msg.is_read,
+                'created_at': msg.created_at.isoformat(),
+            })
+
+        return JsonResponse({
+            'success': True,
+            'messages': messages_list,
+            'my_role': sender_role,
+            'application': {
+                'id': application.id,
+                'job_title': application.job.title,
+                'worker_name': application.worker.get_full_name(),
+                'employer_name': application.job.employer.get_full_name(),
+                'worker_photo': application.worker.profile_photo.url if application.worker.profile_photo else None,
+                'employer_photo': application.job.employer.profile_photo.url if application.job.employer.profile_photo else None,
+            }
+        })
+
+    except JobApplication.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Application not found'}, status=404)
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def send_message(request, application_id):
+    """Send a message in a chat"""
+    try:
+        application = JobApplication.objects.get(id=application_id)
+
+        employer_id = request.session.get('employer_id')
+        worker_id = request.session.get('worker_id')
+        user_role_hint = request.headers.get('X-User-Role', '')
+
+        sender_role = None
+        if employer_id and application.job.employer_id == int(employer_id) and user_role_hint != 'worker':
+            sender_role = 'employer'
+        elif worker_id and application.worker_id == int(worker_id):
+            sender_role = 'worker'
+        elif employer_id and application.job.employer_id == int(employer_id):
+            sender_role = 'employer'
+        else:
+            return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+
+        # Handle both JSON and multipart (file upload)
+        if request.content_type and 'multipart' in request.content_type:
+            message_text = request.POST.get('message', '').strip()
+            file = request.FILES.get('file')
+        else:
+            data = json.loads(request.body)
+            message_text = data.get('message', '').strip()
+            file = None
+
+        if not message_text and not file:
+            return JsonResponse({'success': False, 'message': 'Message or file required'}, status=400)
+
+        chat_msg = ChatMessage(
+            application=application,
+            sender=sender_role,
+            message=message_text,
+            is_read=False
+        )
+        if file:
+            chat_msg.file = file
+        chat_msg.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': {
+                'id': chat_msg.id,
+                'sender': chat_msg.sender,
+                'message': chat_msg.message,
+                'file_url': chat_msg.file.url if chat_msg.file else None,
+                'is_read': chat_msg.is_read,
+                'created_at': chat_msg.created_at.isoformat(),
+            }
+        })
+
+    except JobApplication.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Application not found'}, status=404)
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+@require_http_methods(["GET"])
+def get_unread_count(request):
+    """Get unread message count for current user"""
+    try:
+        employer_id = request.session.get('employer_id')
+        worker_id = request.session.get('worker_id')
+
+        if employer_id:
+            # Employer ke liye — worker ke messages jo unread hain
+            count = ChatMessage.objects.filter(
+                application__job__employer_id=int(employer_id),
+                sender='worker',
+                is_read=False
+            ).count()
+        elif worker_id:
+            # Worker ke liye — employer ke messages jo unread hain
+            count = ChatMessage.objects.filter(
+                application__worker_id=int(worker_id),
+                sender='employer',
+                is_read=False
+            ).count()
+        else:
+            return JsonResponse({'success': False, 'message': 'Not authenticated'}, status=401)
+
+        return JsonResponse({'success': True, 'unread_count': count})
+
+    except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 
