@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispute Resolution Policy | ShramikConnect</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/dispute_resolution.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - DISPUTE RESOLUTION PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="dispute_title">Dispute Resolution Policy</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains how disputes related to the use of the ShramikConnect platform may be handled. ShramikConnect provides a platform that connects workers and employers. Since job agreements and payments occur directly between users, disputes should primarily be resolved between the involved parties.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Direct Resolution Between Users -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="direct_title">Direct Resolution Between Users</h3>
+                        <p data-i18n="direct_desc">If a disagreement or conflict arises between a worker and an employer, both parties are encouraged to communicate directly and attempt to resolve the issue.</p>
+                        <p data-i18n="direct_includes">This may include discussions regarding:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-comments"></i> <span data-i18n="direct1">Job expectations</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="direct2">Work completion</span></li>
+                            <li><i class="fas fa-hand-holding-usd"></i> <span data-i18n="direct3">Payment agreements</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="direct4">Job cancellation or misunderstandings</span></li>
+                        </ul>
+                        <p data-i18n="direct_note">Direct communication often helps resolve disputes quickly and effectively.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Platform Assistance -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="assistance_title">Platform Assistance</h3>
+                        <p data-i18n="assistance_desc">ShramikConnect may provide limited assistance when disputes are reported.</p>
+                        <p data-i18n="assistance_review">The platform may review complaints related to:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user-slash"></i> <span data-i18n="assistance1">Misconduct</span></li>
+                            <li><i class="fas fa-bullhorn"></i> <span data-i18n="assistance2">Misleading job postings</span></li>
+                            <li><i class="fas fa-angry"></i> <span data-i18n="assistance3">Abusive behavior between users</span></li>
+                        </ul>
+                        <p data-i18n="assistance_note">However, the platform does not act as a mediator for financial or contractual disputes.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Payment Disputes -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="payment_dispute_title">Payment Disputes</h3>
+                        <p data-i18n="payment_dispute_desc">ShramikConnect does not process payments between workers and employers.</p>
+                        <p data-i18n="payment_dispute_because">Because of this:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-ban"></i> <span data-i18n="payment1">The platform cannot hold or release payments</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="payment2">The platform cannot enforce payment agreements</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="payment3">Payment conflicts must be resolved directly between the parties involved</span></li>
+                        </ul>
+                        <p data-i18n="payment_note">Users are encouraged to clearly discuss payment terms before starting work.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Documentation and Communication -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="documentation_title">Documentation and Communication</h3>
+                        <p data-i18n="documentation_desc">In case of disputes, users are encouraged to maintain clear communication and keep records of important details such as:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-file-alt"></i> <span data-i18n="doc1">Job descriptions</span></li>
+                            <li><i class="fas fa-rupee-sign"></i> <span data-i18n="doc2">Agreed payment amounts</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="doc3">Work timelines</span></li>
+                            <li><i class="fas fa-envelope"></i> <span data-i18n="doc4">Messages exchanged between users</span></li>
+                        </ul>
+                        <p data-i18n="documentation_note">These records may help both parties clarify misunderstandings.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Legal Resolution -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="legal_title">Legal Resolution</h3>
+                        <p data-i18n="legal_desc">If a dispute cannot be resolved through direct communication, users may choose to pursue resolution through appropriate legal channels.</p>
+                        <p data-i18n="legal_jurisdiction">Any legal matters related to the use of the ShramikConnect platform may fall under the jurisdiction of courts located in Buldhana District, Maharashtra, India.</p>
+                        <p data-i18n="legal_note">Users are responsible for handling their legal matters independently.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Platform Neutrality -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="neutrality_title">Platform Neutrality</h3>
+                        <p data-i18n="neutrality_desc">ShramikConnect maintains a neutral role in disputes between workers and employers.</p>
+                        <p data-i18n="neutrality_guarantee">The platform does not guarantee:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="neutrality1">Job outcomes</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="neutrality2">Work quality</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="neutrality3">Payment fulfillment</span></li>
+                        </ul>
+                        <p data-i18n="neutrality_note">Its primary role is to provide a connection platform for users.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Responsible Use of the Platform -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="responsible_title">Responsible Use of the Platform</h3>
+                        <p data-i18n="responsible_desc">Users are encouraged to act responsibly when entering work arrangements through the platform.</p>
+                        <p data-i18n="responsible_note">Clear communication, transparency, and mutual respect can significantly reduce the likelihood of disputes.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">ShramikConnect encourages users to resolve disputes respectfully and responsibly.</p>
+                <p data-i18n="important_notice_footer">The platform's role is limited to connecting workers and employers and does not extend to managing work agreements or enforcing financial arrangements.</p>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/dispute_resolution.js' %}"></script>
+</body>
+</html>

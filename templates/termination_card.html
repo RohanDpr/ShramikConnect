@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Termination Policy | ShramikConnect</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/termination_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - TERMINATION POLICY PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="termination_title">Account Termination Policy</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the conditions under which a user account on the ShramikConnect platform may be suspended, restricted, or permanently terminated. ShramikConnect aims to maintain a safe and trustworthy platform for workers and employers. Accounts that violate platform policies may be subject to appropriate action.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Reasons for Account Termination -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="reasons_title">Reasons for Account Termination</h3>
+                        <p data-i18n="reasons_desc">ShramikConnect may suspend or terminate user accounts in situations such as:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="reasons1">Repeated violation of platform policies</span></li>
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="reasons2">Fraudulent activity or scams</span></li>
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="reasons3">Providing false or misleading information</span></li>
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="reasons4">Harassment or abusive behavior toward other users</span></li>
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="reasons5">Posting illegal or prohibited job requests</span></li>
+                        </ul>
+                        <p data-i18n="reasons_note">The platform reserves the right to take action when necessary to protect the community.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Temporary Account Suspension -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="suspension_title">Temporary Account Suspension</h3>
+                        <p data-i18n="suspension_desc">In certain cases, accounts may be temporarily suspended instead of permanently terminated.</p>
+                        <p data-i18n="suspension_cases">Temporary suspension may occur when:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="suspension1">Minor policy violations are reported</span></li>
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="suspension2">Suspicious activity is detected</span></li>
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="suspension3">Platform review is required</span></li>
+                        </ul>
+                        <p data-i18n="suspension_note">During suspension, users may not be able to access certain platform features.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Permanent Account Termination -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="permanent_title">Permanent Account Termination</h3>
+                        <p data-i18n="permanent_desc">Accounts may be permanently terminated if serious violations occur.</p>
+                        <p data-i18n="permanent_examples">Examples include:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-ban"></i> <span data-i18n="permanent1">Fraud or scams</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="permanent2">Repeated abusive behavior</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="permanent3">Illegal activities through the platform</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="permanent4">Severe violations of platform conduct rules</span></li>
+                        </ul>
+                        <p data-i18n="permanent_note">Once an account is permanently terminated, access to the platform may be restricted.</p>
+                    </div>
+                </section>
+
+                <!-- 4. User Requested Account Deletion -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="user_requested_title">User Requested Account Deletion</h3>
+                        <p data-i18n="user_requested_desc">Users may request the deletion of their own account if they no longer wish to use the platform.</p>
+                        <p data-i18n="user_requested_process">Upon request:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="user_requested1">The account may be deactivated</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="user_requested2">Certain personal information may be removed from active systems</span></li>
+                        </ul>
+                        <p data-i18n="user_requested_note">However, some information may be retained if required for legal or security purposes.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Platform Rights -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="platform_rights_title">Platform Rights</h3>
+                        <p data-i18n="platform_rights_desc">ShramikConnect reserves the right to:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-search"></i> <span data-i18n="platform_rights1">Investigate suspicious activities</span></li>
+                            <li><i class="fas fa-lock"></i> <span data-i18n="platform_rights2">Restrict access to certain features</span></li>
+                            <li><i class="fas fa-user-slash"></i> <span data-i18n="platform_rights3">Remove accounts that threaten platform safety</span></li>
+                        </ul>
+                        <p data-i18n="platform_rights_note">These actions help maintain a secure and reliable environment for all users.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Effect of Termination -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="effect_title">Effect of Termination</h3>
+                        <p data-i18n="effect_desc">If an account is terminated:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="effect1">Access to the platform may be removed</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="effect2">User profiles may become inactive</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="effect3">Ongoing communication between users may be interrupted</span></li>
+                        </ul>
+                        <p data-i18n="effect_note">Users should ensure they follow platform policies to avoid termination.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Appeals and Review -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="appeals_title">Appeals and Review</h3>
+                        <p data-i18n="appeals_desc">If a user believes their account was terminated incorrectly, they may contact platform support for review.</p>
+                        <p data-i18n="appeals_requests">Requests for review may include:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-file-alt"></i> <span data-i18n="appeals1">Explanation of the situation</span></li>
+                            <li><i class="fas fa-file-alt"></i> <span data-i18n="appeals2">Supporting information or clarification</span></li>
+                        </ul>
+                        <p data-i18n="appeals_note">ShramikConnect may review such requests but does not guarantee account restoration.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">ShramikConnect enforces termination policies to maintain a safe, fair, and respectful environment for all users.</p>
+                <p data-i18n="important_notice_footer">Users are encouraged to follow platform rules and communicate responsibly to avoid account restrictions.</p>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/termination_card.js' %}"></script>
+</body>
+</html>
