@@ -17,7 +17,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4_h65^&&4hjgr4
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG band karo production mein
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = "True"
 
 # ALLOWED_HOSTS mein Render domain add karo
 ALLOWED_HOSTS = ['*']  # Ya specific: ['your-app.onrender.com', 'localhost']
