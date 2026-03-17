@@ -24,7 +24,7 @@ ALLOWED_HOSTS = ['*']  # Ya specific: ['your-app.onrender.com', 'localhost']
 
 # ✅ YEH ADD KARO — CSRF fix ke liye (most likely tera issue yahi hai)
 CSRF_TRUSTED_ORIGINS = [
-    'https://your-app-name.onrender.com',  # apna actual Render URL daal
+    'https://shramikconnect.onrender.com',  # apna actual Render URL daal
 ]
 
 # HTTPS headers trust karo (Render ke liye zaroori)
