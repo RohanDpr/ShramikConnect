@@ -546,10 +546,10 @@ function init() {
     }
     
     const savedLanguage = localStorage.getItem('helpLanguage') || 'en';
-    handleLanguageChange(savedLanguage);
+    handleLanguageChange(savedLanguage); // yeh andar createTermsCards() already call karta hai
     initTheme();
     setupNavigation();
-    createTermsCards();
+    // createTermsCards() hataya — handleLanguageChange → applyLanguage → refreshCards se already ho jaata hai
     setupEventListeners();
 }
 

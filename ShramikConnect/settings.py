@@ -16,8 +16,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4_h65^&&4hjgr4oo%+%*j@3kdl8@dbmc=er#4gd$(qaxi$0_85')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+# DEBUG band karo production mein
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+# ALLOWED_HOSTS mein Render domain add karo
+ALLOWED_HOSTS = ['*']  # Ya specific: ['your-app.onrender.com', 'localhost']
+
+# ✅ YEH ADD KARO — CSRF fix ke liye (most likely tera issue yahi hai)
+CSRF_TRUSTED_ORIGINS = [
+    'https://your-app-name.onrender.com',  # apna actual Render URL daal
+]
+
+# HTTPS headers trust karo (Render ke liye zaroori)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
