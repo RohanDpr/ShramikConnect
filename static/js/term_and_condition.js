@@ -487,16 +487,59 @@ function createTermsCards() {
             </div>
         `;
         
-        cardElement.addEventListener('click', () => {
-            handleCardClick(card.url);
-        });
+       cardElement.addEventListener('click', () => {
+    handleCardClick(card.id);  // ← YEH NAYA LIKHO
+});
         
         cardsContainer.appendChild(cardElement);
     });
 }
 
-function handleCardClick(url) {
-    window.location.href = url;
+function handleCardClick(cardId) {
+    // =====================================
+    // 9 CARDS KE LIYE URL
+    // =====================================
+    switch(cardId) {
+        
+        case 'intro':
+            window.location.href = '/terms/introduction/';  // ← APNA URL
+            break;
+        
+        case 'eligibility':
+            window.location.href = '/eligibility-card/';  // ← APNA URL
+            break;
+        
+        case 'worker':
+            window.location.href = '/workers-term/';  // ← APNA URL
+            break;
+        
+        case 'employer':
+            window.location.href = '/employers-term/';  // ← APNA URL
+            break;
+        
+        case 'platform':
+            window.location.href = '/platform-responsibilities/';  // ← APNA URL
+            break;
+        
+        case 'conduct':
+            window.location.href = '/terms/conduct/';  // ← APNA URL
+            break;
+        
+        case 'termination':
+            window.location.href = '/termination-card/';  // ← APNA URL
+            break;
+        
+        case 'liability':
+            window.location.href = '/liability-card/';  // ← APNA URL
+            break;
+        
+        case 'dispute':
+            window.location.href = '/dispute-resolution-card/';  // ← APNA URL
+            break;
+        
+        default:
+            alert('Page under construction');
+    }
 }
 
 // ============================================

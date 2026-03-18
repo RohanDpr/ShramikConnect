@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liability and Disclaimer | ShramikConnect</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/liability_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - LIABILITY PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="liability_title">Liability and Disclaimer</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the limitations of responsibility for the ShramikConnect platform. ShramikConnect acts only as a digital platform that connects workers and employers. The platform does not directly participate in job agreements or financial transactions between users. By using the platform, users acknowledge and accept the limitations described in this section.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Platform Role -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="platform_role_title">Platform Role</h3>
+                        <p data-i18n="platform_role_desc">ShramikConnect operates as a technology platform that allows workers and employers to connect with each other.</p>
+                        <p data-i18n="platform_role_tools">The platform provides tools that help users:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-search"></i> <span data-i18n="platform_role_tool1">Discover job opportunities</span></li>
+                            <li><i class="fas fa-handshake"></i> <span data-i18n="platform_role_tool2">Connect with workers or employers</span></li>
+                            <li><i class="fas fa-comments"></i> <span data-i18n="platform_role_tool3">Communicate regarding work</span></li>
+                        </ul>
+                        <p data-i18n="platform_role_note">ShramikConnect does not act as an employer, contractor, or agent for any user.</p>
+                    </div>
+                </section>
+
+                <!-- 2. No Employment Relationship -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="no_employment_title">No Employment Relationship</h3>
+                        <p data-i18n="no_employment_desc">Using ShramikConnect does not create an employment relationship between:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="no_employment_relation1">Workers and the platform</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="no_employment_relation2">Employers and the platform</span></li>
+                        </ul>
+                        <p data-i18n="no_employment_agreement">Any work agreement exists only between the worker and the employer.</p>
+                        <p data-i18n="no_employment_involvement">ShramikConnect is not involved in managing or supervising work.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Payment Responsibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="payment_responsibility_title">Payment Responsibility</h3>
+                        <p data-i18n="payment_responsibility_desc">ShramikConnect does not process or manage payments between users.</p>
+                        <p data-i18n="payment_responsibility_negotiation">Workers and employers negotiate payment terms directly and handle payments independently.</p>
+                        <p data-i18n="payment_responsibility_platform">The platform is not responsible for:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="payment_responsibility1">Payment delays</span></li>
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="payment_responsibility2">Payment disputes</span></li>
+                            <li><i class="fas fa-exclamation-circle"></i> <span data-i18n="payment_responsibility3">Non-payment issues</span></li>
+                        </ul>
+                        <p data-i18n="payment_responsibility_note">Users must resolve payment matters directly with each other.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Job Quality and Performance -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="job_quality_title">Job Quality and Performance</h3>
+                        <p data-i18n="job_quality_desc">ShramikConnect does not guarantee the quality, reliability, or performance of workers.</p>
+                        <p data-i18n="job_quality_employer">Similarly, the platform does not guarantee that employers will provide suitable work conditions.</p>
+                        <p data-i18n="job_quality_note">Users are encouraged to communicate clearly and verify job details before accepting work.</p>
+                    </div>
+                </section>
+
+                <!-- 5. User Conduct Responsibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="user_conduct_title">User Conduct Responsibility</h3>
+                        <p data-i18n="user_conduct_desc">Users are responsible for their own actions while using the platform.</p>
+                        <p data-i18n="user_conduct_platform">ShramikConnect is not responsible for:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user-slash"></i> <span data-i18n="user_conduct1">Misconduct by workers or employers</span></li>
+                            <li><i class="fas fa-info-circle"></i> <span data-i18n="user_conduct2">False information provided by users</span></li>
+                            <li><i class="fas fa-exclamation-triangle"></i> <span data-i18n="user_conduct3">Any damages caused during work arrangements</span></li>
+                        </ul>
+                        <p data-i18n="user_conduct_dispute">If disputes arise between users, they must be resolved between the involved parties.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Platform Availability -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="availability_title">Platform Availability</h3>
+                        <p data-i18n="availability_desc">While ShramikConnect aims to provide reliable service, the platform does not guarantee uninterrupted availability.</p>
+                        <p data-i18n="availability_interruptions">Temporary interruptions may occur due to:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-tools"></i> <span data-i18n="availability_reason1">Maintenance updates</span></li>
+                            <li><i class="fas fa-bug"></i> <span data-i18n="availability_reason2">Technical issues</span></li>
+                            <li><i class="fas fa-wifi"></i> <span data-i18n="availability_reason3">Internet connectivity problems</span></li>
+                        </ul>
+                        <p data-i18n="availability_liability">ShramikConnect is not liable for losses resulting from such interruptions.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Third-Party Communication -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="third_party_title">Third-Party Communication</h3>
+                        <p data-i18n="third_party_desc">Users may communicate outside the platform after connecting.</p>
+                        <p data-i18n="third_party_monitoring">ShramikConnect does not control or monitor external communication channels.</p>
+                        <p data-i18n="third_party_liability">Therefore, the platform is not responsible for any agreements, misunderstandings, or issues that arise from such interactions.</p>
+                    </div>
+                </section>
+
+                <!-- 8. Limitation of Liability -->
+                <section class="terms-section">
+                    <h2 class="section-number">8.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="limitation_liability_title">Limitation of Liability</h3>
+                        <p data-i18n="limitation_liability_desc">To the maximum extent permitted by law, ShramikConnect shall not be liable for:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-coins"></i> <span data-i18n="limitation_liability1">Financial losses</span></li>
+                            <li><i class="fas fa-briefcase"></i> <span data-i18n="limitation_liability2">Work-related damages</span></li>
+                            <li><i class="fas fa-gavel"></i> <span data-i18n="limitation_liability3">Contract disputes between users</span></li>
+                            <li><i class="fas fa-chain-broken"></i> <span data-i18n="limitation_liability4">Any indirect or consequential damages</span></li>
+                        </ul>
+                        <p data-i18n="limitation_liability_note">Users agree that they use the platform at their own discretion and responsibility.</p>
+                    </div>
+                </section>
+
+                <!-- 9. User Responsibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">9.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="user_responsibility_title">User Responsibility</h3>
+                        <p data-i18n="user_responsibility_desc">By using the platform, users agree that they are responsible for:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="user_responsibility1">Verifying job details</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="user_responsibility2">Negotiating payment terms</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="user_responsibility3">Ensuring safe working arrangements</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="user_responsibility4">Following applicable laws</span></li>
+                        </ul>
+                        <p data-i18n="user_responsibility_note">ShramikConnect only facilitates connections and does not participate in user agreements.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">ShramikConnect provides a platform to help workers and employers find each other.</p>
+                <p data-i18n="important_notice_platform">The platform does not:</p>
+                <ul>
+                    <li><span data-i18n="important_notice1">Guarantee job completion</span></li>
+                    <li><span data-i18n="important_notice2">Guarantee payment</span></li>
+                    <li><span data-i18n="important_notice3">Supervise work performed by users</span></li>
+                </ul>
+                <p data-i18n="important_notice_footer">All agreements and responsibilities remain between the worker and the employer.</p>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/liability_card.js' %}"></script>
+</body>
+</html>

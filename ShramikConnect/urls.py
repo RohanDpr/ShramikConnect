@@ -40,7 +40,15 @@ urlpatterns = [
     path('choose_password_employer/', views.choose_password_employer),
     path('change_password_employer/', views.change_password_employer),
     path('get_password_employer/', views.get_password_employer),
-    
+     path('eligibility-card/', views.eligibility_card, name='eligibility_card'),
+    path('workers-term/', views.workers_term, name='workers_term'),
+    path('employers-term/', views.employers_term, name='employers_term'),
+    path('platform-responsibilities/', views.platform_responsibilities, name='platform_responsibilities'),
+    path('termination-card/', views.termination_card, name='termination_card'),
+    path('dispute-resolution-card/', views.dispute_resolution_card, name='dispute_resolution_card'),
+    path('liability-card/', views.liability_card, name='liability_card'),
+    path('location-data-card/', views.location_data_card, name='location_data_card'),
+
     # Info pages
     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
     path('contact_developer/', views.contact_developer, name='contact_developer'),

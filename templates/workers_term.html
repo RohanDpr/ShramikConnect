@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Terms | ShramikConnect</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/workers_term.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - WORKER TERMS PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="worker_title">Worker Terms</h1>
+                <p class="page-description" data-i18n="worker_desc">This section explains the responsibilities, expectations, and rules that apply to workers who use the ShramikConnect platform to find job opportunities.</p>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the responsibilities, expectations, and rules that apply to workers who use the ShramikConnect platform to find job opportunities. Workers must follow these terms while using the platform to maintain a safe and reliable environment for all users.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Worker Registration -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="worker_reg_title">Worker Registration</h3>
+                        <p data-i18n="worker_reg_desc">To use ShramikConnect as a worker, users must create a worker profile and provide accurate information.</p>
+                        <p data-i18n="worker_reg_requirements">During registration, workers may be required to provide:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="worker_reg_req1">Mobile number verification</span></li>
+                            <li><i class="fas fa-user"></i> <span data-i18n="worker_reg_req2">Basic personal details</span></li>
+                            <li><i class="fas fa-tools"></i> <span data-i18n="worker_reg_req3">Skill or work category</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="worker_reg_req4">Current location</span></li>
+                        </ul>
+                        <p data-i18n="worker_reg_responsibility">Workers are responsible for ensuring that the information provided in their profile is correct and updated.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Skill Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="skill_title">Skill Information</h3>
+                        <p data-i18n="skill_desc">Workers must clearly mention their skills, experience, or type of work they are able to perform.</p>
+                        <p data-i18n="skill_benefit">This helps employers understand the worker's capabilities before offering job opportunities.</p>
+                        <p data-i18n="skill_disclaimer">ShramikConnect does not guarantee the accuracy of self-declared skills and encourages employers to communicate directly with workers before confirming any work.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Job Applications -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="job_apply_title">Job Applications</h3>
+                        <p data-i18n="job_apply_desc">Workers may browse available jobs on the platform and apply to jobs that match their skills.</p>
+                        <p data-i18n="job_apply_before">Before applying for a job, workers should:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="job_apply_step1">Read the job description carefully</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="job_apply_step2">Confirm the job location</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="job_apply_step3">Understand the work requirements</span></li>
+                        </ul>
+                        <p data-i18n="job_apply_note">Workers should only apply for jobs they are capable of completing.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Communication with Employers -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="communication_title">Communication with Employers</h3>
+                        <p data-i18n="communication_desc">Once a worker applies for a job, communication may take place directly between the worker and the employer through the platform or other mutually agreed methods.</p>
+                        <p data-i18n="communication_professional">Workers should maintain professional and respectful communication with employers.</p>
+                        <p data-i18n="communication_warning">Any abusive, threatening, or inappropriate behavior may result in account suspension.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Payment Negotiation -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="payment_title">Payment Negotiation</h3>
+                        <p data-i18n="payment_desc">ShramikConnect does not manage or process payments between workers and employers.</p>
+                        <p data-i18n="payment_responsibility">Workers and employers are responsible for negotiating payment terms directly.</p>
+                        <p data-i18n="payment_agreement">Payment methods, timing, and amounts must be agreed upon by both parties independently.</p>
+                        <p data-i18n="payment_disclaimer">The platform is not responsible for payment disputes.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Work Completion -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="completion_title">Work Completion</h3>
+                        <p data-i18n="completion_desc">Workers are expected to complete the work they agree to perform in a timely and responsible manner.</p>
+                        <p data-i18n="completion_inability">If a worker is unable to complete the work, they should inform the employer as soon as possible.</p>
+                        <p data-i18n="completion_consequence">Failure to complete agreed work without proper communication may affect the worker's reputation on the platform.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Ratings and Feedback -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="ratings_title">Ratings and Feedback</h3>
+                        <p data-i18n="ratings_desc">Employers may provide ratings or feedback after a job interaction.</p>
+                        <p data-i18n="ratings_system">ShramikConnect uses a 5-star rating system to help maintain trust within the platform.</p>
+                        <p data-i18n="ratings_criteria">Ratings may reflect:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-star"></i> <span data-i18n="ratings_criteria1">Work quality</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="ratings_criteria2">Reliability</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="ratings_criteria3">Professional behavior</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="ratings_criteria4">Communication</span></li>
+                        </ul>
+                        <p data-i18n="ratings_impact">Consistently poor ratings may affect a worker's ability to receive job opportunities.</p>
+                    </div>
+                </section>
+
+                <!-- 8. Worker Responsibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">8.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="responsibility_title">Worker Responsibility</h3>
+                        <p data-i18n="responsibility_desc">Workers are responsible for:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-shield-alt"></i> <span data-i18n="responsibility1">Performing work safely</span></li>
+                            <li><i class="fas fa-clipboard-list"></i> <span data-i18n="responsibility2">Following employer instructions related to the job</span></li>
+                            <li><i class="fas fa-handshake"></i> <span data-i18n="responsibility3">Maintaining professional behavior</span></li>
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="responsibility4">Ensuring the accuracy of their profile information</span></li>
+                        </ul>
+                        <p data-i18n="responsibility_note">Workers must ensure that the work they accept is within their skills and capabilities.</p>
+                    </div>
+                </section>
+
+                <!-- 9. Independent Work Relationship -->
+                <section class="terms-section">
+                    <h2 class="section-number">9.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="independent_title">Independent Work Relationship</h3>
+                        <p data-i18n="independent_desc">Workers using ShramikConnect act as independent individuals.</p>
+                        <p data-i18n="independent_relationship">The platform does not create an employment relationship between the worker and ShramikConnect.</p>
+                        <p data-i18n="independent_role">ShramikConnect only provides a platform to connect workers with employers.</p>
+                        <p data-i18n="independent_agreement">Workers are responsible for their own agreements with employers.</p>
+                    </div>
+                </section>
+
+                <!-- 10. Platform Role -->
+                <section class="terms-section">
+                    <h2 class="section-number">10.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="platform_role_title">Platform Role</h3>
+                        <p data-i18n="platform_role_desc">ShramikConnect only facilitates connections between workers and employers.</p>
+                        <p data-i18n="platform_role_limitations">The platform does not:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="platform_limitation1">Guarantee job availability</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="platform_limitation2">Guarantee payment</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="platform_limitation3">Supervise work performed by workers</span></li>
+                        </ul>
+                        <p data-i18n="platform_role_note">Workers should communicate clearly with employers before accepting any job opportunity.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/workers_term.js' %}"></script>
+</body>
+</html>

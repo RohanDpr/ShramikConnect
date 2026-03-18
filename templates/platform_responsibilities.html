@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Responsibilities | ShramikConnect</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/platform_responsibilities.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - PLATFORM RESPONSIBILITIES PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="platform_title">Platform Responsibilities</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the role and responsibilities of the ShramikConnect platform. ShramikConnect is designed to help workers and employers discover each other and communicate about job opportunities. The platform provides tools and services that facilitate these connections while maintaining a safe and reliable environment.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Providing a Connection Platform -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="connection_title">Providing a Connection Platform</h3>
+                        <p data-i18n="connection_desc">ShramikConnect provides a digital platform where:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-search"></i> <span data-i18n="connection1">Workers can search for job opportunities</span></li>
+                            <li><i class="fas fa-briefcase"></i> <span data-i18n="connection2">Employers can find workers for different types of work</span></li>
+                            <li><i class="fas fa-comments"></i> <span data-i18n="connection3">Users can communicate regarding job requirements</span></li>
+                        </ul>
+                        <p data-i18n="connection_note">The platform focuses on making it easier for users to discover opportunities and connect with each other.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Maintaining Platform Accessibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="accessibility_title">Maintaining Platform Accessibility</h3>
+                        <p data-i18n="accessibility_desc">ShramikConnect aims to keep the platform accessible and functional for users.</p>
+                        <p data-i18n="accessibility_maintenance">The platform may perform regular updates and maintenance to improve performance, fix technical issues, and introduce new features.</p>
+                        <p data-i18n="accessibility_note">Temporary service interruptions may occur during these maintenance activities.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Promoting Safe Platform Usage -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="safety_title">Promoting Safe Platform Usage</h3>
+                        <p data-i18n="safety_desc">ShramikConnect encourages safe and responsible use of the platform.</p>
+                        <p data-i18n="safety_monitoring">The platform may monitor reported activities and take action when policies are violated in order to protect users from harmful or inappropriate behavior.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Protecting User Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="protection_title">Protecting User Information</h3>
+                        <p data-i18n="protection_desc">ShramikConnect makes reasonable efforts to protect user data and account information.</p>
+                        <p data-i18n="protection_measures">The platform uses appropriate measures to maintain the confidentiality and security of user data.</p>
+                        <p data-i18n="protection_note">Users are also responsible for protecting their account credentials.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Reviewing Reported Issues -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="review_title">Reviewing Reported Issues</h3>
+                        <p data-i18n="review_desc">Users may report problems related to platform usage such as:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-bullhorn"></i> <span data-i18n="review1">Misleading job posts</span></li>
+                            <li><i class="fas fa-angry"></i> <span data-i18n="review2">Inappropriate behavior</span></li>
+                            <li><i class="fas fa-exclamation-triangle"></i> <span data-i18n="review3">Suspicious activities</span></li>
+                        </ul>
+                        <p data-i18n="review_note">ShramikConnect may review such reports and take action where necessary according to platform policies.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Improving Platform Features -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="improvement_title">Improving Platform Features</h3>
+                        <p data-i18n="improvement_desc">ShramikConnect may continuously improve the platform to enhance user experience.</p>
+                        <p data-i18n="improvement_includes">This may include:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-plus-circle"></i> <span data-i18n="improvement1">Adding new features</span></li>
+                            <li><i class="fas fa-search"></i> <span data-i18n="improvement2">Improving job discovery tools</span></li>
+                            <li><i class="fas fa-comments"></i> <span data-i18n="improvement3">Enhancing communication capabilities</span></li>
+                            <li><i class="fas fa-tachometer-alt"></i> <span data-i18n="improvement4">Updating system performance</span></li>
+                        </ul>
+                        <p data-i18n="improvement_note">These improvements help maintain an effective platform for workers and employers.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Maintaining Neutral Platform Role -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="neutral_title">Maintaining Neutral Platform Role</h3>
+                        <p data-i18n="neutral_desc">ShramikConnect maintains a neutral role between workers and employers.</p>
+                        <p data-i18n="neutral_tools">The platform provides tools for connection and communication but does not participate in job agreements between users.</p>
+                        <p data-i18n="neutral_note">All work arrangements and agreements are handled directly by the users involved.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">ShramikConnect's responsibility is limited to providing a digital platform that connects workers and employers.</p>
+                <p data-i18n="important_notice_platform">The platform does not:</p>
+                <ul>
+                    <li><span data-i18n="important1">Supervise work performed by users</span></li>
+                    <li><span data-i18n="important2">Manage payments between users</span></li>
+                    <li><span data-i18n="important3">Guarantee job completion or job availability</span></li>
+                </ul>
+                <p data-i18n="important_notice_footer">Users are responsible for managing their own agreements and work arrangements.</p>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/platform_responsibilities.js' %}"></script>
+</body>
+</html>

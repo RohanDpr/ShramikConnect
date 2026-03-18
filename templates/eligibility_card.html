@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Eligibility | ShramikConnect Terms</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/eligibility_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - ELIGIBILITY PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="eligibility_title">User Eligibility</h1>
+                <p class="page-description" data-i18n="eligibility_desc">This section explains the requirements and legal eligibility to use the ShramikConnect platform as a worker or employer.</p>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Eligibility Requirements</h2>
+                <p data-i18n="overview_desc">This page explains the eligibility criteria required to use the ShramikConnect platform. These requirements ensure that both workers and employers can use the platform safely and responsibly.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Minimum Age Requirement -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="age_title">Minimum Age Requirement</h3>
+                        <p data-i18n="age_desc">To use the ShramikConnect platform, users must be at least 18 years old.</p>
+                        <p data-i18n="age_restriction">Individuals below the age of 18 are not permitted to create accounts or use the platform.</p>
+                        <p data-i18n="age_enforcement">If ShramikConnect discovers that an account belongs to a minor, the account may be suspended or permanently removed.</p>
+                        <p data-i18n="age_rationale">This rule ensures that users are legally capable of communicating and entering work agreements.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Geographic Availability -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="geo_title">Geographic Availability</h3>
+                        <p data-i18n="geo_desc">ShramikConnect is designed primarily for users located within India.</p>
+                        <p data-i18n="geo_requirement">Workers and employers using the platform should be located in India or offering job opportunities within Indian locations.</p>
+                        <p data-i18n">The platform may restrict certain services if the user is located outside supported regions.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Worker Eligibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="worker_title">Worker Eligibility</h3>
+                        <p data-i18n="worker_desc">To register as a worker on ShramikConnect, users must meet the following requirements:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="worker_req1">Must have a valid mobile number for account verification</span></li>
+                            <li><i class="fas fa-user"></i> <span data-i18n="worker_req2">Must provide basic personal information</span></li>
+                            <li><i class="fas fa-tools"></i> <span data-i18n="worker_req3">Must provide skill details or work category</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="worker_req4">Must provide accurate location information</span></li>
+                        </ul>
+                        <p data-i18n="worker_responsibility">Workers are responsible for ensuring that their profile details are correct and updated.</p>
+                        <p data-i18n="worker_verification">ShramikConnect may request identity verification if suspicious activity or complaints are reported.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Employer Eligibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="employer_title">Employer Eligibility</h3>
+                        <p data-i18n="employer_desc">Employers on ShramikConnect may be individual persons or organizations seeking workers for different types of jobs.</p>
+                        <p data-i18n="employer_requirements">To use the platform as an employer:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="employer_req1">A valid mobile number verification is required</span></li>
+                            <li><i class="fas fa-briefcase"></i> <span data-i18n="employer_req2">Employers must provide accurate job information</span></li>
+                            <li><i class="fas fa-map-pin"></i> <span data-i18n="employer_req3">Employers must provide the correct job location</span></li>
+                        </ul>
+                        <p data-i18n="employer_registration">Employers are not required to have a business registration or GST registration to post jobs on the platform.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Accurate Information Requirement -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="accuracy_title">Accurate Information Requirement</h3>
+                        <p data-i18n="accuracy_desc">All users must provide true, accurate, and complete information when creating accounts or posting job details.</p>
+                        <p data-i18n="accuracy_consequences">Providing false or misleading information may result in actions such as:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-trash-alt"></i> <span data-i18n="accuracy_action1">Removal of job listings</span></li>
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="accuracy_action2">Temporary account suspension</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="accuracy_action3">Permanent account termination in serious cases</span></li>
+                        </ul>
+                        <p data-i18n="accuracy_trust">This rule helps maintain a trustworthy environment for all users.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Account Responsibility -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="account_title">Account Responsibility</h3>
+                        <p data-i18n="account_desc">Users are responsible for maintaining the security of their account information.</p>
+                        <p data-i18n="account_prohibited">Users must not:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="account_prohibit1">Share their account credentials with others</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="account_prohibit2">Allow unauthorized access to their account</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="account_prohibit3">Use another person's account to access the platform</span></li>
+                        </ul>
+                        <p data-i18n="account_liability">Any activity performed through a user account will be considered the responsibility of the account holder.</p>
+                    </div>
+                </section>
+
+                <!-- Important Notice -->
+                <div class="important-notice">
+                    <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="notice_title">Important Notice</span></h3>
+                    <p data-i18n="notice_desc">ShramikConnect acts only as a digital platform that connects workers and employers.</p>
+                    <p data-i18n="notice_platform">The platform:</p>
+                    <ul>
+                        <li><span data-i18n="notice_point1">Does not act as an employer</span></li>
+                        <li><span data-i18n="notice_point2">Does not guarantee job availability</span></li>
+                        <li><span data-i18n="notice_point3">Does not manage or process payments between users</span></li>
+                    </ul>
+                    <p data-i18n="notice_footer">Workers and employers communicate directly and are responsible for negotiating job details and payment terms independently.</p>
+                </div>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/eligibility_card.js' %}"></script>
+</body>
+</html>

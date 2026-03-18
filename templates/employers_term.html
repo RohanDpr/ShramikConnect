@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Terms | ShramikConnect</title>
+    <!-- Base styles from terms page -->
+    <link rel="stylesheet" href="{% static 'css/term_and_condition.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/employers_term.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - EMPLOYER TERMS PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="employer_title">Employer Terms</h1>
+                <p class="page-description" data-i18n="employer_desc">This section explains the responsibilities, expectations, and rules for employers who use the ShramikConnect platform to connect with workers.</p>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the responsibilities, expectations, and rules for employers who use the ShramikConnect platform to connect with workers. Employers must follow these guidelines to maintain a fair, safe, and transparent environment for all users of the platform.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Employer Registration -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="employer_reg_title">Employer Registration</h3>
+                        <p data-i18n="employer_reg_desc">To use ShramikConnect as an employer, users must create an employer profile and provide accurate information.</p>
+                        <p data-i18n="employer_reg_requirements">During registration, employers may be required to provide:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="employer_reg_req1">Mobile number verification</span></li>
+                            <li><i class="fas fa-user-tie"></i> <span data-i18n="employer_reg_req2">Basic personal details</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="employer_reg_req3">Job location information</span></li>
+                        </ul>
+                        <p data-i18n="employer_reg_responsibility">Employers must ensure that the information provided in their account is correct and up to date.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Job Posting Requirements -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="job_posting_title">Job Posting Requirements</h3>
+                        <p data-i18n="job_posting_desc">Employers can post job opportunities on the platform to find suitable workers.</p>
+                        <p data-i18n="job_posting_requirements">When posting a job, employers should clearly mention:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-briefcase"></i> <span data-i18n="job_posting_req1">Type of work</span></li>
+                            <li><i class="fas fa-map-pin"></i> <span data-i18n="job_posting_req2">Job location</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="job_posting_req3">Expected work duration</span></li>
+                            <li><i class="fas fa-clipboard-list"></i> <span data-i18n="job_posting_req4">Basic work requirements</span></li>
+                        </ul>
+                        <p data-i18n="job_posting_note">Providing clear and accurate job descriptions helps workers understand the nature of the job before applying.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Honest Job Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="honest_info_title">Honest Job Information</h3>
+                        <p data-i18n="honest_info_desc">Employers must ensure that all job postings are accurate and truthful.</p>
+                        <p data-i18n="honest_info_prohibited">Job posts must not contain:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="honest_info_prohibited1">Misleading information</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="honest_info_prohibited2">Fake job opportunities</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="honest_info_prohibited3">Illegal work requests</span></li>
+                        </ul>
+                        <p data-i18n="honest_info_consequence">If false or misleading job details are reported, the platform may remove the listing or suspend the employer account.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Communication with Workers -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="communication_title">Communication with Workers</h3>
+                        <p data-i18n="communication_desc">Employers should communicate clearly and respectfully with workers.</p>
+                        <p data-i18n="communication_instructions">Employers must provide workers with clear instructions about the work, location, and expectations before the job begins.</p>
+                        <p data-i18n="communication_warning">Harassment, abusive language, or inappropriate behavior toward workers may result in account suspension.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Payment Agreement -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="payment_title">Payment Agreement</h3>
+                        <p data-i18n="payment_desc">ShramikConnect does not process or control payments between employers and workers.</p>
+                        <p data-i18n="payment_negotiation">Employers and workers must negotiate payment terms directly with each other.</p>
+                        <p data-i18n="payment_responsibility">Employers are responsible for paying workers according to the agreed terms once the work is completed.</p>
+                        <p data-i18n="payment_disclaimer">The platform is not responsible for payment disputes between users.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Job Cancellation -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="cancellation_title">Job Cancellation</h3>
+                        <p data-i18n="cancellation_desc">If an employer needs to cancel a job after workers have applied, the employer should communicate directly with the workers involved.</p>
+                        <p data-i18n="cancellation_platform">ShramikConnect does not manage cancellations or compensation arrangements.</p>
+                        <p data-i18n="cancellation_resolution">Employers and workers must resolve such situations through direct communication.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Fair Treatment of Workers -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="fair_treatment_title">Fair Treatment of Workers</h3>
+                        <p data-i18n="fair_treatment_desc">Employers must treat workers fairly and respectfully.</p>
+                        <p data-i18n="fair_treatment_prohibited">Employers should not:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-ban"></i> <span data-i18n="fair_treatment_prohibited1">Discriminate against workers</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="fair_treatment_prohibited2">Exploit workers</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="fair_treatment_prohibited3">Request unsafe or illegal work</span></li>
+                        </ul>
+                        <p data-i18n="fair_treatment_note">Maintaining respectful behavior helps build a trustworthy community on the platform.</p>
+                    </div>
+                </section>
+
+                <!-- 8. Independent Hiring Relationship -->
+                <section class="terms-section">
+                    <h2 class="section-number">8.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="independent_title">Independent Hiring Relationship</h3>
+                        <p data-i18n="independent_desc">Workers found through ShramikConnect are independent individuals.</p>
+                        <p data-i18n="independent_relationship">Using the platform does not create an employment relationship between the employer and ShramikConnect.</p>
+                        <p data-i18n="independent_agreement">Any work agreement exists only between the employer and the worker.</p>
+                        <p data-i18n="independent_role">ShramikConnect acts only as a platform connecting both parties.</p>
+                    </div>
+                </section>
+
+                <!-- 9. Platform Limitations -->
+                <section class="terms-section">
+                    <h2 class="section-number">9.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="limitations_title">Platform Limitations</h3>
+                        <p data-i18n="limitations_desc">ShramikConnect provides tools to help employers find workers but does not guarantee:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="limitation1">Worker availability</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="limitation2">Worker performance</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="limitation3">Successful job completion</span></li>
+                        </ul>
+                        <p data-i18n="limitations_note">Employers should communicate directly with workers before confirming any work arrangements.</p>
+                    </div>
+                </section>
+
+                <!-- 10. Responsibility of Employers -->
+                <section class="terms-section">
+                    <h2 class="section-number">10.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="responsibility_title">Responsibility of Employers</h3>
+                        <p data-i18n="responsibility_desc">Employers are responsible for:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="responsibility1">Providing accurate job details</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="responsibility2">Communicating clearly with workers</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="responsibility3">Paying workers as agreed</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="responsibility4">Ensuring safe working conditions</span></li>
+                        </ul>
+                        <p data-i18n="responsibility_consequence">Failure to follow these responsibilities may result in account restrictions.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Big Back to Terms Button -->
+            <div class="big-back">
+                <a href="{% url 'term_and_condition' %}" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_terms">Back to Terms & Conditions</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/employers_term.js' %}"></script>
+</body>
+</html>

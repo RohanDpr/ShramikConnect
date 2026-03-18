@@ -300,6 +300,30 @@ def change_password_worker(request):
 def get_password_worker(request):
     return render(request, 'worker/get_password_worker.html')
 
+def eligibility_card(request):
+    return render(request, 'eligibility_card.html')
+
+def workers_term(request):
+    return render(request, 'workers_term.html')
+
+def employers_term(request):
+    return render(request, 'employers_term.html')
+
+def platform_responsibilities(request):
+    return render(request, 'platform_responsibilities.html')
+
+def termination_card(request):
+    return render(request, 'termination_card.html')
+
+def dispute_resolution_card(request):
+    return render(request, 'dispute_resolution.html')
+
+def liability_card(request):
+    return render(request, 'liability_card.html')
+
+def location_data_card(request):
+    return render(request, 'location_data.html')
+
 
 # ============================================
 # EMPLOYER AUTH VIEWS
