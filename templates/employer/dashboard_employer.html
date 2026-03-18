@@ -162,6 +162,7 @@
             
             <div class="popup-content">
                 <form id="jobForm">
+                    {% csrf_token %}
                     <div class="form-row">
                         <div class="form-group">
                             <label for="employerName" class="form-label" data-i18n="employer_name">Employer Name</label>

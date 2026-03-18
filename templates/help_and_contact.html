@@ -229,6 +229,7 @@
                 
                 <div class="form-container">
                     <form class="report-form" id="problemReportForm">
+                        {% csrf_token %}
                         <div class="form-header">
                             <i class="fas fa-exclamation-circle"></i>
                             <h3 data-i18n="form_title">Tell Us About Your Issue</h3>
