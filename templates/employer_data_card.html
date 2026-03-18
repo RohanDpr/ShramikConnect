@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Data | ShramikConnect Privacy</title>
+    <!-- Base styles from privacy page -->
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/employer_data_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - EMPLOYER DATA PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="employer_title">Employer Data</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the specific types of personal information we collect from employers on the ShramikConnect platform. We collect only the information necessary to help employers find suitable workers and post job opportunities effectively.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Basic Account Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="basic_info_title">Basic Account Information</h3>
+                        <p data-i18n="basic_info_desc">When employers register on ShramikConnect, we collect essential account information:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user-tie"></i> <span data-i18n="basic_info1">Full name</span></li>
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="basic_info2">Mobile number (verified via OTP)</span></li>
+                            <li><i class="fas fa-envelope"></i> <span data-i18n="basic_info3">Email address (optional but recommended)</span></li>
+                            <li><i class="fas fa-lock"></i> <span data-i18n="basic_info4">Password (encrypted)</span></li>
+                        </ul>
+                        <p data-i18n="basic_info_note">This information is necessary to create and maintain your employer account and to communicate with workers about job opportunities.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Business Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="business_info_title">Business Information</h3>
+                        <p data-i18n="business_info_desc">To help workers understand who they might be working for, we collect business-related information:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-building"></i> <span data-i18n="business_info1"><strong>Business name</strong> - Optional. You can operate as an individual or provide your business/organization name.</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="business_info2"><strong>Location</strong> - City/area where you need workers (can be your business location or job site location).</span></li>
+                            <li><i class="fas fa-industry"></i> <span data-i18n="business_info3"><strong>Work category</strong> - Types of workers you typically hire (construction, plumbing, electrical, domestic help, etc.).</span></li>
+                        </ul>
+                        
+                        <div class="note-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p data-i18n="business_info_note"><strong>Note:</strong> Business registration documents (GST, company registration) are <strong>NOT required</strong> to use ShramikConnect. Individuals can hire workers without any business registration.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Job Posting Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="job_posting_title">Job Posting Data</h3>
+                        <p data-i18n="job_posting_desc">When you post jobs on the platform, we collect and store the following information:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-heading"></i> <span data-i18n="job_posting1"><strong>Job title and description</strong> - Details about the work to be performed</span></li>
+                            <li><i class="fas fa-tools"></i> <span data-i18n="job_posting2"><strong>Required skills</strong> - Skills needed for the job</span></li>
+                            <li><i class="fas fa-map-pin"></i> <span data-i18n="job_posting3"><strong>Work location</strong> - Where the job will take place</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="job_posting4"><strong>Duration and timing</strong> - Expected work duration, start date, working hours</span></li>
+                            <li><i class="fas fa-rupee-sign"></i> <span data-i18n="job_posting5"><strong>Payment offered</strong> - Wages or payment amount (optional - can be discussed with workers)</span></li>
+                        </ul>
+                        <p data-i18n="job_posting_note">Job postings are visible to workers on the platform. Clear and accurate job descriptions help attract suitable workers.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Hiring and Communication Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="hiring_title">Hiring and Communication Data</h3>
+                        <p data-i18n="hiring_desc">When you interact with workers and hire them, we collect information related to these activities:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-history"></i> <span data-i18n="hiring1"><strong>Job posting history</strong> - All jobs you have posted on the platform</span></li>
+                            <li><i class="fas fa-users"></i> <span data-i18n="hiring2"><strong>Applicant information</strong> - Workers who have applied to your jobs</span></li>
+                            <li><i class="fas fa-comments"></i> <span data-i18n="hiring3"><strong>Messages exchanged</strong> - Communication with workers about job details</span></li>
+                            <li><i class="fas fa-user-check"></i> <span data-i18n="hiring4"><strong>Hiring decisions</strong> - Which workers you selected for jobs</span></li>
+                        </ul>
+                        <p data-i18n="hiring_note">This information helps you track your hiring activities and manage your interactions with workers.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Ratings and Feedback Given -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="ratings_given_title">Ratings and Feedback Given</h3>
+                        <p data-i18n="ratings_given_desc">After job completion, employers may provide ratings and feedback about workers:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-star"></i> <span data-i18n="ratings_given1"><strong>Star ratings</strong> - 1 to 5 stars based on work quality, behavior, punctuality, and professionalism</span></li>
+                            <li><i class="fas fa-comment"></i> <span data-i18n="ratings_given2"><strong>Written feedback</strong> - Comments about the worker's performance</span></li>
+                        </ul>
+                        
+                        <div class="important-box">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <h4 data-i18n="ratings_impact_title">Impact of Your Ratings</h4>
+                                <p data-i18n="ratings_impact_desc">The ratings and feedback you provide help other employers make informed decisions when hiring workers. Honest and fair ratings contribute to a trustworthy community on ShramikConnect.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Employer Rights Regarding Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="employer_rights_title">Employer Rights Regarding Data</h3>
+                        <p data-i18n="employer_rights_desc">As an employer on ShramikConnect, you have the following rights regarding your data:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-eye"></i> <span data-i18n="employer_rights1"><strong>Access</strong> - Request a copy of your data anytime</span></li>
+                            <li><i class="fas fa-edit"></i> <span data-i18n="employer_rights2"><strong>Update</strong> - Edit your profile information through account settings</span></li>
+                            <li><i class="fas fa-trash-alt"></i> <span data-i18n="employer_rights3"><strong>Delete</strong> - Request account deletion via email (processed within 2 days)</span></li>
+                        </ul>
+                        
+                        <div class="contact-card">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <h4 data-i18n="contact_title">Data Requests</h4>
+                                    <p>For any requests related to your data, please contact us at <strong>support@shramikconnect.in</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice for Employers</span></h3>
+                <p data-i18n="important_notice_desc">The information you provide as an employer helps workers find suitable job opportunities. Providing accurate job details increases your chances of finding the right workers for your needs.</p>
+                <p data-i18n="important_notice_footer"><strong>No business registration required:</strong> You can hire workers as an individual without any business registration, GST, or company documents. ShramikConnect is designed to be accessible to all employers, from individuals to large organizations.</p>
+            </div>
+
+            <!-- Big Back to Privacy Policy Button -->
+            <div class="big-back">
+                <a href="/privacy_policy/" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_privacy">Back to Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/employer_data_card.js' %}"></script>
+</body>
+</html>

@@ -1543,23 +1543,23 @@ body {
             </div>
             
             <div class="sidebar-menu">
-                <a href="help_and_contact_page.html" class="menu-item-box">
+                <a href="/help_and_contact/" class="menu-item-box">
                     <i class="fas fa-question-circle"></i>
                     <span data-i18n="help_contact">Help & Contact</span>
                 </a>
-                <a href="#" class="menu-item-box" id="homeLink">
+                <a href="/" class="menu-item-box" id="homeLink">
                     <i class="fas fa-home"></i>
                     <span data-i18n="home">Home</span>
                 </a>
-                <a href="about.html" class="menu-item-box">
+                <a href="/about/" class="menu-item-box">
                     <i class="fas fa-info-circle"></i>
                     <span data-i18n="about">About</span>
                 </a>
-                <a href="term_and_condition.html" class="menu-item-box">
+                <a href="/terms_and_conditions/" class="menu-item-box">
                     <i class="fas fa-file-contract"></i>
                     <span data-i18n="terms_conditions">Terms & Conditions</span>
                 </a>
-                <a href="privacy_policy.html" class="menu-item-box active">
+                <a href="/privacy_policy/" class="menu-item-box active">
                     <i class="fas fa-shield-alt"></i>
                     <span data-i18n="privacy_policy">Privacy Policy</span>
                 </a>
@@ -1606,15 +1606,15 @@ body {
         </div>
         
         <div class="nav-right">
-            <a href="#" class="nav-link" id="navHome" data-i18n="home">
+            <a href="/" class="nav-link" id="navHome" data-i18n="home">
                 <i class="fas fa-home"></i>
                 <span class="nav-text" data-i18n="home">Home</span>
             </a>
-            <a href="help_and_contact_page.html" class="nav-link" data-i18n="help">
+            <a href="/help_and_contact/" class="nav-link" data-i18n="help">
                 <i class="fas fa-question-circle"></i>
                 <span class="nav-text" data-i18n="help">Help</span>
             </a>
-            <a href="about.html" class="nav-link" data-i18n="about">
+            <a href="/about/" class="nav-link" data-i18n="about">
                 <i class="fas fa-info-circle"></i>
                 <span class="nav-text" data-i18n="about">About</span>
             </a>
@@ -1674,19 +1674,19 @@ body {
                 <div class="footer-links">
                     <div class="links-column">
                         <h3 class="column-title">Platform</h3>
-                        <a href="#" class="footer-link">For Workers</a>
-                        <a href="#" class="footer-link">For Employers</a>
+                        <a href="/login_worker" class="footer-link">For Workers</a>
+                        <a href="/dashboard_employer" class="footer-link">For Employers</a>
                     </div>
                     <div class="links-column">
                         <h3 class="column-title">Company</h3>
-                        <a href="about.html" class="footer-link" data-i18n="about">About</a>
-                        <a href="#" class="footer-link">How It Works</a>
+                        <a href="/about/" class="footer-link" data-i18n="about">About</a>
+                        <a href="/how-platform-works/" class="footer-link" data-i18n="how_it_works">How It Works</a>
                     </div>
                     <div class="links-column">
                         <h3 class="column-title">Support</h3>
-                        <a href="help_and_contact_page.html" class="footer-link" data-i18n="help_contact">Help & Contact</a>
-                        <a href="privacy_policy.html" class="footer-link active" data-i18n="privacy">Privacy Policy</a>
-                        <a href="term_and_condition.html" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                        <a href="/help_and_contact/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                        <a href="/privacy-policy/" class="footer-link active" data-i18n="privacy">Privacy Policy</a>
+                        <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
                     </div>
                 </div>
             </div>
@@ -1773,20 +1773,7 @@ const privacyCards = [
         descKey: 'privacy_location_desc',
         tags: ['location', 'gps', 'tracking']
     },
-    {
-        id: 'payments',
-        icon: 'fa-credit-card',
-        titleKey: 'privacy_payments_title',
-        descKey: 'privacy_payments_desc',
-        tags: ['payment', 'transaction', 'financial']
-    },
-    {
-        id: 'cookies',
-        icon: 'fa-cookie-bite',
-        titleKey: 'privacy_cookies_title',
-        descKey: 'privacy_cookies_desc',
-        tags: ['cookies', 'tracking', 'preferences']
-    },
+    
     {
         id: 'security',
         icon: 'fa-shield-halved',
@@ -1984,51 +1971,44 @@ function handleCardClick(cardId) {
     switch(cardId) {
         
         case 'collect':
-            window.location.href = '/privacy/collect/';  // ← APNA URL
+            window.location.href = '/collect-card/';  // ← APNA URL
             break;
         
         case 'use':
-            window.location.href = '/privacy/use/';  // ← APNA URL
+            window.location.href = '/use_data_card/';  // ← APNA URL
             break;
         
         case 'worker':
-            window.location.href = '/privacy/worker/';  // ← APNA URL
+            window.location.href = '/worker_data_card/';  // ← APNA URL
             break;
         
         case 'employer':
-            window.location.href = '/privacy/employer/';  // ← APNA URL
+            window.location.href = '/employer_data_card/';  // ← APNA URL
             break;
         
         case 'location':
             window.location.href = '/location-data-card/';  // ← APNA URL
             break;
-        
-        case 'payments':
-            window.location.href = '/privacy/payments/';  // ← APNA URL
-            break;
-        
-        case 'cookies':
-            window.location.href = '/privacy/cookies/';  // ← APNA URL
-            break;
+    
         
         case 'security':
-            window.location.href = '/privacy/security/';  // ← APNA URL
+            window.location.href = '/data_security/';  // ← APNA URL
             break;
         
         case 'sharing':
-            window.location.href = '/privacy/sharing/';  // ← APNA URL
+            window.location.href = '/data_sharing/';  // ← APNA URL
             break;
         
         case 'rights':
-            window.location.href = '/privacy/rights/';  // ← APNA URL
+            window.location.href = '/user_rights/';  // ← APNA URL
             break;
         
         case 'retention':
-            window.location.href = '/privacy/retention/';  // ← APNA URL
+            window.location.href = '/data_retention/';  // ← APNA URL
             break;
         
         case 'contact':
-            window.location.href = '/privacy/contact/';  // ← APNA URL
+            window.location.href = '/help_and_contact/';  // ← APNA URL
             break;
         
         default:

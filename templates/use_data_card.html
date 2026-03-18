@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How We Use Data | ShramikConnect Privacy</title>
+    <!-- Base styles from privacy page -->
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/use_data_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - HOW WE USE DATA PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="use_title">How We Use Data</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains how ShramikConnect uses the personal information we collect from users. We use your data only for legitimate purposes related to providing and improving our platform services, and we never sell your personal information to third parties.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Account Management -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="account_management_title">Account Management</h3>
+                        <p data-i18n="account_management_desc">We use your account information to:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user-check"></i> <span data-i18n="account_management1">Create and maintain your user account</span></li>
+                            <li><i class="fas fa-sign-in-alt"></i> <span data-i18n="account_management2">Authenticate your identity when you log in</span></li>
+                            <li><i class="fas fa-shield-alt"></i> <span data-i18n="account_management3">Protect your account from unauthorized access</span></li>
+                            <li><i class="fas fa-envelope"></i> <span data-i18n="account_management4">Send important account-related notifications</span></li>
+                        </ul>
+                        <p data-i18n="account_management_note">These uses are essential for providing you with access to our platform and ensuring the security of your account.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Platform Functionality -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="functionality_title">Platform Functionality</h3>
+                        <p data-i18n="functionality_desc">We use your profile and activity data to enable core platform features:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-search"></i> <span data-i18n="functionality1">Help workers discover relevant job opportunities</span></li>
+                            <li><i class="fas fa-users"></i> <span data-i18n="functionality2">Help employers find workers with matching skills</span></li>
+                            <li><i class="fas fa-comments"></i> <span data-i18n="functionality3">Facilitate communication between workers and employers</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="functionality4">Display ratings and feedback to build trust</span></li>
+                        </ul>
+                        <p data-i18n="functionality_note">This data is essential for the matching and connection services that ShramikConnect provides.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Service Improvement -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="improvement_title">Service Improvement</h3>
+                        <p data-i18n="improvement_desc">We analyze usage patterns and technical data to improve our platform:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-chart-line"></i> <span data-i18n="improvement1">Understand how users interact with the platform</span></li>
+                            <li><i class="fas fa-bug"></i> <span data-i18n="improvement2">Identify and fix technical issues</span></li>
+                            <li><i class="fas fa-rocket"></i> <span data-i18n="improvement3">Optimize platform performance and user experience</span></li>
+                            <li><i class="fas fa-lightbulb"></i> <span data-i18n="improvement4">Develop new features based on user needs</span></li>
+                        </ul>
+                        <p data-i18n="improvement_note">This helps us make ShramikConnect more useful and user-friendly for everyone.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Communication -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="communication_title">Communication</h3>
+                        <p data-i18n="communication_desc">We use your contact information to communicate with you about:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-bell"></i> <span data-i18n="communication1">Job applications and responses from employers</span></li>
+                            <li><i class="fas fa-user-check"></i> <span data-i18n="communication2">Messages from workers or employers</span></li>
+                            <li><i class="fas fa-question-circle"></i> <span data-i18n="communication3">Responses to your support inquiries</span></li>
+                            <li><i class="fas fa-exclamation-triangle"></i> <span data-i18n="communication4">Important updates about platform policies or security</span></li>
+                        </ul>
+                        <div class="note-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p data-i18n="communication_note">We do not send marketing emails or promotional messages without your consent. Currently, we do not engage in marketing communications.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Trust and Safety -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="safety_title">Trust and Safety</h3>
+                        <p data-i18n="safety_desc">We use data to maintain a safe and trustworthy platform:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-shield-alt"></i> <span data-i18n="safety1">Verify user identities when needed</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="safety2">Detect and prevent fraudulent or suspicious activity</span></li>
+                            <li><i class="fas fa-flag"></i> <span data-i18n="safety3">Investigate reported violations of platform policies</span></li>
+                            <li><i class="fas fa-gavel"></i> <span data-i18n="safety4">Take appropriate action against misconduct</span></li>
+                        </ul>
+                        <p data-i18n="safety_note">These measures help protect all users and maintain the integrity of our community.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Legal Compliance -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="legal_title">Legal Compliance</h3>
+                        <p data-i18n="legal_desc">We may use or disclose your information when required by law:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-gavel"></i> <span data-i18n="legal1">Comply with legal obligations and court orders</span></li>
+                            <li><i class="fas fa-building"></i> <span data-i18n="legal2">Respond to requests from law enforcement or government authorities</span></li>
+                            <li><i class="fas fa-file-contract"></i> <span data-i18n="legal3">Establish, exercise, or defend legal claims</span></li>
+                        </ul>
+                        <p data-i18n="legal_note">We only share information in response to valid legal requests, and we notify users when permitted by law.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">ShramikConnect uses your personal information only for the purposes described in this policy. We do not sell your data to third parties, and we do not use your information for advertising or marketing without your explicit consent.</p>
+                <p data-i18n="important_notice_footer">If our data usage practices change in the future, we will update this policy and notify users as required by applicable law.</p>
+            </div>
+
+            <!-- Big Back to Privacy Policy Button -->
+            <div class="big-back">
+                <a href="/privacy_policy/" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_privacy">Back to Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/use_data_card.js' %}"></script>
+</body>
+</html>

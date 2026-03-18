@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Rights | ShramikConnect Privacy</title>
+    <!-- Base styles from privacy page -->
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/user_rights.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - USER RIGHTS PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="rights_title">User Rights</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">As a user of ShramikConnect, you have certain rights regarding your personal information. This section explains the rights available to you and how you can exercise them. We are committed to respecting your privacy and providing you with control over your data.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Right to Access -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="access_title">Right to Access</h3>
+                        <p data-i18n="access_desc">You have the right to request a copy of the personal information we hold about you. This includes:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user"></i> <span data-i18n="access1">Account information (name, mobile number, email)</span></li>
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="access2">Profile details (location, skills, work experience)</span></li>
+                            <li><i class="fas fa-history"></i> <span data-i18n="access3">Job application history and interactions</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="access4">Ratings and feedback received</span></li>
+                        </ul>
+                        <p data-i18n="access_note">To request access to your data, please contact us at <strong>support@shramikconnect.in</strong>. We will respond to your request within 15 working days as required by law.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Right to Rectification -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="rectification_title">Right to Rectification</h3>
+                        <p data-i18n="rectification_desc">If you believe that any personal information we hold about you is inaccurate or incomplete, you have the right to request correction.</p>
+                        <p data-i18n="rectification_update">You can update certain information directly through your account settings, including:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user-edit"></i> <span data-i18n="rectification1">Name and contact details</span></li>
+                            <li><i class="fas fa-tools"></i> <span data-i18n="rectification2">Skills and work preferences</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="rectification3">Location information</span></li>
+                        </ul>
+                        <p data-i18n="rectification_note">For corrections to other information, please contact our support team.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Right to Deletion (Right to be Forgotten) -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="deletion_title">Right to Deletion (Right to be Forgotten)</h3>
+                        <p data-i18n="deletion_desc">You have the right to request deletion of your personal information in certain circumstances, such as:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="deletion1">Your data is no longer needed for the purposes for which it was collected</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="deletion2">You withdraw your consent (where processing is based on consent)</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span data-i18n="deletion3">Your data has been processed unlawfully</span></li>
+                        </ul>
+                        
+                        <div class="important-box">
+                            <i class="fas fa-trash-alt"></i>
+                            <div>
+                                <h4 data-i18n="deletion_process_title">Account Deletion Process</h4>
+                                <p data-i18n="deletion_process_desc">To delete your account, please send an email to <strong>support@shramikconnect.in</strong> with your request. We will process your account deletion within <strong>2 days</strong> of receiving your request. Once deleted, your account and associated data will be permanently removed from our active systems.</p>
+                            </div>
+                        </div>
+                        
+                        <p data-i18n="deletion_note">Some information may be retained longer if required for legal compliance or to resolve disputes, but only to the extent necessary.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Right to Restrict Processing -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="restrict_title">Right to Restrict Processing</h3>
+                        <p data-i18n="restrict_desc">You have the right to request that we restrict the processing of your personal information in certain situations, such as:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="restrict1">You contest the accuracy of your data (while we verify it)</span></li>
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="restrict2">The processing is unlawful, but you oppose deletion</span></li>
+                            <li><i class="fas fa-pause-circle"></i> <span data-i18n="restrict3">We no longer need the data, but you require it for legal claims</span></li>
+                        </ul>
+                        <p data-i18n="restrict_note">If processing is restricted, we will only store your data and not use it further without your consent or for legal purposes.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Right to Data Portability -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="portability_title">Right to Data Portability</h3>
+                        <p data-i18n="portability_desc">You have the right to receive your personal information in a structured, commonly used, and machine-readable format. This allows you to transfer your data to another service provider if you wish.</p>
+                        <p data-i18n="portability_note">To request a copy of your data in portable format, please contact us at <strong>support@shramikconnect.in</strong>. We will provide your data in a standard format such as JSON or CSV.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Right to Object -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="object_title">Right to Object</h3>
+                        <p data-i18n="object_desc">You have the right to object to the processing of your personal information in certain circumstances, including:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="object1">Processing based on legitimate interests (unless we have compelling legitimate grounds)</span></li>
+                            <li><i class="fas fa-times-circle"></i> <span data-i18n="object2">Processing for direct marketing purposes (though we do not currently engage in marketing)</span></li>
+                        </ul>
+                        <p data-i18n="object_note">If you object, we will stop processing your data unless we have legitimate grounds that override your interests or for legal claims.</p>
+                    </div>
+                </section>
+
+                <!-- 7. How to Exercise Your Rights -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="exercise_title">How to Exercise Your Rights</h3>
+                        <p data-i18n="exercise_desc">To exercise any of your rights described above, please contact us using the following methods:</p>
+                        
+                        <div class="contact-card">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <h4 data-i18n="email_title">Email</h4>
+                                    <p><strong>support@shramikconnect.in</strong></p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <h4 data-i18n="response_time_title">Response Time</h4>
+                                    <p data-i18n="response_time_desc">We will respond to your request within <strong>15 working days</strong> as required by applicable law.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="note-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p data-i18n="exercise_note">To help us process your request efficiently, please provide as much detail as possible about the specific right you wish to exercise and the information it relates to. We may need to verify your identity before processing your request.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">Your privacy rights are important to us. ShramikConnect is committed to respecting your choices and providing you with control over your personal information.</p>
+                <p data-i18n="important_notice_footer">If you have any questions about your rights or need assistance exercising them, please contact us at <strong>support@shramikconnect.in</strong>. We're here to help.</p>
+            </div>
+
+            <!-- Big Back to Privacy Policy Button -->
+            <div class="big-back">
+                <a href="/privacy_policy/" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_privacy">Back to Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/user_rights.js' %}"></script>
+</body>
+</html>

@@ -77,6 +77,29 @@ def connect_on_social_media_card(request):
 def signup_card(request):
     return render(request, 'singup_card.html')
 
+def collect_card(request):
+    return render(request, 'collect_card.html')
+
+def use_data_card(request):
+    return render(request, 'use_data_card.html')
+
+def worker_data_card(request):
+    return render(request, 'worker_data_card.html')
+
+def employer_data_card(request):
+    return render(request, 'employer_data_card.html')
+
+def data_security(request):
+    return render(request, 'data_security.html')
+
+def data_sharing(request):
+    return render(request, 'data_sharing.html')
+
+def user_rights(request):
+    return render(request, 'user_rights.html')
+
+def data_retention(request):
+    return render(request, 'data_retention.html')
 
 # ============================================
 # WORKER AUTH VIEWS

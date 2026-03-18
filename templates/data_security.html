@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Security | ShramikConnect Privacy</title>
+    <!-- Base styles from privacy page -->
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/data_security.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - DATA SECURITY PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="security_title">Data Security</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">ShramikConnect takes the security of your personal information seriously. We implement appropriate technical and organizational measures to protect your data from unauthorized access, disclosure, alteration, or destruction. This section explains the security practices we follow to keep your information safe.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Encryption -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="encryption_title">Encryption</h3>
+                        <p data-i18n="encryption_desc">We use industry-standard encryption to protect your data:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-lock"></i> <span data-i18n="encryption1">All data transmitted between your device and our servers is encrypted using SSL/TLS technology (HTTPS). This ensures that your information cannot be intercepted or read by unauthorized parties during transmission.</span></li>
+                            <li><i class="fas fa-database"></i> <span data-i18n="encryption2">Sensitive information, such as passwords, is hashed and securely stored in our database. This means that even in the unlikely event of a data breach, your actual password would not be exposed.</span></li>
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="encryption3">Identity documents (Aadhar, PAN) provided by users are stored with additional security measures to protect this sensitive information.</span></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 2. Secure Hosting Infrastructure -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="hosting_security_title">Secure Hosting Infrastructure</h3>
+                        <p data-i18n="hosting_security_desc">ShramikConnect is hosted on <strong>Render</strong>, a trusted cloud platform that provides:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-server"></i> <span data-i18n="hosting_security1">Secure data centers with physical security measures</span></li>
+                            <li><i class="fas fa-shield-alt"></i> <span data-i18n="hosting_security2">Network firewalls and intrusion detection systems</span></li>
+                            <li><i class="fas fa-database"></i> <span data-i18n="hosting_security3">Regular data backups to prevent data loss</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="hosting_security4">High availability and redundancy to ensure platform reliability</span></li>
+                        </ul>
+                        <p data-i18n="hosting_security_note">Render implements comprehensive security measures that meet industry standards. You can learn more about Render's security practices on their official website.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Access Controls -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="access_control_title">Access Controls</h3>
+                        <p data-i18n="access_control_desc">We strictly limit access to user data within our organization:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user-lock"></i> <span data-i18n="access_control1">Only authorized personnel with a legitimate business need can access user data</span></li>
+                            <li><i class="fas fa-key"></i> <span data-i18n="access_control2">All employee access is protected by strong authentication and logged for audit purposes</span></li>
+                            <li><i class="fas fa-clipboard-check"></i> <span data-i18n="access_control3">Regular access reviews are conducted to ensure permissions remain appropriate</span></li>
+                        </ul>
+                        <p data-i18n="access_control_note">We follow the principle of least privilege, meaning employees only have access to the minimum data necessary to perform their job functions.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Authentication and Account Security -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="authentication_title">Authentication and Account Security</h3>
+                        <p data-i18n="authentication_desc">We provide security features to help protect your account:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="authentication1">OTP (One-Time Password) verification for mobile number authentication</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="authentication2">Session management to automatically log out inactive users</span></li>
+                            <li><i class="fas fa-ban"></i> <span data-i18n="authentication3">Account lockout mechanisms after multiple failed login attempts to prevent brute force attacks</span></li>
+                        </ul>
+                        <div class="important-box">
+                            <i class="fas fa-user-shield"></i>
+                            <div>
+                                <h4 data-i18n="user_responsibility_title">Your Responsibility</h4>
+                                <p data-i18n="user_responsibility_desc">You play an important role in keeping your account secure. Always use a strong, unique password, never share your login credentials with others, and log out of your account when using shared devices.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Data Retention and Deletion -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="retention_title">Data Retention and Deletion</h3>
+                        <p data-i18n="retention_desc">We retain your personal information only as long as necessary:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-calendar-alt"></i> <span data-i18n="retention1">Active accounts: Data is retained while your account is active</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="retention2">Inactive accounts: Accounts inactive for 12 months may be deactivated</span></li>
+                            <li><i class="fas fa-trash-alt"></i> <span data-i18n="retention3">Account deletion: When you request account deletion via email, we delete your account and associated data within 2 days</span></li>
+                        </ul>
+                        <p data-i18n="retention_note">Some information may be retained longer if required for legal compliance or to resolve disputes, but only to the extent necessary.</p>
+                    </div>
+                </section>
+
+                <!-- 6. Security Monitoring and Incident Response -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="incident_title">Security Monitoring and Incident Response</h3>
+                        <p data-i18n="incident_desc">We continuously monitor our platform for potential security threats:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-eye"></i> <span data-i18n="incident1">Regular monitoring for suspicious activities and potential security incidents</span></li>
+                            <li><i class="fas fa-bell"></i> <span data-i18n="incident2">Automated alerts for unusual patterns that may indicate a security breach</span></li>
+                            <li><i class="fas fa-clipboard-list"></i> <span data-i18n="incident3">Established incident response procedures to quickly address any security issues</span></li>
+                        </ul>
+                        <p data-i18n="incident_note">In the unlikely event of a data breach that affects your personal information, we will notify affected users as required by applicable law.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">While we implement strong security measures, no method of transmission over the Internet or electronic storage is 100% secure. We continuously work to maintain and improve our security practices to protect your data.</p>
+                <p data-i18n="important_notice_footer">If you have any questions about the security of your data or suspect any unauthorized activity on your account, please contact us immediately at <strong>support@shramikconnect.in</strong>.</p>
+            </div>
+
+            <!-- Big Back to Privacy Policy Button -->
+            <div class="big-back">
+                <a href="/privacy_policy/" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_privacy">Back to Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/data_security.js' %}"></script>
+</body>
+</html>

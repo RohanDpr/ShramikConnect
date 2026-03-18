@@ -1032,6 +1032,136 @@ body {
     50% { transform: translateY(-5px); }
 }
 
+/* ============================================
+   SOCIAL ICONS - WITH ROLE SELECTION STYLE ANIMATIONS
+   ============================================ */
+.social-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    font-size: 1.2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background shine effect - from role selection */
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.social-link:hover::before {
+    left: 100%;
+}
+
+.social-link i {
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+/* Individual Icon Colors on Hover - from role selection */
+
+/* Instagram - Purple/Pink */
+.social-link:nth-child(1):hover {
+    background: radial-gradient(circle at 30% 30%, #fdf497, #fdf497, #fd5949, #d6249f, #285AEB);
+    border-color: transparent;
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(225, 48, 108, 0.4);
+}
+.social-link:nth-child(1):hover i {
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Facebook - Blue */
+.social-link:nth-child(2):hover {
+    background: #1877F2;
+    border-color: #1877F2;
+    transform: translateY(-8px) scale(1.15) rotate(360deg);
+    box-shadow: 0 10px 20px rgba(24, 119, 242, 0.4);
+}
+.social-link:nth-child(2):hover i {
+    color: white;
+}
+
+/* YouTube - Red */
+.social-link:nth-child(3):hover {
+    background: #FF0000;
+    border-color: #FF0000;
+    transform: translateY(-8px) scale(1.15) rotateX(10deg);
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+}
+.social-link:nth-child(3):hover i {
+    color: white;
+    animation: youtubePulse 0.8s ease;
+}
+
+/* X (Twitter) - Black */
+.social-link:nth-child(4):hover {
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-8px) scale(1.15) rotate(10deg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+.social-link:nth-child(4):hover i {
+    color: white;
+}
+
+/* Email - Blue/Green gradient */
+.social-link:nth-child(5):hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+.social-link:nth-child(5):hover i {
+    color: white;
+}
+
+/* Animation for YouTube pulse */
+@keyframes youtubePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Keep existing float animation for non-hover state */
+.social-link {
+    animation: float 5s ease-in-out infinite;
+}
+
+.social-link:nth-child(1) { animation-delay: 0s; }
+.social-link:nth-child(2) { animation-delay: 0.2s; }
+.social-link:nth-child(3) { animation-delay: 0.4s; }
+.social-link:nth-child(4) { animation-delay: 0.6s; }
+.social-link:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
 .social-link:nth-child(1) { animation-delay: 0s; }
 .social-link:nth-child(2) { animation-delay: 0.2s; }
 .social-link:nth-child(3) { animation-delay: 0.4s; }
