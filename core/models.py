@@ -301,6 +301,45 @@ class EmailOTP(models.Model):
 
 
 # ============================================
+# MOBILE OTP VERIFICATION MODEL (NEW)
+# ============================================
+
+class MobileOTP(models.Model):
+    """Model to store mobile OTPs for verification"""
+    
+    mobile = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r'^[6-9]\d{9}$', 'Enter a valid 10-digit mobile number')],
+        verbose_name="Mobile Number"
+    )
+    otp = models.CharField(max_length=6, verbose_name="OTP")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    is_verified = models.BooleanField(default=False, verbose_name="Is Verified")
+    
+    class Meta:
+        db_table = 'mobile_otp'
+        verbose_name = "Mobile OTP"
+        verbose_name_plural = "Mobile OTPs"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['mobile', 'created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.mobile} - {self.otp} - {'Verified' if self.is_verified else 'Pending'}"
+    
+    def is_valid(self):
+        """Check if OTP is still valid (within expiry time)"""
+        expiry_time = self.created_at + timedelta(minutes=5)
+        return timezone.now() <= expiry_time
+    
+    @staticmethod
+    def generate_otp():
+        """Generate a 6-digit OTP"""
+        return ''.join(random.choices(string.digits, k=6))
+
+
+# ============================================
 # JOB MODEL
 # ============================================
 

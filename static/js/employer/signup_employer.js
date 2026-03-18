@@ -1,6 +1,6 @@
 /**
  * Employer Signup Page - 5-Step Form
- * FIXED VERSION - HTTPS ISSUE RESOLVED
+ * COMPLETE VERSION WITH REAL OTP VERIFICATION (EMAIL + MOBILE)
  */
 
 // ============================================
@@ -1052,7 +1052,7 @@ function goToStep2() {
 }
 
 // ============================================
-// STEP 2: SECURITY - UPDATED WITH REAL OTP AND FIXED URLs
+// STEP 2: SECURITY - REAL OTP IMPLEMENTATION
 // ============================================
 
 function validateEmailInput() {
@@ -1074,7 +1074,7 @@ function validateMobileInput() {
 }
 
 /**
- * Handle Get Email OTP button click - FIXED with relative URL
+ * Handle Get Email OTP button click
  */
 function handleGetEmailOtp() {
     const email = emailInput.value.trim();
@@ -1090,7 +1090,6 @@ function handleGetEmailOtp() {
     const originalText = getEmailOtpBtn.innerHTML;
     getEmailOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
     
-    // ✅ FIX: Use relative URL (no http/https)
     fetch('/api/send-email-otp/', {
         method: 'POST',
         headers: {
@@ -1114,6 +1113,11 @@ function handleGetEmailOtp() {
             startEmailResendCountdown();
             
             showNotification('OTP Sent!', data.message, 'success');
+            
+            // For development only
+            if (data.otp) {
+                console.log(`📧 OTP for ${email}: ${data.otp}`);
+            }
         } else {
             showNotification('Error', data.message, 'error');
             getEmailOtpBtn.disabled = false;
@@ -1129,7 +1133,7 @@ function handleGetEmailOtp() {
 }
 
 /**
- * Handle Get Mobile OTP button click - KEEPING DUMMY FOR NOW
+ * Handle Get Mobile OTP button click - REAL OTP
  */
 function handleGetMobileOtp() {
     const mobile = mobileInput.value.trim();
@@ -1139,26 +1143,67 @@ function handleGetMobileOtp() {
         return;
     }
     
-    userData.mobile = mobile;
-    
-    getMobileOtpBtn.disabled = true;
-    const originalText = getMobileOtpBtn.innerHTML;
-    getMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
-    
-    setTimeout(() => {
-        console.log(`OTP sent to mobile: ${mobile}`);
+    // First check if mobile already exists
+    fetch(`/api/check-mobile-exists/?mobile=${encodeURIComponent(mobile)}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.exists) {
+            showNotification('Error', 'This mobile number is already registered', 'error');
+            return;
+        }
         
-        mobileOtpSection.classList.add('active');
-        mobileOtpInput.value = '';
-        mobileDisplay.textContent = `OTP sent to ${mobile}`;
-        mobileDisplay.classList.add('show');
+        // Mobile doesn't exist, proceed with OTP
+        userData.mobile = mobile;
         
-        getMobileOtpBtn.classList.add('hidden');
+        getMobileOtpBtn.disabled = true;
+        const originalText = getMobileOtpBtn.innerHTML;
+        getMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
         
-        startMobileResendCountdown();
-        
-        showNotification('OTP Sent!', 'OTP has been sent to your mobile number', 'success');
-    }, 1500);
+        fetch('/api/send-mobile-otp/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ mobile: mobile })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(`OTP sent to mobile: ${mobile}`);
+                
+                mobileOtpSection.classList.add('active');
+                mobileOtpInput.value = '';
+                mobileDisplay.textContent = `OTP sent to ${mobile}`;
+                mobileDisplay.classList.add('show');
+                
+                getMobileOtpBtn.classList.add('hidden');
+                
+                startMobileResendCountdown();
+                
+                showNotification('OTP Sent!', data.message, 'success');
+                
+                // For development only
+                if (data.otp) {
+                    console.log(`📱 OTP for ${mobile}: ${data.otp}`);
+                }
+            } else {
+                showNotification('Error', data.message, 'error');
+                getMobileOtpBtn.disabled = false;
+                getMobileOtpBtn.innerHTML = originalText;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error', 'Network error. Please try again.', 'error');
+            getMobileOtpBtn.disabled = false;
+            getMobileOtpBtn.innerHTML = originalText;
+        });
+    })
+    .catch(error => {
+        console.error('Error checking mobile:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
+    });
 }
 
 function startEmailResendCountdown() {
@@ -1234,7 +1279,7 @@ function validateMobileOtp() {
 }
 
 /**
- * Handle Verify Email OTP button click - FIXED with relative URL
+ * Handle Verify Email OTP button click
  */
 function handleVerifyEmailOtp() {
     const enteredOtp = emailOtpInput.value.trim();
@@ -1248,7 +1293,6 @@ function handleVerifyEmailOtp() {
     const originalText = verifyEmailOtpBtn.innerHTML;
     verifyEmailOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Verifying...</span>';
     
-    // ✅ FIX: Use relative URL
     fetch('/api/verify-email-otp/', {
         method: 'POST',
         headers: {
@@ -1298,7 +1342,7 @@ function handleVerifyEmailOtp() {
 }
 
 /**
- * Handle Verify Mobile OTP button click - KEEPING DUMMY FOR NOW
+ * Handle Verify Mobile OTP button click - REAL OTP
  */
 function handleVerifyMobileOtp() {
     const enteredOtp = mobileOtpInput.value.trim();
@@ -1312,10 +1356,20 @@ function handleVerifyMobileOtp() {
     const originalText = verifyMobileOtpBtn.innerHTML;
     verifyMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Verifying...</span>';
     
-    setTimeout(() => {
-        const isValid = enteredOtp === '654321';
-        
-        if (isValid) {
+    fetch('/api/verify-mobile-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ 
+            mobile: userData.mobile,
+            otp: enteredOtp 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
             userData.mobileVerified = true;
             
             mobileStatus.classList.add('verified');
@@ -1329,11 +1383,11 @@ function handleVerifyMobileOtp() {
                 mobileResendCountdown = null;
             }
             
-            showNotification('OTP Verified!', 'Your mobile number has been verified successfully', 'success');
+            showNotification('OTP Verified!', data.message, 'success');
             
             validateStep2();
         } else {
-            showNotification('Error', 'Invalid OTP. Please try again', 'error');
+            showNotification('Error', data.message, 'error');
             
             verifyMobileOtpBtn.disabled = false;
             verifyMobileOtpBtn.innerHTML = originalText;
@@ -1341,18 +1395,23 @@ function handleVerifyMobileOtp() {
             mobileOtpInput.value = '';
             validateMobileOtp();
         }
-    }, 1500);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        verifyMobileOtpBtn.disabled = false;
+        verifyMobileOtpBtn.innerHTML = originalText;
+    });
 }
 
 /**
- * Handle Resend Email OTP - FIXED with relative URL
+ * Handle Resend Email OTP
  */
 function handleResendEmailOtp() {
     resendEmailOtpBtn.disabled = true;
     const originalText = emailResendText.innerHTML;
     emailResendText.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
     
-    // ✅ FIX: Use relative URL
     fetch('/api/resend-email-otp/', {
         method: 'POST',
         headers: {
@@ -1372,6 +1431,11 @@ function handleResendEmailOtp() {
             startEmailResendCountdown();
             
             showNotification('OTP Sent!', data.message, 'success');
+            
+            // For development only
+            if (data.otp) {
+                console.log(`📧 New OTP: ${data.otp}`);
+            }
         } else {
             showNotification('Error', data.message, 'error');
             resendEmailOtpBtn.disabled = false;
@@ -1387,23 +1451,49 @@ function handleResendEmailOtp() {
 }
 
 /**
- * Handle Resend Mobile OTP - KEEPING DUMMY FOR NOW
+ * Handle Resend Mobile OTP - REAL OTP
  */
 function handleResendMobileOtp() {
     resendMobileOtpBtn.disabled = true;
     const originalText = mobileResendText.innerHTML;
     mobileResendText.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
     
-    setTimeout(() => {
-        console.log(`Resent OTP to mobile: ${userData.mobile}`);
-        
-        mobileOtpInput.value = '';
-        verifyMobileOtpBtn.disabled = true;
-        
-        startMobileResendCountdown();
-        
-        showNotification('OTP Sent!', 'New OTP has been sent to your mobile', 'success');
-    }, 1000);
+    fetch('/api/resend-mobile-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ mobile: userData.mobile })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log(`Resent OTP to mobile: ${userData.mobile}`);
+            
+            mobileOtpInput.value = '';
+            verifyMobileOtpBtn.disabled = true;
+            
+            startMobileResendCountdown();
+            
+            showNotification('OTP Sent!', data.message, 'success');
+            
+            // For development only
+            if (data.otp) {
+                console.log(`📱 New OTP: ${data.otp}`);
+            }
+        } else {
+            showNotification('Error', data.message, 'error');
+            resendMobileOtpBtn.disabled = false;
+            mobileResendText.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        resendMobileOtpBtn.disabled = false;
+        mobileResendText.innerHTML = originalText;
+    });
 }
 
 function togglePasswordVisibility(passwordField, toggleButton) {
@@ -1780,7 +1870,7 @@ function updateRequirementsChecklist() {
 }
 
 /**
- * Handle Create Account - FIXED with relative URL
+ * Handle Create Account
  */
 function handleCreateAccount() {
     if (createAccountBtn.disabled) {
@@ -1824,7 +1914,6 @@ function handleCreateAccount() {
         formData.append('document_file', userData.documentFile);
     }
     
-    // ✅ FIX: Use relative URL
     fetch('/signup_employer/', {
         method: 'POST',
         body: formData,

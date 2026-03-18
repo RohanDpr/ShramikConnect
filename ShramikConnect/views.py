@@ -13,7 +13,7 @@ import json
 import os
 import math
 from datetime import datetime
-from core.models import Employer, Worker, EmailOTP, Job, JobApplication, WorkHistory, ChatMessage
+from core.models import Employer, Worker, EmailOTP, MobileOTP, Job, JobApplication, WorkHistory, ChatMessage
 import logging
 import sendgrid
 from sendgrid.helpers.mail import Mail
@@ -1994,6 +1994,209 @@ def check_email_exists(request):
         
     except Exception as e:
         logger.error(f"Error checking email: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=500)
+    
+    # ============================================
+# MOBILE OTP VERIFICATION VIEWS (ADD THESE AT THE END OF views.py)
+# ============================================
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def send_mobile_otp(request):
+    """
+    Send OTP to mobile number
+    Currently using console backend for development
+    """
+    try:
+        data = json.loads(request.body)
+        mobile = data.get('mobile')
+        
+        if not mobile:
+            return JsonResponse({
+                'success': False,
+                'message': 'Mobile number is required'
+            })
+        
+        # Check if mobile already registered
+        if Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists():
+            return JsonResponse({
+                'success': False,
+                'message': 'This mobile number is already registered. Please login or use a different number.'
+            })
+        
+        # Generate OTP
+        otp = MobileOTP.generate_otp()
+        
+        # Save to database
+        MobileOTP.objects.create(mobile=mobile, otp=otp)
+        
+        # For development - log OTP to console
+        print(f"📱 OTP for {mobile}: {otp}")
+        
+        # TODO: Integrate with SMS service like MSG91, Twilio, etc.
+        # For now, we'll just return success and show OTP in response for testing
+        # REMOVE THIS IN PRODUCTION!
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'OTP sent successfully to your mobile',
+            'otp': otp  # Remove in production!
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Error sending mobile OTP: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Failed to send OTP: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def verify_mobile_otp(request):
+    """Verify mobile OTP"""
+    try:
+        data = json.loads(request.body)
+        mobile = data.get('mobile')
+        otp = data.get('otp')
+        
+        if not mobile or not otp:
+            return JsonResponse({
+                'success': False,
+                'message': 'Mobile number and OTP are required'
+            })
+        
+        # Get latest OTP for this mobile
+        latest_otp = MobileOTP.objects.filter(
+            mobile=mobile
+        ).order_by('-created_at').first()
+        
+        if not latest_otp:
+            return JsonResponse({
+                'success': False,
+                'message': 'No OTP found for this mobile. Please request a new OTP.'
+            })
+        
+        if latest_otp.is_verified:
+            return JsonResponse({
+                'success': False,
+                'message': 'This mobile has already been verified'
+            })
+        
+        if not latest_otp.is_valid():
+            return JsonResponse({
+                'success': False,
+                'message': 'OTP has expired. Please request a new OTP.'
+            })
+        
+        if latest_otp.otp != otp:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid OTP. Please try again.'
+            })
+        
+        # Mark as verified
+        latest_otp.is_verified = True
+        latest_otp.save()
+        
+        logger.info(f"Mobile verified successfully: {mobile}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Mobile verified successfully!'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Error verifying mobile OTP: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Failed to verify OTP: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def resend_mobile_otp(request):
+    """Resend mobile OTP"""
+    try:
+        data = json.loads(request.body)
+        mobile = data.get('mobile')
+        
+        if not mobile:
+            return JsonResponse({
+                'success': False,
+                'message': 'Mobile number is required'
+            })
+        
+        # Check if mobile already registered
+        if Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists():
+            return JsonResponse({
+                'success': False,
+                'message': 'This mobile number is already registered. Please login or use a different number.'
+            })
+        
+        # Generate new OTP
+        otp = MobileOTP.generate_otp()
+        
+        # Save to database
+        MobileOTP.objects.create(mobile=mobile, otp=otp)
+        
+        # For development - log OTP to console
+        print(f"📱 New OTP for {mobile}: {otp}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'New OTP sent successfully to your mobile',
+            'otp': otp  # Remove in production!
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Error resending mobile OTP: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Failed to resend OTP: {str(e)}'
+        }, status=500)
+
+
+@require_http_methods(["GET"])
+def check_mobile_exists(request):
+    """Check if mobile number already exists"""
+    try:
+        mobile = request.GET.get('mobile')
+        
+        if not mobile:
+            return JsonResponse({
+                'success': False,
+                'message': 'Mobile parameter is required'
+            }, status=400)
+        
+        exists = Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists()
+        
+        return JsonResponse({
+            'success': True,
+            'exists': exists
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking mobile: {str(e)}")
         return JsonResponse({
             'success': False,
             'message': str(e)

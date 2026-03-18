@@ -101,11 +101,21 @@ urlpatterns = [
     path('api/chat/<int:application_id>/send/', views.send_message, name='send_message'),
     path('api/chat/unread-count/', views.get_unread_count, name='get_unread_count'),
     
-    # Email OTP verification
+    # ============================================
+    # EMAIL OTP VERIFICATION APIs
+    # ============================================
     path('api/send-email-otp/', views.send_email_otp, name='send_email_otp'),
     path('api/verify-email-otp/', views.verify_email_otp, name='verify_email_otp'),
     path('api/resend-email-otp/', views.resend_email_otp, name='resend_email_otp'),
     path('api/check-email-exists/', views.check_email_exists, name='check_email_exists'),
+    
+    # ============================================
+    # MOBILE OTP VERIFICATION APIs (NEW)
+    # ============================================
+    path('api/send-mobile-otp/', views.send_mobile_otp, name='send_mobile_otp'),
+    path('api/verify-mobile-otp/', views.verify_mobile_otp, name='verify_mobile_otp'),
+    path('api/resend-mobile-otp/', views.resend_mobile_otp, name='resend_mobile_otp'),
+    path('api/check-mobile-exists/', views.check_mobile_exists, name='check_mobile_exists'),
 ]
 
 # Serve media files in development

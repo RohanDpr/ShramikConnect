@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Employer, Worker, EmailOTP, Job, JobApplication, WorkHistory, ChatMessage
+from .models import Employer, Worker, EmailOTP, MobileOTP, Job, JobApplication, WorkHistory, ChatMessage
+from django.utils import timezone
 
 # ============================================
 # EMPLOYER ADMIN
@@ -131,6 +132,29 @@ class EmailOTPAdmin(admin.ModelAdmin):
 
 
 # ============================================
+# MOBILE OTP ADMIN (NEW)
+# ============================================
+
+@admin.register(MobileOTP)
+class MobileOTPAdmin(admin.ModelAdmin):
+    """Admin configuration for Mobile OTP model"""
+    
+    list_display = ('id', 'mobile', 'otp', 'is_verified', 'created_at')
+    list_filter = ('is_verified',)
+    search_fields = ('mobile', 'otp')
+    readonly_fields = ('created_at',)
+    
+    fieldsets = (
+        ('OTP Information', {
+            'fields': ('mobile', 'otp', 'is_verified')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',)
+        }),
+    )
+
+
+# ============================================
 # JOB ADMIN
 # ============================================
 
@@ -200,7 +224,7 @@ class JobApplicationAdmin(admin.ModelAdmin):
             'fields': ('job', 'worker', 'expected_price', 'availability', 'cover_message')
         }),
         ('Status', {
-            'fields': ('status',)
+            'fields': ('status', 'employer_read', 'worker_read')
         }),
         ('Timestamps', {
             'fields': ('applied_date', 'acceptance_time', 'hired_date', 'completion_date', 'created_at', 'updated_at')
@@ -297,9 +321,6 @@ class ChatMessageAdmin(admin.ModelAdmin):
 # ============================================
 # CUSTOM ADMIN SITE CONFIGURATION
 # ============================================
-
-from django.contrib import admin
-from django.utils import timezone
 
 # Admin site headers customize karo
 admin.site.site_header = "ShramikConnect Administration"
