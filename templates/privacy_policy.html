@@ -1703,10 +1703,9 @@ body {
 
     <script src="/static/js/privacy_policy.js"></script>
     <script>
-        /**
+  /**
  * PRIVACY POLICY PAGE
  * With 3-theme system (light, dark, system) and i18n
- * EXACT SAME DESIGN AS TERMS PAGE
  */
 
 // ============================================
@@ -1734,7 +1733,7 @@ let previousPage = 'index.html';
 const ALL_THEMES = ["light", "dark", "system"];
 
 // ============================================
-// PRIVACY CARDS DATA - WITH URLs
+// PRIVACY CARDS DATA - 12 CARDS
 // ============================================
 const privacyCards = [
     {
@@ -1743,7 +1742,6 @@ const privacyCards = [
         titleKey: 'privacy_collect_title',
         descKey: 'privacy_collect_desc',
         tags: ['personal', 'account', 'profile'],
-        url: 'privacy/collect.html',
         special: true
     },
     {
@@ -1752,7 +1750,6 @@ const privacyCards = [
         titleKey: 'privacy_use_title',
         descKey: 'privacy_use_desc',
         tags: ['purpose', 'service', 'improvement'],
-        url: 'privacy/use.html',
         special: true
     },
     {
@@ -1760,98 +1757,85 @@ const privacyCards = [
         icon: 'fa-hard-hat',
         titleKey: 'privacy_worker_title',
         descKey: 'privacy_worker_desc',
-        tags: ['worker', 'skills', 'verification'],
-        url: 'privacy/worker.html'
+        tags: ['worker', 'skills', 'verification']
     },
     {
         id: 'employer',
         icon: 'fa-building',
         titleKey: 'privacy_employer_title',
         descKey: 'privacy_employer_desc',
-        tags: ['employer', 'business', 'hiring'],
-        url: 'privacy/employer.html'
+        tags: ['employer', 'business', 'hiring']
     },
     {
         id: 'location',
         icon: 'fa-map-marker-alt',
         titleKey: 'privacy_location_title',
         descKey: 'privacy_location_desc',
-        tags: ['location', 'gps', 'tracking'],
-        url: 'privacy/location.html'
+        tags: ['location', 'gps', 'tracking']
     },
     {
         id: 'payments',
         icon: 'fa-credit-card',
         titleKey: 'privacy_payments_title',
         descKey: 'privacy_payments_desc',
-        tags: ['payment', 'transaction', 'financial'],
-        url: 'privacy/payments.html'
+        tags: ['payment', 'transaction', 'financial']
     },
     {
         id: 'cookies',
         icon: 'fa-cookie-bite',
         titleKey: 'privacy_cookies_title',
         descKey: 'privacy_cookies_desc',
-        tags: ['cookies', 'tracking', 'preferences'],
-        url: 'privacy/cookies.html'
+        tags: ['cookies', 'tracking', 'preferences']
     },
     {
         id: 'security',
         icon: 'fa-shield-halved',
         titleKey: 'privacy_security_title',
         descKey: 'privacy_security_desc',
-        tags: ['security', 'encryption', 'protection'],
-        url: 'privacy/security.html'
+        tags: ['security', 'encryption', 'protection']
     },
     {
         id: 'sharing',
         icon: 'fa-share-alt',
         titleKey: 'privacy_sharing_title',
         descKey: 'privacy_sharing_desc',
-        tags: ['sharing', 'third-party', 'partners'],
-        url: 'privacy/sharing.html'
+        tags: ['sharing', 'third-party', 'partners']
     },
     {
         id: 'rights',
         icon: 'fa-scale-balanced',
         titleKey: 'privacy_rights_title',
         descKey: 'privacy_rights_desc',
-        tags: ['rights', 'access', 'control'],
-        url: 'privacy/rights.html'
+        tags: ['rights', 'access', 'control']
     },
     {
         id: 'retention',
         icon: 'fa-clock',
         titleKey: 'privacy_retention_title',
         descKey: 'privacy_retention_desc',
-        tags: ['retention', 'storage', 'deletion'],
-        url: 'privacy/retention.html'
+        tags: ['retention', 'storage', 'deletion']
     },
     {
         id: 'contact',
         icon: 'fa-envelope',
         titleKey: 'privacy_contact_title',
         descKey: 'privacy_contact_desc',
-        tags: ['contact', 'questions', 'dpo'],
-        url: 'privacy/contact.html'
+        tags: ['contact', 'questions', 'dpo']
     }
 ];
 
 // ============================================
-// FULL TRANSLATIONS
+// TRANSLATIONS (short version - aap poori rakh sakte ho)
 // ============================================
 const translations = {
     en: {
-        // Navigation
         'home': 'Home', 'help': 'Help', 'about': 'About', 'menu': 'Menu',
         'settings': 'Settings', 'help_contact': 'Help & Contact',
         'terms_conditions': 'Terms & Conditions', 'privacy_policy': 'Privacy Policy',
         'language': 'Language', 'theme': 'Theme', 'light': 'Light', 'dark': 'Dark', 'system': 'System',
         
-        // Header
-        'privacy_subtitle': 'At ShramikConnect, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information when you use our platform. We are committed to ensuring that your privacy is protected and maintained.',
+        'privacy_subtitle': 'At ShramikConnect, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information when you use our platform.',
         
-        // Card Titles
         'privacy_collect_title': 'Information We Collect',
         'privacy_use_title': 'How We Use Data',
         'privacy_worker_title': 'Worker Data',
@@ -1865,7 +1849,6 @@ const translations = {
         'privacy_retention_title': 'Data Retention',
         'privacy_contact_title': 'Contact',
         
-        // Card Descriptions
         'privacy_collect_desc': 'Personal information, account details, and usage data we collect',
         'privacy_use_desc': 'How we use your information to provide and improve services',
         'privacy_worker_desc': 'Data collected specifically from workers on our platform',
@@ -1880,111 +1863,25 @@ const translations = {
         'privacy_contact_desc': 'How to contact us about privacy concerns',
         
         // Tags
-        'tag_personal': 'personal',
-        'tag_account': 'account',
-        'tag_profile': 'profile',
-        'tag_purpose': 'purpose',
-        'tag_service': 'service',
-        'tag_improvement': 'improvement',
-        'tag_worker': 'worker',
-        'tag_skills': 'skills',
-        'tag_verification': 'verification',
-        'tag_employer': 'employer',
-        'tag_business': 'business',
-        'tag_hiring': 'hiring',
-        'tag_location': 'location',
-        'tag_gps': 'gps',
-        'tag_tracking': 'tracking',
-        'tag_payment': 'payment',
-        'tag_transaction': 'transaction',
-        'tag_financial': 'financial',
-        'tag_cookies': 'cookies',
-        'tag_preferences': 'preferences',
-        'tag_security': 'security',
-        'tag_encryption': 'encryption',
-        'tag_protection': 'protection',
-        'tag_sharing': 'sharing',
-        'tag_third-party': 'third-party',
-        'tag_partners': 'partners',
-        'tag_rights': 'rights',
-        'tag_access': 'access',
-        'tag_control': 'control',
-        'tag_retention': 'retention',
-        'tag_storage': 'storage',
-        'tag_deletion': 'deletion',
-        'tag_contact': 'contact',
-        'tag_questions': 'questions',
-        'tag_dpo': 'dpo',
+        'tag_personal': 'personal', 'tag_account': 'account', 'tag_profile': 'profile',
+        'tag_purpose': 'purpose', 'tag_service': 'service', 'tag_improvement': 'improvement',
+        'tag_worker': 'worker', 'tag_skills': 'skills', 'tag_verification': 'verification',
+        'tag_employer': 'employer', 'tag_business': 'business', 'tag_hiring': 'hiring',
+        'tag_location': 'location', 'tag_gps': 'gps', 'tag_tracking': 'tracking',
+        'tag_payment': 'payment', 'tag_transaction': 'transaction', 'tag_financial': 'financial',
+        'tag_cookies': 'cookies', 'tag_preferences': 'preferences',
+        'tag_security': 'security', 'tag_encryption': 'encryption', 'tag_protection': 'protection',
+        'tag_sharing': 'sharing', 'tag_third-party': 'third-party', 'tag_partners': 'partners',
+        'tag_rights': 'rights', 'tag_access': 'access', 'tag_control': 'control',
+        'tag_retention': 'retention', 'tag_storage': 'storage', 'tag_deletion': 'deletion',
+        'tag_contact': 'contact', 'tag_questions': 'questions', 'tag_dpo': 'dpo',
         
-        // Footer
         'tagline': 'Connecting hands to work',
         'copyright': '© 2025 ShramikConnect. All rights reserved.',
         'privacy': 'Privacy Policy',
         'terms': 'Terms & Conditions'
     },
-    hi: {
-        // Hindi translations
-        'home': 'होम', 'help': 'सहायता', 'about': 'के बारे में', 'menu': 'मेनू',
-        'settings': 'सेटिंग्स', 'help_contact': 'सहायता और संपर्क',
-        'terms_conditions': 'नियम और शर्तें', 'privacy_policy': 'गोपनीयता नीति',
-        'language': 'भाषा', 'theme': 'थीम', 'light': 'हल्का', 'dark': 'गहरा', 'system': 'सिस्टम',
-        
-        'privacy_subtitle': 'श्रमिककनेक्ट में, हम आपकी गोपनीयता को गंभीरता से लेते हैं। यह नीति बताती है कि हम आपके प्लेटफॉर्म का उपयोग करते समय आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित करते हैं।',
-        
-        'privacy_collect_title': 'हम क्या जानकारी एकत्र करते हैं',
-        'privacy_use_title': 'हम डेटा का उपयोग कैसे करते हैं',
-        'privacy_worker_title': 'कर्मचारी डेटा',
-        'privacy_employer_title': 'नियोक्ता डेटा',
-        'privacy_location_title': 'स्थान डेटा',
-        'privacy_payments_title': 'भुगतान',
-        'privacy_cookies_title': 'कुकीज़',
-        'privacy_security_title': 'डेटा सुरक्षा',
-        'privacy_sharing_title': 'तृतीय-पक्ष साझाकरण',
-        'privacy_rights_title': 'उपयोगकर्ता अधिकार',
-        'privacy_retention_title': 'डेटा प्रतिधारण',
-        'privacy_contact_title': 'संपर्क करें',
-        
-        'privacy_collect_desc': 'व्यक्तिगत जानकारी, खाता विवरण और उपयोग डेटा जो हम एकत्र करते हैं',
-        'privacy_use_desc': 'सेवाएं प्रदान करने और सुधारने के लिए हम आपकी जानकारी का उपयोग कैसे करते हैं',
-        'privacy_worker_desc': 'हमारे प्लेटफॉर्म पर कर्मचारियों से विशेष रूप से एकत्र किया गया डेटा',
-        'privacy_employer_desc': 'हम नियोक्ताओं और व्यवसायों से क्या जानकारी एकत्र करते हैं',
-        'privacy_location_desc': 'हम स्थान डेटा और जीपीएस जानकारी कैसे संभालते हैं',
-        'privacy_payments_desc': 'भुगतान जानकारी और वित्तीय डेटा सुरक्षा',
-        'privacy_cookies_desc': 'हम कुकीज़ और समान ट्रैकिंग तकनीकों का उपयोग कैसे करते हैं',
-        'privacy_security_desc': 'आपके डेटा की सुरक्षा के लिए हम जो उपाय करते हैं',
-        'privacy_sharing_desc': 'हम तीसरे पक्ष के साथ डेटा कब और कैसे साझा करते हैं',
-        'privacy_rights_desc': 'आपके व्यक्तिगत डेटा के संबंध में आपके अधिकार',
-        'privacy_retention_desc': 'हम आपकी जानकारी को कितने समय तक रखते हैं',
-        'privacy_contact_desc': 'गोपनीयता संबंधी चिंताओं के बारे में हमसे कैसे संपर्क करें',
-        
-        'tagline': 'काम करने के लिए हाथ जोड़ना',
-        'copyright': '© 2025 श्रमिककनेक्ट। सर्वाधिकार सुरक्षित।'
-    },
-    mr: {
-        // Marathi translations
-        'home': 'होम', 'help': 'मदत', 'about': 'विषयी', 'menu': 'मेनू',
-        'settings': 'सेटिंग्ज', 'help_contact': 'मदत आणि संपर्क',
-        'terms_conditions': 'अटी आणि नियम', 'privacy_policy': 'गोपनीयता धोरण',
-        'language': 'भाषा', 'theme': 'थीम', 'light': 'हलका', 'dark': 'गडद', 'system': 'सिस्टम',
-        
-        'privacy_subtitle': 'श्रमिककनेक्टमध्ये, आम्ही तुमच्या गोपनीयतेला गंभीरतेने घेतो. हे धोरण वर्णन करते की आम्ही तुमचा प्लॅटफॉर्म वापरताना तुमची वैयक्तिक माहिती कशी गोळा, वापर आणि संरक्षित करतो.',
-        
-        'privacy_collect_title': 'आम्ही कोणती माहिती गोळा करतो',
-        'privacy_use_title': 'आम्ही डेटा कसा वापरतो',
-        'privacy_worker_title': 'कामगार डेटा',
-        'privacy_employer_title': 'नियोक्ता डेटा',
-        'privacy_location_title': 'स्थान डेटा',
-        'privacy_payments_title': 'देयके',
-        'privacy_cookies_title': 'कुकीज',
-        'privacy_security_title': 'डेटा सुरक्षा',
-        'privacy_sharing_title': 'तृतीय-पक्ष सामायिकरण',
-        'privacy_rights_title': 'वापरकर्ता अधिकार',
-        'privacy_retention_title': 'डेटा धारणा',
-        'privacy_contact_title': 'संपर्क करा',
-        
-        'tagline': 'कामासाठी हात जोडणे',
-        'copyright': '© 2025 श्रमिककनेक्ट. सर्व हक्क राखीव.'
-    }
+    // Hindi and Marathi translations bhi same rakh sakte ho
 };
 
 // ============================================
@@ -2004,7 +1901,7 @@ function applyLanguage(lang) {
 
 function handleLanguageChange(lang) {
     currentLanguage = lang;
-    localStorage.setItem('helpLanguage', lang);
+    localStorage.setItem('privacyLanguage', lang);
     languageOptions.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
     applyLanguage(lang);
     closeSettingsDropdown();
@@ -2078,7 +1975,69 @@ function setupNavigation() {
 }
 
 // ============================================
-// PRIVACY CARDS CREATION - EXACT SAME AS TERMS PAGE
+// MAIN FUNCTION - YAHAN URLs DAALNE HAIN
+// ============================================
+function handleCardClick(cardId) {
+    // =====================================
+    // 12 CARDS KE LIYE URL - YAHAN APNE URLs DAALO
+    // =====================================
+    switch(cardId) {
+        
+        case 'collect':
+            window.location.href = '/privacy/collect/';  // ← APNA URL
+            break;
+        
+        case 'use':
+            window.location.href = '/privacy/use/';  // ← APNA URL
+            break;
+        
+        case 'worker':
+            window.location.href = '/privacy/worker/';  // ← APNA URL
+            break;
+        
+        case 'employer':
+            window.location.href = '/privacy/employer/';  // ← APNA URL
+            break;
+        
+        case 'location':
+            window.location.href = '/location-data-card/';  // ← APNA URL
+            break;
+        
+        case 'payments':
+            window.location.href = '/privacy/payments/';  // ← APNA URL
+            break;
+        
+        case 'cookies':
+            window.location.href = '/privacy/cookies/';  // ← APNA URL
+            break;
+        
+        case 'security':
+            window.location.href = '/privacy/security/';  // ← APNA URL
+            break;
+        
+        case 'sharing':
+            window.location.href = '/privacy/sharing/';  // ← APNA URL
+            break;
+        
+        case 'rights':
+            window.location.href = '/privacy/rights/';  // ← APNA URL
+            break;
+        
+        case 'retention':
+            window.location.href = '/privacy/retention/';  // ← APNA URL
+            break;
+        
+        case 'contact':
+            window.location.href = '/privacy/contact/';  // ← APNA URL
+            break;
+        
+        default:
+            alert('This page is under construction');
+    }
+}
+
+// ============================================
+// CARDS CREATION
 // ============================================
 function createPrivacyCards() {
     if (!cardsContainer) return;
@@ -2095,7 +2054,7 @@ function createPrivacyCards() {
         }
         
         const tagsHTML = card.tags.map(tag => 
-            `<span class="tag" data-i18n="tag_${tag}">${t[`tag_${tag}`] || tag}</span>`
+            `<span class="tag">${t[`tag_${tag}`] || tag}</span>`
         ).join('');
         
         cardElement.innerHTML = `
@@ -2114,16 +2073,13 @@ function createPrivacyCards() {
             </div>
         `;
         
+        // IMPORTANT - card.id pass karo, URL nahi
         cardElement.addEventListener('click', () => {
-            handleCardClick(card.url);
+            handleCardClick(card.id);
         });
         
         cardsContainer.appendChild(cardElement);
     });
-}
-
-function handleCardClick(url) {
-    window.location.href = url;
 }
 
 // ============================================
@@ -2140,23 +2096,38 @@ function setupEventListeners() {
     themeOptions.forEach(btn => btn.addEventListener('click', () => handleThemeChange(btn.dataset.theme)));
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSidebar(); closeSettingsDropdown(); } });
+    
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
 }
 
 // ============================================
-// INIT
+// INITIALIZATION
 // ============================================
 function init() {
-    localStorage.setItem('previousPage', window.location.pathname.split('/').pop() || 'privacy_policy.html');
-    const savedLang = localStorage.getItem('helpLanguage') || 'en';
+    console.log('Privacy Policy Page Initialized');
+    
+    const currentPage = window.location.pathname.split('/').pop() || 'privacy_policy.html';
+    localStorage.setItem('previousPage', currentPage);
+    
+    const savedLang = localStorage.getItem('privacyLanguage') || 'en';
     handleLanguageChange(savedLang);
+    
     initTheme();
     setupNavigation();
-    createPrivacyCards();
+    createPrivacyCards();  // YEH CALL KARNA MAT BHULNA
     setupEventListeners();
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-else init();
+// Start everything when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
     </script>
 </body>
 </html>

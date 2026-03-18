@@ -321,6 +321,9 @@ def dispute_resolution_card(request):
 def liability_card(request):
     return render(request, 'liability_card.html')
 
+def location_data_card(request):
+    return render(request, 'location_data.html')
+
 
 # ============================================
 # EMPLOYER AUTH VIEWS

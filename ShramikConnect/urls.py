@@ -47,7 +47,7 @@ urlpatterns = [
     path('termination-card/', views.termination_card, name='termination_card'),
     path('dispute-resolution-card/', views.dispute_resolution_card, name='dispute_resolution_card'),
     path('liability-card/', views.liability_card, name='liability_card'),
-
+    path('location-data-card/', views.location_data_card, name='location_data_card'),
 
     # Info pages
     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
