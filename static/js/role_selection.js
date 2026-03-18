@@ -382,4 +382,5 @@ function initializeSettingsDropdown() {
 // Error handling
 window.addEventListener('error', function(e) {
     console.error('Error occurred:', e.error);
+    
 });
