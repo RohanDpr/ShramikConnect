@@ -104,6 +104,15 @@ def data_retention(request):
 def conduct_card(request):
     return render(request, 'conduct_card.html')
 
+def employer_edit_profile_page(request):
+    return render(request, 'employer/employer_edit_profile_page.html')
+
+def worker_edit_profile_page(request):
+    return render(request, 'worker/worker_edit_profile_page.html')
+
+def know_more_about_developers(request):
+    return render(request, 'know_more_about_developers.html')
+
 # ============================================
 # WORKER AUTH VIEWS
 # ============================================

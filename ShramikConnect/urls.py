@@ -57,6 +57,9 @@ urlpatterns = [
     path('user_rights/', views.user_rights, name='user_rights'),
     path('data_retention/', views.data_retention, name='data_retention'),
     path('conduct_card/', views.conduct_card, name='conduct_card'),
+    path('employer_edit_profile_page/', views.employer_edit_profile_page, name='employer_edit_profile_page'),
+    path('worker_edit_profile_page/', views.worker_edit_profile_page, name='worker_edit_profile_page'),
+    path('know_more_about_developers/', views.know_more_about_developers, name='know_more_about_developers'),
 
     # Info pages
     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
