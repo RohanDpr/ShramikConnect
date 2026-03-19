@@ -42,15 +42,7 @@ const ALL_THEMES = ["light", "dark", "system"];
 // TERMS CARDS DATA - SIRF 9 CARDS (NO DUPLICATES)
 // ============================================
 const termsCards = [
-    {
-        id: 'intro',
-        icon: 'fa-file-contract',
-        titleKey: 'terms_intro_title',
-        descKey: 'terms_intro_desc',
-        tags: ['intro', 'overview'],
-        url: 'terms/introduction.html',
-        special: true
-    },
+   
     {
         id: 'eligibility',
         icon: 'fa-user-check',
@@ -501,9 +493,7 @@ function handleCardClick(cardId) {
     // =====================================
     switch(cardId) {
         
-        case 'intro':
-            window.location.href = '/terms/introduction/';  // ← APNA URL
-            break;
+       
         
         case 'eligibility':
             window.location.href = '/eligibility-card/';  // ← APNA URL
@@ -522,7 +512,7 @@ function handleCardClick(cardId) {
             break;
         
         case 'conduct':
-            window.location.href = '/terms/conduct/';  // ← APNA URL
+            window.location.href = '/conduct_card/';  // ← APNA URL
             break;
         
         case 'termination':

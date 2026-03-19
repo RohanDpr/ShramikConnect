@@ -101,6 +101,9 @@ def user_rights(request):
 def data_retention(request):
     return render(request, 'data_retention.html')
 
+def conduct_card(request):
+    return render(request, 'conduct_card.html')
+
 # ============================================
 # WORKER AUTH VIEWS
 # ============================================

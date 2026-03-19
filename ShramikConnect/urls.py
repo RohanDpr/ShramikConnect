@@ -56,6 +56,7 @@ urlpatterns = [
     path('data_sharing/', views.data_sharing, name='data_sharing'),
     path('user_rights/', views.user_rights, name='user_rights'),
     path('data_retention/', views.data_retention, name='data_retention'),
+    path('conduct_card/', views.conduct_card, name='conduct_card'),
 
     # Info pages
     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),

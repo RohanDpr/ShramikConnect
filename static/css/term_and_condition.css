@@ -1191,16 +1191,52 @@ body {
 /* ============================================
    FOOTER
    ============================================ */
+/* ============================================
+   SHRAMIKCONNECT FOOTER STYLES
+   ============================================ */
+
+/* Root Variables for Theming */
+:root {
+    --footer-bg: #1e293b;
+    --footer-text: #f8fafc;
+    --accent-1: #4362C9;
+    --accent-2: #01A060;
+    --border-black: #0f172a;
+    --wave-fill: #f8fafc;
+}
+
+/* Dark Theme Variables */
+body.dark-theme {
+    --footer-bg: #0f172a;
+    --footer-text: #e2e8f0;
+    --accent-1: #6B8CFF;
+    --accent-2: #00C274;
+    --border-black: #334155;
+    --wave-fill: #1a1a1a;
+}
+
+/* Footer Container */
 .footer {
     background: var(--footer-bg);
     color: var(--footer-text);
     padding: 60px 0 30px;
     position: relative;
     overflow: hidden;
-    margin-top: 0;
+    margin-top: 50px;
     border-top: 2px solid var(--border-black);
+    transition: all 0.3s ease;
 }
 
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ============================================
+   FOOTER WAVE ANIMATION
+   ============================================ */
 .footer-wave {
     position: absolute;
     top: -50px;
@@ -1219,9 +1255,12 @@ body {
 }
 
 .footer-wave .shape-fill {
-    fill: var(--bg-primary);
+    fill: var(--wave-fill);
 }
 
+/* ============================================
+   FOOTER CONTENT LAYOUT
+   ============================================ */
 .footer-content {
     display: flex;
     justify-content: space-between;
@@ -1231,6 +1270,7 @@ body {
     margin-bottom: 30px;
 }
 
+/* Brand Section */
 .footer-brand {
     flex: 1;
     min-width: 280px;
@@ -1259,8 +1299,10 @@ body {
 
 .tagline {
     font-size: 0.95rem;
+    color: var(--footer-text);
     opacity: 0.8;
     margin-bottom: 15px;
+    line-height: 1.5;
 }
 
 .copyright {
@@ -1269,6 +1311,7 @@ body {
     margin-top: 15px;
 }
 
+/* Footer Links */
 .footer-links {
     display: flex;
     gap: 50px;
@@ -1285,6 +1328,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 15px;
+    color: var(--footer-text);
     position: relative;
     padding-bottom: 5px;
 }
@@ -1299,6 +1343,7 @@ body {
     transition: width 0.3s ease;
 }
 
+/* Column Title Underline Colors */
 .links-column:nth-child(1) .column-title::after {
     background: var(--accent-1);
 }
@@ -1311,6 +1356,23 @@ body {
     background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
 }
 
+/* Hover Effects on Columns */
+.links-column:nth-child(1):hover .column-title::after {
+    width: 40px;
+    background: var(--accent-2);
+}
+
+.links-column:nth-child(2):hover .column-title::after {
+    width: 40px;
+    background: var(--accent-1);
+}
+
+.links-column:nth-child(3):hover .column-title::after {
+    width: 40px;
+    background: var(--accent-2);
+}
+
+/* Footer Links */
 .footer-link {
     color: var(--footer-text);
     text-decoration: none;
@@ -1320,8 +1382,7 @@ body {
     opacity: 0.8;
 }
 
-.footer-link:nth-child(odd):hover,
-.footer-link.active {
+.footer-link:nth-child(odd):hover {
     color: var(--accent-1);
     transform: translateX(4px);
     opacity: 1;
@@ -1333,6 +1394,9 @@ body {
     opacity: 1;
 }
 
+/* ============================================
+   SOCIAL MEDIA ICONS
+   ============================================ */
 .footer-bottom {
     display: flex;
     justify-content: center;
@@ -1344,37 +1408,185 @@ body {
 .social-links {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .social-link {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border-black);
-    border-radius: var(--border-radius-circle);
+    width: 42px;
+    height: 42px;
+    border: 2px solid var(--border-black);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--footer-text);
     text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine Effect */
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.social-link:hover::before {
+    left: 100%;
+}
+
+.social-link i {
+    font-size: 18px;
     transition: all 0.3s ease;
-    background: transparent;
-    opacity: 0.7;
+    position: relative;
+    z-index: 2;
 }
 
-.social-link:nth-child(odd):hover {
-    background: var(--accent-1);
-    border-color: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateY(-3px) scale(1.1);
-    opacity: 1;
+/* Individual Icon Hover Effects */
+
+/* Instagram */
+.social-link:nth-child(1):hover {
+    background: radial-gradient(circle at 30% 30%, #fdf497, #fdf497, #fd5949, #d6249f, #285AEB);
+    border-color: transparent;
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(225, 48, 108, 0.4);
+}
+.social-link:nth-child(1):hover i {
+    color: white;
+    transform: scale(1.1);
 }
 
-.social-link:nth-child(even):hover {
-    background: var(--accent-2);
-    border-color: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateY(-3px) scale(1.1);
-    opacity: 1;
+/* Facebook */
+.social-link:nth-child(2):hover {
+    background: #1877F2;
+    border-color: #1877F2;
+    transform: translateY(-8px) scale(1.15) rotate(360deg);
+    box-shadow: 0 10px 20px rgba(24, 119, 242, 0.4);
+}
+.social-link:nth-child(2):hover i {
+    color: white;
+}
+
+/* YouTube */
+.social-link:nth-child(3):hover {
+    background: #FF0000;
+    border-color: #FF0000;
+    transform: translateY(-8px) scale(1.15) rotateX(10deg);
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+}
+.social-link:nth-child(3):hover i {
+    color: white;
+    animation: youtubePulse 0.8s ease;
+}
+
+/* X (Twitter) */
+.social-link:nth-child(4):hover {
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-8px) scale(1.15) rotate(10deg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+.social-link:nth-child(4):hover i {
+    color: white;
+}
+
+/* Email */
+.social-link:nth-child(5):hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+.social-link:nth-child(5):hover i {
+    color: white;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes youtubePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+    
+    .column-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-link:hover {
+        transform: translateY(-2px) !important;
+    }
+    
+    .social-links {
+        gap: 12px;
+    }
+    
+    .social-link {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .social-link i {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-links {
+        gap: 8px;
+    }
+    
+    .social-link {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+.footer-link:focus-visible,
+.social-link:focus-visible {
+    outline: 2px solid var(--accent-1);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .social-link:hover {
+        transform: translateY(-2px) scale(1.05) !important;
+    }
 }
 
 /* ============================================
