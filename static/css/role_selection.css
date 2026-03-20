@@ -332,12 +332,60 @@ body.dark-theme .page-subtitle {
     color: #cccccc;
 }
 
-/* Role Cards Section */
+/* Role Cards Section - RESPONSIVE GRID */
 .role-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
     margin-bottom: 60px;
+}
+
+/* Responsive: Mobile view - single column */
+@media (max-width: 768px) {
+    .role-cards {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .main-content {
+        padding: 20px 0 60px;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .page-subtitle {
+        font-size: 1rem;
+        padding: 0 15px;
+    }
+    
+    .page-title-section {
+        margin-bottom: 40px;
+    }
+}
+
+/* Responsive: Small mobile devices */
+@media (max-width: 480px) {
+    .role-cards {
+        gap: 25px;
+    }
+    
+    .main-content {
+        padding: 15px 0 40px;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .page-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .page-title-section {
+        margin-bottom: 30px;
+    }
 }
 
 .role-card {
@@ -355,6 +403,19 @@ body.dark-theme .page-subtitle {
     opacity: 0;
     transform: translateY(30px);
     animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Responsive: Card padding for mobile */
+@media (max-width: 768px) {
+    .role-card {
+        padding: 40px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .role-card {
+        padding: 30px 25px;
+    }
 }
 
 .role-card.kaam-dhundho {
@@ -410,6 +471,27 @@ body.dark-theme .role-card:hover {
     transition: all 0.3s ease;
 }
 
+/* Responsive: Card icon for mobile */
+@media (max-width: 768px) {
+    .card-icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+    }
+    
+    .card-icon i {
+        font-size: 1.8rem;
+    }
+}
+
 .kaam-dhundho .card-icon {
     background: linear-gradient(135deg, rgba(67, 98, 201, 0.1) 0%, rgba(67, 98, 201, 0.2) 100%);
     color: #4362C9;
@@ -432,6 +514,21 @@ body.dark-theme .role-card:hover {
     line-height: 1.2;
 }
 
+/* Responsive: Card title for mobile */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+}
+
 .kaam-dhundho .card-title {
     color: #4362C9;
 }
@@ -449,6 +546,21 @@ body.dark-theme .role-card:hover {
     flex-grow: 1;
 }
 
+/* Responsive: Card description for mobile */
+@media (max-width: 768px) {
+    .card-description {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-description {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+}
+
 body.dark-theme .card-description {
     color: #cccccc;
 }
@@ -458,6 +570,19 @@ body.dark-theme .card-description {
     margin-bottom: 40px;
 }
 
+/* Responsive: Card features for mobile */
+@media (max-width: 768px) {
+    .card-features {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-features {
+        margin-bottom: 25px;
+    }
+}
+
 .feature {
     display: flex;
     align-items: center;
@@ -465,9 +590,39 @@ body.dark-theme .card-description {
     font-size: 1rem;
 }
 
+/* Responsive: Feature text for mobile */
+@media (max-width: 768px) {
+    .feature {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .feature {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+}
+
 .feature i {
     margin-right: 12px;
     font-size: 1.1rem;
+}
+
+/* Responsive: Feature icon for mobile */
+@media (max-width: 768px) {
+    .feature i {
+        font-size: 1rem;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .feature i {
+        font-size: 0.9rem;
+        margin-right: 8px;
+    }
 }
 
 .kaam-dhundho .feature i {
@@ -499,6 +654,23 @@ a {
     position: relative;
     overflow: hidden;
     margin-top: auto;
+}
+
+/* Responsive: Card button for mobile */
+@media (max-width: 768px) {
+    .card-button {
+        padding: 14px 28px;
+        font-size: 1rem;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-button {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        gap: 8px;
+    }
 }
 
 .kaam-dhundho-btn {
@@ -555,6 +727,13 @@ a {
     transform: translateY(30px);
 }
 
+/* Responsive: Additional info for mobile */
+@media (max-width: 768px) {
+    .additional-info {
+        margin-top: 10px;
+    }
+}
+
 .info-card {
     background: linear-gradient(135deg, rgba(67, 98, 201, 0.05) 0%, rgba(1, 160, 96, 0.05) 100%);
     border-radius: 20px;
@@ -563,6 +742,35 @@ a {
     max-width: 600px;
     border: 1px solid rgba(67, 98, 201, 0.1);
     transition: all 0.3s ease;
+}
+
+/* Responsive: Info card for mobile */
+@media (max-width: 768px) {
+    .info-card {
+        padding: 25px;
+        margin: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-card {
+        padding: 20px;
+        margin: 0 10px;
+    }
+    
+    .info-card i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .info-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .info-card p {
+        font-size: 0.85rem;
+    }
 }
 
 .info-card:hover {
@@ -619,6 +827,14 @@ body.dark-theme .info-card p {
     border-top: 2px solid var(--border-black, #0f172a);
 }
 
+/* Responsive: Footer for mobile */
+@media (max-width: 768px) {
+    .footer {
+        padding: 40px 0 25px;
+        margin-top: 30px;
+    }
+}
+
 .footer-wave {
     position: absolute;
     top: -50px;
@@ -647,6 +863,16 @@ body.dark-theme .info-card p {
     flex-wrap: wrap;
     gap: 50px;
     margin-bottom: 30px;
+}
+
+/* Responsive: Footer content for mobile */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+        margin-bottom: 20px;
+    }
 }
 
 .footer-brand {
@@ -695,10 +921,25 @@ body.dark-theme .info-card p {
     flex-wrap: wrap;
 }
 
+/* Responsive: Footer links for mobile */
+@media (max-width: 768px) {
+    .footer-links {
+        justify-content: center;
+        gap: 30px;
+    }
+}
+
 .links-column {
     display: flex;
     flex-direction: column;
     min-width: 120px;
+}
+
+/* Responsive: Links column for mobile */
+@media (max-width: 480px) {
+    .links-column {
+        min-width: 100px;
+    }
 }
 
 .column-title {
@@ -708,6 +949,14 @@ body.dark-theme .info-card p {
     color: var(--footer-text, #f8fafc);
     position: relative;
     padding-bottom: 5px;
+}
+
+/* Responsive: Column title for mobile */
+@media (max-width: 768px) {
+    .column-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 .column-title::after {
@@ -756,6 +1005,13 @@ body.dark-theme .info-card p {
     opacity: 0.8;
 }
 
+/* Responsive: Footer link hover for mobile */
+@media (max-width: 768px) {
+    .footer-link:hover {
+        transform: translateY(-2px);
+    }
+}
+
 .footer-link:nth-child(odd):hover {
     color: var(--accent-1, #2563eb);
     transform: translateX(4px);
@@ -786,6 +1042,19 @@ body.dark-theme .info-card p {
     justify-content: center;
 }
 
+/* Responsive: Social links for mobile */
+@media (max-width: 768px) {
+    .social-links {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-links {
+        gap: 8px;
+    }
+}
+
 .social-link {
     width: 42px;
     height: 42px;
@@ -800,6 +1069,29 @@ body.dark-theme .info-card p {
     background: rgba(255, 255, 255, 0.05);
     position: relative;
     overflow: hidden;
+}
+
+/* Responsive: Social link size for mobile */
+@media (max-width: 768px) {
+    .social-link {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .social-link i {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-link {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-link i {
+        font-size: 14px;
+    }
 }
 
 /* Background shine effect */
@@ -889,50 +1181,6 @@ body.dark-theme .info-card p {
     color: white;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .footer-links {
-        justify-content: center;
-    }
-    
-    .column-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .footer-link:hover {
-        transform: translateY(-2px);
-    }
-    
-    .social-links {
-        gap: 12px;
-    }
-    
-    .social-link {
-        width: 38px;
-        height: 38px;
-    }
-    
-    .social-link i {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .social-links {
-        gap: 8px;
-    }
-    
-    .social-link {
-        width: 35px;
-        height: 35px;
-    }
-}
 /* Focus Styles for Accessibility */
 button:focus-visible,
 a:focus-visible,
@@ -957,5 +1205,17 @@ body.dark-theme .settings-icon:focus-visible {
     
     html {
         scroll-behavior: auto;
+    }
+}
+
+/* Fade In Up Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
