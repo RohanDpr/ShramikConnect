@@ -1106,17 +1106,7 @@ body {
     color: white;
 }
 
-/* YouTube - Red */
-.social-link:nth-child(3):hover {
-    background: #FF0000;
-    border-color: #FF0000;
-    transform: translateY(-8px) scale(1.15) rotateX(10deg);
-    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
-}
-.social-link:nth-child(3):hover i {
-    color: white;
-    animation: youtubePulse 0.8s ease;
-}
+
 
 /* X (Twitter) - Black */
 .social-link:nth-child(4):hover {
