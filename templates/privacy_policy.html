@@ -1746,7 +1746,7 @@ body {
                     <i class="fas fa-info-circle"></i>
                     <span data-i18n="about">About</span>
                 </a>
-                <a href="/terms_and_conditions/" class="menu-item-box">
+                <a href="/term_and_condition/" class="menu-item-box">
                     <i class="fas fa-file-contract"></i>
                     <span data-i18n="terms_conditions">Terms & Conditions</span>
                 </a>
@@ -1797,7 +1797,7 @@ body {
         </div>
         
         <div class="nav-right">
-            <a href="/" class="nav-link" id="navHome" data-i18n="home">
+            <a href="#" class="nav-link" id="navHome" data-i18n="home">
                 <i class="fas fa-home"></i>
                 <span class="nav-text" data-i18n="home">Home</span>
             </a>
@@ -2175,9 +2175,23 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    const prev = localStorage.getItem('previousPage') || 'index.html';
-    [homeLink, navHome, logoContainer].forEach(el => {
-        if (el) el.addEventListener('click', (e) => { e.preventDefault(); window.location.href = prev; });
+    // Get the previous page from localStorage
+    let previousPage = localStorage.getItem('previousPage');
+    
+    // If no previous page exists, go to homepage
+    if (!previousPage) {
+        previousPage = '/';
+    }
+    
+    const homeElements = [homeLink, navHome, logoContainer];
+    
+    homeElements.forEach(el => {
+        if (el) {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = previousPage;
+            });
+        }
     });
 }
 
@@ -2310,14 +2324,24 @@ function setupEventListeners() {
 function init() {
     console.log('Privacy Policy Page Initialized');
     
-    const currentPage = window.location.pathname.split('/').pop() || 'privacy_policy.html';
-    localStorage.setItem('previousPage', currentPage);
+    // Save the previous page from referrer
+    const referrer = document.referrer;
+    const currentPage = window.location.href;
+    
+    // Only save if coming from another page on the same site
+    if (referrer && referrer !== currentPage && referrer.includes(window.location.hostname)) {
+        localStorage.setItem('previousPage', referrer);
+    } else if (!localStorage.getItem('previousPage')) {
+        // If no previous page, set default
+        localStorage.setItem('previousPage', '/');
+    }
     
     const savedLang = localStorage.getItem('privacyLanguage') || 'en';
     handleLanguageChange(savedLang);
     
     initTheme();
     setupNavigation();
+    createPrivacyCards();
     setupEventListeners();
 }
 
