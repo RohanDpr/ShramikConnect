@@ -1,10 +1,7 @@
-{% extends 'base.html' %}
-
+<!DOCTYPE html>
 {% load static %}
-
-{% block title %} Employer Dashboard | ShramikConnect {% endblock %}
-
-{% block head %}
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employer Dashboard | ShramikConnect</title>
@@ -15,8 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-{% endblock %}
-{% block content %}
+</head>
 <body class="light-theme">
     <!-- ============================================
          NOTIFICATION CONTAINER
@@ -1246,10 +1242,25 @@
                 </div>
             </div>
             
-            <!-- Social Media Section - COMPLETELY HATAYA -->
-            <!-- Sirf copyright ke liye footer-bottom hai -->
+            <!-- Social Media Section -->
             <div class="footer-bottom">
-                <!-- Yahan kuch nahi, bas border ke liye -->
+                <div class="social-links">
+                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://youtube.com/@shramikconnect?si=4p-FRw0gFxA-kkvk" class="social-link" aria-label="YouTube" target="_blank">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://x.com/ShramikConnect" class="social-link" aria-label="X (Twitter)" target="_blank">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    <a href="/cdn-cgi/l/email-protection#d2a6b7b3bffca1baa0b3bfbbb9b1bdbcbcb7b1a692b5bfb3bbbefcb1bdbf" class="social-link" aria-label="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
@@ -1283,4 +1294,4 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="{% static 'js/employer/dashboard_employer.js' %}"></script>
 </body>
-{% endblock %}
+</html>

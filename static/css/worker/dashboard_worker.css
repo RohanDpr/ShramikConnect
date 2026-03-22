@@ -2856,13 +2856,19 @@ body.dark-theme .redirect-strip-btn.active {
     .nav-text {
         display: none;
     }
+
+    /* Hide ShramikConnect text on mobile — show only icon */
+    .logo h1 {
+        display: none;
+    }
     
     .main-content {
         padding: 20px;
     }
     
+    /* Stats: 2 cards per row, big */
     .statistics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .actions-grid {
@@ -2894,14 +2900,38 @@ body.dark-theme .redirect-strip-btn.active {
         height: 500px;
     }
     
+    /* Global nav strip: column layout, one per row */
     .global-nav-strip {
-        overflow-x: auto;
-        white-space: nowrap;
-        justify-content: flex-start;
+        flex-direction: column;
+        white-space: normal;
+        align-items: stretch;
+        overflow-x: visible;
+    }
+
+    .nav-strip-btn {
+        width: 100%;
+        text-align: left;
+        padding: 12px 20px;
     }
     
     .global-nav-strip.active ~ .main-content {
-        margin-top: 150px;
+        margin-top: 0;
+    }
+    
+    /* Quick redirect strip: column layout */
+    .quick-redirect-strip {
+        flex-direction: column;
+        margin: 0 15px 15px;
+        padding: 10px;
+        gap: 6px;
+        align-items: stretch;
+    }
+    
+    .redirect-strip-btn {
+        width: 100%;
+        text-align: left;
+        padding: 10px 16px;
+        font-size: 14px;
     }
     
     .confirmation-actions {
@@ -2911,27 +2941,12 @@ body.dark-theme .redirect-strip-btn.active {
     .confirmation-btn {
         width: 100%;
     }
-    
-    .quick-redirect-strip {
-        margin: 0 15px 15px;
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .redirect-strip-btn {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
 }
 
 @media (max-width: 576px) {
     .navbar {
         padding: 0 15px;
         height: 60px;
-    }
-    
-    .logo h1 {
-        font-size: 20px;
     }
     
     .hamburger-btn {
@@ -2962,28 +2977,21 @@ body.dark-theme .redirect-strip-btn.active {
     
     .stat-card {
         padding: 20px;
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    
-    .stat-icon {
-        margin: 0 auto;
     }
     
     .global-nav-strip.active ~ .main-content {
-        margin-top: 130px;
+        margin-top: 0;
     }
     
     .quick-redirect-strip {
         margin: 0 10px 10px;
         padding: 8px;
-        gap: 8px;
+        gap: 6px;
     }
     
     .redirect-strip-btn {
-        padding: 5px 10px;
-        font-size: 12px;
+        padding: 10px 14px;
+        font-size: 13px;
     }
 }
 
