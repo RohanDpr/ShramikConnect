@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Meet Our Developers | ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meet Our Developers | ShramikConnect</title>
@@ -19,7 +22,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-</head>
+{% endblock %}
+{% block content %}
 <body class="light">
     <!-- ============================================
          SETTINGS ICON (Right Side)
@@ -747,4 +751,4 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{% static 'js/know_more_about_developers.js' %}"></script>
 </body>
-</html>
+{% endblock %}
