@@ -1,0 +1,1710 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Edit Profile | Worker · ShramikConnect {% endblock %}
+
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Worker · ShramikConnect</title>
+    <link rel="stylesheet" href="worker_edit_profile_page.css">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="assets/ShramikConnect_Logo.jpg">
+
+    <style>
+      /* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #FFFFFF;
+    color: #1A1A1A;
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 40px 40px 60px;
+    min-height: 100vh;
+}
+
+body.dark-theme {
+    background: #0F172A;
+    color: #F1F5F9;
+}
+
+/* ============================================
+   NOTIFICATION WRAPPER
+   ============================================ */
+.notification-wrapper {
+    position: fixed;
+    top: 90px;
+    right: 30px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.notification {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-left: 4px solid #4362C9;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.success { border-left-color: #4362C9; }
+.notification.error { border-left-color: #DC2626; }
+.notification.info { border-left-color: #3B82F6; }
+body.dark-theme .notification { background: #1E293B; color: #F1F5F9; }
+
+.notification-content { flex: 1; }
+.notification-close {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 14px;
+}
+
+/* ============================================
+   SETTINGS DROPDOWN
+   ============================================ */
+.settings-icon {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(67, 98, 201, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    transition: all 0.3s;
+}
+
+.settings-icon:hover {
+    transform: scale(1.1) rotate(90deg);
+    background: rgba(67, 98, 201, 0.1);
+    border-color: #4362C9;
+}
+
+.settings-icon svg {
+    color: #4362C9;
+    width: 24px;
+    height: 24px;
+}
+
+.settings-dropdown {
+    position: fixed;
+    top: 90px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(67, 98, 201, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.3s;
+    min-width: 280px;
+}
+
+.settings-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+body.dark-theme .settings-dropdown {
+    background: rgba(26, 26, 26, 0.98);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.settings-section { margin-bottom: 24px; }
+.settings-heading {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #4362C9 0%, #01A060 40%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+}
+
+.language-switcher, .theme-switcher { display: flex; gap: 8px; flex-wrap: wrap; }
+.language-option, .theme-option {
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.language-option:hover, .theme-option:hover {
+    border-color: #4362C9;
+    color: #4362C9;
+    transform: translateY(-1px);
+}
+
+.language-option.active, .theme-option.active {
+    background: #4362C9;
+    border-color: #4362C9;
+    color: #FFFFFF;
+}
+
+/* ============================================
+   POPUP / CONFIRMATION MODAL
+   ============================================ */
+.popup-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    padding: 20px;
+}
+
+.popup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-container {
+    background: #FFFFFF;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    animation: popupSlideIn 0.4s;
+    border: 1px solid #E5E5E5;
+}
+
+@keyframes popupSlideIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+body.dark-theme .popup-container {
+    background: #1A1A1A;
+    border-color: #333;
+}
+
+.popup-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.popup-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4362C9 0%, #2E4BBF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.popup-close {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: #F0F4FF;
+    border: 1px solid rgba(67, 98, 201, 0.2);
+    color: #4362C9;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.popup-close:hover {
+    background: #4362C9;
+    color: white;
+    transform: rotate(90deg);
+}
+
+.popup-content { padding: 32px; }
+.confirmation-icon { font-size: 60px; color: #DC2626; text-align: center; margin-bottom: 20px; }
+.confirmation-content h3 { font-size: 22px; color: #1A1A1A; margin-bottom: 15px; text-align: center; }
+body.dark-theme .confirmation-content h3 { color: #F1F5F9; }
+.confirmation-actions { display: flex; gap: 15px; justify-content: center; }
+.confirmation-btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    min-width: 140px;
+}
+.confirm-btn { background: #DC2626; color: white; }
+.confirm-btn:hover { background: #B91C1C; transform: translateY(-2px); }
+.cancel-btn { background: #F0F4FF; color: #4362C9; border: 1px solid rgba(67, 98, 201, 0.2); }
+.cancel-btn:hover { background: #E5EAFF; transform: translateY(-2px); }
+
+/* ============================================
+   PAGE HEADER - CENTERED
+   ============================================ */
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px 0 10px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #4362C9 30%, #2A4AB5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: #666666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+body.dark-theme .page-subtitle { color: #AAAAAA; }
+
+/* ============================================
+   FORM CARD - FULL WIDTH ON DESKTOP
+   ============================================ */
+.form-card {
+    background-color: #FFFFFF;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 8px 30px rgba(67, 98, 201, 0.12);
+    border: 2px solid rgba(67, 98, 201, 0.15);
+    transition: all 0.3s;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+}
+
+body.dark-theme .form-card {
+    background: #1E293B;
+    border-color: rgba(107, 140, 255, 0.2);
+}
+
+/* ============================================
+   SECTION SUBHEADING
+   ============================================ */
+.section-subheading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 30px 0 20px 0;
+    color: #4362C9;
+    border-bottom: 2px solid rgba(67, 98, 201, 0.2);
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-subheading i { font-size: 1.4rem; }
+
+/* ============================================
+   PROFILE PHOTO SECTION
+   ============================================ */
+.profile-photo-section {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    background: #F8FAFF;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(67,98,201,0.2);
+}
+
+body.dark-theme .profile-photo-section {
+    background: #1E293B;
+    border-color: #334155;
+}
+
+.profile-photo-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4362C9 0%, #6B8CFF 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: white;
+    overflow: hidden;
+    border: 4px solid white;
+    box-shadow: 0 6px 20px rgba(67,98,201,0.3);
+}
+
+.profile-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+.photo-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: white;
+    border: 1px solid #4362C9;
+    border-radius: 40px;
+    color: #4362C9;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.photo-btn:hover {
+    background: #4362C9;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(67,98,201,0.2);
+}
+
+.photo-btn.remove-btn { border-color: #DC2626; color: #DC2626; background: #FEF2F2; }
+.photo-btn.remove-btn:hover { background: #DC2626; color: white; }
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1F2937;
+}
+body.dark-theme .form-group label { color: #E2E8F0; }
+.form-group label i { color: #4362C9; width: 18px; }
+
+input, select, textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #E5E5E5;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    background: #F8FAFF;
+    transition: 0.3s;
+}
+
+body.dark-theme input, body.dark-theme select {
+    background: #2D3748;
+    border-color: #444;
+    color: #F1F5F9;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #4362C9;
+    box-shadow: 0 0 0 3px rgba(67,98,201,0.2);
+    background: white;
+}
+
+/* Radio Group */
+.radio-group { display: flex; gap: 25px; flex-wrap: wrap; }
+.radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.radio-option input[type="radio"] { display: none; }
+.radio-custom {
+    width: 20px; height: 20px;
+    border: 2px solid #D1D5E0;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+.radio-option input[type="radio"]:checked + .radio-custom {
+    border-color: #4362C9;
+    background: #4362C9;
+    box-shadow: inset 0 0 0 4px white;
+}
+.radio-label { color: #4B5563; }
+
+/* Age Display */
+.age-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 10px 16px;
+    background: rgba(67,98,201,0.05);
+    border-radius: 10px;
+    color: #4362C9;
+    font-weight: 500;
+}
+.age-display.error { color: #DC2626; background: rgba(220,38,38,0.05); }
+
+/* ============================================
+   VERIFICATION SECTIONS
+   ============================================ */
+.verification-section {
+    margin-bottom: 28px;
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(67, 98, 201, 0.03) 0%, rgba(107, 140, 255, 0.03) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(67, 98, 201, 0.1);
+}
+
+.verification-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1F2937;
+}
+.verification-section h4 i { color: #4362C9; }
+
+.input-with-button { display: flex; gap: 12px; margin-bottom: 12px; }
+.get-otp-btn, .verify-btn {
+    padding: 0 24px;
+    background: #4362C9;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+.get-otp-btn:hover, .verify-btn:hover { background: #2A4AB5; transform: translateY(-1px); }
+.get-otp-btn:disabled, .verify-btn:disabled { background: #6B7280; cursor: not-allowed; }
+
+.verification-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #10B981;
+}
+
+.otp-section { margin-top: 12px; display: none; }
+.otp-section.active { display: block; animation: fadeIn 0.5s ease; }
+.otp-input-container { display: flex; gap: 10px; margin-bottom: 10px; }
+.otp-input-container input {
+    flex: 1;
+    padding: 14px 16px;
+    border: 1.5px solid #E5E5E5;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    text-align: center;
+}
+.otp-resend { text-align: center; }
+.resend-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    background: #F3F4F6;
+    border: 1px solid #D1D5E0;
+    border-radius: 8px;
+    color: #6B7280;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.email-display, .mobile-display {
+    font-size: 14px;
+    color: #4362C9;
+    font-weight: 500;
+    margin-bottom: 10px;
+    padding: 8px 16px;
+    background: rgba(67,98,201,0.05);
+    border-radius: 8px;
+    display: none;
+}
+.email-display.show, .mobile-display.show { display: block; }
+
+/* ============================================
+   PASSWORD STYLES
+   ============================================ */
+.password-input { position: relative; }
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+}
+.password-strength {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+}
+.strength-bar {
+    flex: 1;
+    height: 5px;
+    background: #E5E7EB;
+    border-radius: 3px;
+    transition: 0.3s;
+}
+.password-strength.weak .strength-bar:nth-child(-n+1) { background: #EF4444; }
+.password-strength.medium .strength-bar:nth-child(-n+2) { background: #F59E0B; }
+.password-strength.strong .strength-bar:nth-child(-n+3) { background: #10B981; }
+.password-strength.very-strong .strength-bar:nth-child(-n+4) { background: #059669; }
+.strength-text { font-size: 13px; color: #6B7280; margin-left: 8px; font-weight: 500; }
+.password-match {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    color: #10B981;
+    opacity: 0;
+}
+.password-match.visible { opacity: 1; }
+
+/* ============================================
+   MULTI-SELECT & HINTS
+   ============================================ */
+select[multiple] { height: auto; min-height: 130px; padding: 8px; }
+select[multiple] option { padding: 10px; margin: 2px 0; border-radius: 6px; }
+select[multiple] option:checked { background: #4362C9 linear-gradient(0deg, #4362C9 0%, #4362C9 100%); color: white; }
+.input-hint { font-size: 13px; color: #666; margin-top: 5px; font-style: italic; }
+
+/* ============================================
+   DOCUMENT PREVIEW
+   ============================================ */
+.document-preview {
+    margin-top: 16px;
+    padding: 20px;
+    background: #F9FAFB;
+    border-radius: 12px;
+    border: 2px dashed #D1D5E0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+body.dark-theme .document-preview { background: #1F2937; border-color: #334155; }
+.doc-info { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+.doc-icon { font-size: 28px; color: #4362C9; }
+.verification-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #F0FDF4;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #10B981;
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 50px;
+    align-items: center;
+    justify-content: space-between;
+}
+.btn-group { display: flex; gap: 15px; flex-wrap: wrap; }
+.btn {
+    padding: 16px 32px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+.btn-primary { background: linear-gradient(135deg, #4362C9, #2A4AB5); color: white; box-shadow: 0 8px 16px rgba(67,98,201,0.2); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(67,98,201,0.3); }
+.btn-secondary { background: #F3F4F6; color: #4B5563; border: 1px solid #D1D5E0; }
+.btn-secondary:hover { background: #E5E7EB; transform: translateY(-2px); }
+.btn-danger { background: #FEE2E2; color: #DC2626; border: 1px solid #DC2626; }
+.btn-danger:hover { background: #DC2626; color: white; transform: translateY(-2px); }
+
+/* ============================================
+   LINK BOX - OUTSIDE CARD (same style)
+   ============================================ */
+.link-box {
+    background: #F8FAFF;
+    border-radius: 20px;
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+    margin: 20px auto 0;
+    cursor: pointer;
+    max-width: 1200px;
+    width: 100%;
+}
+.link-box:hover {
+    transform: translateY(-3px);
+    border-color: #4362C9;
+    box-shadow: 0 12px 30px rgba(67,98,201,0.15);
+    background: #FFFFFF;
+}
+body.dark-theme .link-box { background: #2A2A2A; }
+body.dark-theme .link-box:hover { background: #333333; border-color: #6B8CFF; }
+.link-icon {
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg, #4362C9 0%, #6B8CFF 100%);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.link-content { flex: 1; }
+.link-title { font-size: 18px; font-weight: 600; color: #1A1A1A; margin-bottom: 4px; }
+body.dark-theme .link-title { color: #FFFFFF; }
+.link-action { font-size: 16px; color: #4362C9; text-decoration: none; font-weight: 500; }
+.link-action:hover { text-decoration: underline; }
+
+/* ============================================
+   DARK THEME ADJUSTMENTS
+   ============================================ */
+body.dark-theme .section-subtitle,
+body.dark-theme .input-hint,
+body.dark-theme .strength-text { color: #AAAAAA; }
+body.dark-theme .radio-label { color: #CBD5E0; }
+body.dark-theme .verification-section { background: rgba(107,140,255,0.05); }
+body.dark-theme .verification-section h4 { color: #E2E8F0; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 992px) {
+    body { padding: 30px 20px; }
+    .form-card { padding: 30px; }
+}
+
+@media (max-width: 768px) {
+    .form-row { grid-template-columns: 1fr; gap: 15px; }
+    .profile-photo-section { flex-direction: column; align-items: center; text-align: center; }
+    .action-buttons { flex-direction: column; align-items: stretch; }
+    .btn-group { flex-direction: column; width: 100%; }
+    .btn { width: 100%; justify-content: center; }
+    .input-with-button { flex-direction: column; }
+    .get-otp-btn, .verify-btn { padding: 14px; justify-content: center; }
+    .otp-input-container { flex-direction: column; }
+    .page-title { font-size: 2rem; }
+    .section-subheading { font-size: 1.3rem; }
+    .link-box { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 576px) {
+    .form-card { padding: 20px; }
+    .profile-photo-preview { width: 100px; height: 100px; }
+    .photo-actions { width: 100%; }
+    .photo-btn { flex: 1; justify-content: center; }
+}  
+    </style>
+{% endblock %}
+
+{% block content %}
+<body class="light-theme">
+    <!-- Notification Container -->
+    <div class="notification-wrapper" id="notificationWrapper"></div>
+
+    <!-- Settings Dropdown -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light"><span data-i18n="light">Light</span></button>
+                <button class="theme-option" data-theme="dark"><span data-i18n="dark">Dark</span></button>
+                <button class="theme-option" data-theme="system"><span data-i18n="system">System</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Icon -->
+    <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- Delete Account Confirmation Popup -->
+    <div class="popup-overlay" id="deletePopup">
+        <div class="popup-container confirmation-modal">
+            <div class="popup-header">
+                <h2 data-i18n="delete_account_title">Delete Account</h2>
+                <button class="popup-close" id="closePopupBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="popup-content">
+                <div class="confirmation-content">
+                    <div class="confirmation-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 data-i18n="delete_confirmation">Are you sure you want to permanently delete your worker account?</h3>
+                    <div class="confirmation-actions">
+                        <button class="confirmation-btn confirm-btn" id="confirmDeleteBtn" data-i18n="yes_delete">Yes, Delete</button>
+                        <button class="confirmation-btn cancel-btn" id="cancelDeleteBtn" data-i18n="cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Header - Centered -->
+    <div class="page-header">
+        <h1 class="page-title" data-i18n="edit_profile">Edit Profile</h1>
+        <p class="page-subtitle" data-i18n="edit_profile_sub">Update your personal and professional details</p>
+    </div>
+
+    <!-- Main Form Card - Full Width on Desktop -->
+    <div class="form-card">
+        <!-- ===== PROFILE PHOTO ===== -->
+        <div class="profile-photo-section">
+            <div class="profile-photo-preview" id="profilePreview">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" id="profileImage">
+            </div>
+            <div class="photo-actions">
+                <button class="photo-btn" id="changePhotoBtn"><i class="fas fa-camera"></i> <span data-i18n="change_photo">Change Photo</span></button>
+                <button class="photo-btn remove-btn" id="removePhotoBtn"><i class="fas fa-trash"></i> <span data-i18n="remove_photo">Remove Photo</span></button>
+            </div>
+        </div>
+
+        <!-- ===== PERSONAL INFORMATION SECTION ===== -->
+        <h3 class="section-subheading"><i class="fas fa-user-circle"></i> <span data-i18n="personal_info">Personal Information</span></h3>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstName" data-i18n="first_name"><i class="fas fa-user"></i> First Name *</label>
+                <input type="text" id="firstName" value="Ramesh" data-i18n-placeholder="enter_first_name" placeholder="Enter first name">
+            </div>
+            <div class="form-group">
+                <label for="lastName" data-i18n="last_name"><i class="fas fa-user"></i> Last Name *</label>
+                <input type="text" id="lastName" value="Kumar" data-i18n-placeholder="enter_last_name" placeholder="Enter last name">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="dob" data-i18n="date_of_birth"><i class="fas fa-calendar"></i> Date of Birth *</label>
+                <input type="date" id="dob" value="1990-05-15" max="2007-12-31">
+                <div class="age-display" id="ageDisplay">
+                    <i class="fas fa-birthday-cake"></i>
+                    <span id="ageText">34 years old</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label data-i18n="gender"><i class="fas fa-venus-mars"></i> Gender *</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="male" checked>
+                        <span class="radio-custom"></span>
+                        <span class="radio-label" data-i18n="male">Male</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="female">
+                        <span class="radio-custom"></span>
+                        <span class="radio-label" data-i18n="female">Female</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="other">
+                        <span class="radio-custom"></span>
+                        <span class="radio-label" data-i18n="other">Other</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SECURITY & VERIFICATION SECTION ===== -->
+        <h3 class="section-subheading" style="margin-top: 30px;"><i class="fas fa-shield-alt"></i> <span data-i18n="security_verification">Security & Verification</span></h3>
+
+        <!-- Email Verification -->
+        <div class="verification-section">
+            <h4><i class="fas fa-envelope"></i> <span data-i18n="email_verification">Email Verification</span></h4>
+            <div class="input-with-button">
+                <input type="email" id="emailInput" value="ramesh.k@example.com" data-i18n-placeholder="enter_email" placeholder="Enter your email">
+                <button class="get-otp-btn" id="getEmailOtpBtn" data-i18n="get_otp"><i class="fas fa-paper-plane"></i> <span>Get OTP</span></button>
+            </div>
+            <div class="verification-details" id="emailVerificationDetails">
+                <div class="email-display" id="emailDisplay"></div>
+                <div class="otp-section" id="emailOtpSection">
+                    <div class="otp-input-container">
+                        <input type="text" id="emailOtpInput" maxlength="6" placeholder="XXXXXX" data-i18n-placeholder="otp_placeholder">
+                        <button class="verify-btn" id="verifyEmailOtpBtn" disabled data-i18n="verify_otp"><i class="fas fa-check-circle"></i> <span>Verify</span></button>
+                    </div>
+                    <div class="otp-resend">
+                        <button class="resend-btn" id="resendEmailOtpBtn" disabled><i class="fas fa-redo"></i> <span id="emailResendText" data-i18n="resend_otp_60s">Resend OTP (60s)</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="verification-status verified" id="emailStatus"><i class="fas fa-check-circle"></i> <span data-i18n="email_verified">Email Verified</span></div>
+        </div>
+
+        <!-- Mobile Verification -->
+        <div class="verification-section">
+            <h4><i class="fas fa-mobile-alt"></i> <span data-i18n="mobile_verification">Mobile Verification</span></h4>
+            <div class="input-with-button">
+                <input type="tel" id="mobileInput" value="9876543210" data-i18n-placeholder="enter_mobile" placeholder="Enter your mobile number">
+                <button class="get-otp-btn" id="getMobileOtpBtn" data-i18n="get_otp"><i class="fas fa-paper-plane"></i> <span>Get OTP</span></button>
+            </div>
+            <div class="verification-details" id="mobileVerificationDetails">
+                <div class="mobile-display" id="mobileDisplay"></div>
+                <div class="otp-section" id="mobileOtpSection">
+                    <div class="otp-input-container">
+                        <input type="text" id="mobileOtpInput" maxlength="6" placeholder="XXXXXX" data-i18n-placeholder="otp_placeholder">
+                        <button class="verify-btn" id="verifyMobileOtpBtn" disabled data-i18n="verify_otp"><i class="fas fa-check-circle"></i> <span>Verify</span></button>
+                    </div>
+                    <div class="otp-resend">
+                        <button class="resend-btn" id="resendMobileOtpBtn" disabled><i class="fas fa-redo"></i> <span id="mobileResendText" data-i18n="resend_otp_60s">Resend OTP (60s)</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="verification-status verified" id="mobileStatus"><i class="fas fa-check-circle"></i> <span data-i18n="mobile_verified">Mobile Verified</span></div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="verification-section">
+            <h4><i class="fas fa-lock"></i> <span data-i18n="change_password">Change Password</span></h4>
+            <div class="form-group">
+                <label for="oldPassword" data-i18n="old_password"><i class="fas fa-key"></i> Old Password</label>
+                <div class="password-input">
+                    <input type="password" id="oldPassword" placeholder="········" data-i18n-placeholder="old_password_placeholder">
+                    <button type="button" class="toggle-password" data-target="oldPassword"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="newPassword" data-i18n="new_password"><i class="fas fa-lock"></i> New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="newPassword" data-i18n-placeholder="new_password_placeholder" placeholder="Minimum 8 characters">
+                        <button type="button" class="toggle-password" data-target="newPassword"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div>
+                        <span class="strength-text" id="strengthText" data-i18n="password_strength">Password Strength</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword" data-i18n="confirm_password"><i class="fas fa-check-circle"></i> Confirm Password</label>
+                    <div class="password-input">
+                        <input type="password" id="confirmPassword" data-i18n-placeholder="confirm_password_placeholder" placeholder="Re-enter password">
+                        <button type="button" class="toggle-password" data-target="confirmPassword"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="password-match" id="passwordMatch"><i class="fas fa-check-circle"></i> <span data-i18n="passwords_match">Passwords match</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== IDENTITY & DOCUMENTATION SECTION ===== -->
+        <h3 class="section-subheading"><i class="fas fa-id-card"></i> <span data-i18n="identity_documents">Identity & Documentation</span></h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="profession" data-i18n="profession"><i class="fas fa-briefcase"></i> Profession *</label>
+                <select id="profession" multiple size="4" class="multi-select">
+                    <option value="electrician" selected>Electrician</option>
+                    <option value="plumber">Plumber</option>
+                    <option value="carpenter">Carpenter</option>
+                    <option value="painter">Painter</option>
+                    <option value="mason">Mason</option>
+                    <option value="welder">Welder</option>
+                    <option value="driver">Driver</option>
+                    <option value="cleaner">Cleaner</option>
+                    <option value="gardener">Gardener</option>
+                    <option value="security">Security Guard</option>
+                    <option value="cook">Cook</option>
+                    <option value="other">Other</option>
+                </select>
+                <div class="input-hint" data-i18n="profession_hint">Hold Ctrl/Cmd to select multiple</div>
+            </div>
+            <div class="form-group">
+                <label for="workArea" data-i18n="preferred_work_area"><i class="fas fa-map-marker-alt"></i> Preferred Work Area *</label>
+                <input type="text" id="workArea" value="Mumbai, Andheri West, Bandra" data-i18n-placeholder="work_area_placeholder" placeholder="e.g. Mumbai, Andheri, Bandra">
+            </div>
+        </div>
+
+        <!-- Full Address -->
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" id="street" value="MG Road, Andheri East" data-i18n-placeholder="street" placeholder="Street">
+            </div>
+            <div class="form-group">
+                <input type="text" id="city" value="Mumbai" data-i18n-placeholder="city" placeholder="City">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" id="state" value="Maharashtra" data-i18n-placeholder="state" placeholder="State">
+            </div>
+            <div class="form-group">
+                <input type="text" id="pincode" value="400093" data-i18n-placeholder="pincode" placeholder="Pincode">
+            </div>
+        </div>
+
+        <!-- Document Upload -->
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label for="docType" data-i18n="document_type"><i class="fas fa-id-card"></i> Document Type</label>
+                <select id="docType">
+                    <option value="aadhar" selected>Aadhar Card</option>
+                    <option value="pan">PAN Card</option>
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>&nbsp;</label>
+                <button class="photo-btn" id="uploadDocBtn" style="width: 100%;"><i class="fas fa-upload"></i> <span data-i18n="upload_new">Upload New</span></button>
+            </div>
+        </div>
+        <div class="document-preview" id="documentPreview">
+            <div class="doc-info">
+                <i class="fas fa-file-pdf doc-icon"></i>
+                <span id="docFileName">aadhar_ramesh_kumar.pdf</span>
+            </div>
+            <span class="verification-badge verified"><i class="fas fa-check-circle"></i> <span data-i18n="uploaded">Uploaded</span></span>
+        </div>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <div class="action-buttons">
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="clearBtn"><i class="fas fa-times-circle"></i> <span data-i18n="clear">Clear</span></button>
+                <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i> <span data-i18n="save_changes">Save Changes</span></button>
+            </div>
+            <button class="btn btn-danger" id="deleteAccountBtn"><i class="fas fa-trash-alt"></i> <span data-i18n="delete_account">Delete Account</span></button>
+        </div>
+    </div>
+
+    <!-- ===== BACK TO DASHBOARD LINK (OUTSIDE THE CARD) ===== -->
+    <div class="link-box" id="backToDashboard">
+        <div class="link-icon">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="link-content">
+            <h3 class="link-title" data-i18n="back_to_dashboard">Back to Dashboard</h3>
+            <a href="/dashboard_worker/" class="link-action" data-i18n="go_to_dashboard">Go to Dashboard →</a>
+        </div>
+    </div>
+
+    <script src="worker_edit_profile_page.js"></script>
+    <script>
+        /**
+ * Worker Edit Profile Page - Complete
+ * Fixed: Language switching, full width, preview removed, back button outside
+ */
+
+// ============================================
+// DOM ELEMENTS
+// ============================================
+// Settings
+const settingsIcon = document.getElementById('settingsIcon');
+const settingsDropdown = document.getElementById('settingsDropdown');
+const languageOptions = document.querySelectorAll('.language-option');
+const themeOptions = document.querySelectorAll('.theme-option');
+
+// Notification
+const notifWrapper = document.getElementById('notificationWrapper');
+
+// Delete Popup
+const deletePopup = document.getElementById('deletePopup');
+const closePopupBtn = document.getElementById('closePopupBtn');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+
+// Profile Photo
+const profilePreview = document.getElementById('profilePreview');
+const changePhotoBtn = document.getElementById('changePhotoBtn');
+const removePhotoBtn = document.getElementById('removePhotoBtn');
+
+// Personal Info
+const firstName = document.getElementById('firstName');
+const lastName = document.getElementById('lastName');
+const dob = document.getElementById('dob');
+const ageText = document.getElementById('ageText');
+const ageDisplay = document.getElementById('ageDisplay');
+const genderRadios = document.querySelectorAll('input[name="gender"]');
+
+// Email Verification
+const emailInput = document.getElementById('emailInput');
+const getEmailOtpBtn = document.getElementById('getEmailOtpBtn');
+const emailDisplay = document.getElementById('emailDisplay');
+const emailOtpSection = document.getElementById('emailOtpSection');
+const emailOtpInput = document.getElementById('emailOtpInput');
+const verifyEmailOtpBtn = document.getElementById('verifyEmailOtpBtn');
+const emailStatus = document.getElementById('emailStatus');
+const resendEmailOtpBtn = document.getElementById('resendEmailOtpBtn');
+const emailResendText = document.getElementById('emailResendText');
+
+// Mobile Verification
+const mobileInput = document.getElementById('mobileInput');
+const getMobileOtpBtn = document.getElementById('getMobileOtpBtn');
+const mobileDisplay = document.getElementById('mobileDisplay');
+const mobileOtpSection = document.getElementById('mobileOtpSection');
+const mobileOtpInput = document.getElementById('mobileOtpInput');
+const verifyMobileOtpBtn = document.getElementById('verifyMobileOtpBtn');
+const mobileStatus = document.getElementById('mobileStatus');
+const resendMobileOtpBtn = document.getElementById('resendMobileOtpBtn');
+const mobileResendText = document.getElementById('mobileResendText');
+
+// Password
+const oldPassword = document.getElementById('oldPassword');
+const newPassword = document.getElementById('newPassword');
+const confirmPassword = document.getElementById('confirmPassword');
+const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+const passwordStrength = document.getElementById('passwordStrength');
+const strengthText = document.getElementById('strengthText');
+const passwordMatch = document.getElementById('passwordMatch');
+
+// Professional
+const profession = document.getElementById('profession');
+const workArea = document.getElementById('workArea');
+const street = document.getElementById('street');
+const city = document.getElementById('city');
+const state = document.getElementById('state');
+const pincode = document.getElementById('pincode');
+const docType = document.getElementById('docType');
+const uploadDocBtn = document.getElementById('uploadDocBtn');
+const docFileName = document.getElementById('docFileName');
+
+// Action Buttons
+const clearBtn = document.getElementById('clearBtn');
+const saveBtn = document.getElementById('saveBtn');
+const backToDashboard = document.getElementById('backToDashboard');
+
+// ============================================
+// STATE
+// ============================================
+let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+let currentTheme = localStorage.getItem('preferredTheme') || 'light';
+
+let emailVerified = true;
+let mobileVerified = true;
+let emailResendCountdown = null, mobileResendCountdown = null;
+let emailResendTimeLeft = 60, mobileResendTimeLeft = 60;
+
+const DUMMY_EMAIL_OTP = '123456';
+const DUMMY_MOBILE_OTP = '654321';
+
+const validationPatterns = {
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    phone: /^[6-9]\d{9}$/,
+    otp: /^\d{6}$/,
+    pincode: /^\d{6}$/
+};
+
+// ============================================
+// COMPLETE TRANSLATIONS (EN, HI, MR)
+// ============================================
+const translations = {
+    en: {
+        'language': 'Language', 'theme': 'Theme', 'light': 'Light', 'dark': 'Dark', 'system': 'System',
+        'edit_profile': 'Edit Profile', 'edit_profile_sub': 'Update your personal and professional details',
+        'personal_info': 'Personal Information', 'security_verification': 'Security & Verification',
+        'identity_documents': 'Identity & Documentation',
+        'first_name': 'First Name *', 'last_name': 'Last Name *', 'enter_first_name': 'Enter first name', 'enter_last_name': 'Enter last name',
+        'date_of_birth': 'Date of Birth *', 'gender': 'Gender *', 'male': 'Male', 'female': 'Female', 'other': 'Other',
+        'email_verification': 'Email Verification', 'enter_email': 'Enter your email', 'get_otp': 'Get OTP',
+        'verify_otp': 'Verify', 'otp_placeholder': 'XXXXXX', 'resend_otp_60s': 'Resend OTP (60s)',
+        'email_verified': 'Email Verified', 'mobile_verification': 'Mobile Verification',
+        'enter_mobile': 'Enter mobile number', 'mobile_verified': 'Mobile Verified',
+        'change_password': 'Change Password', 'old_password': 'Old Password', 'old_password_placeholder': '········',
+        'new_password': 'New Password', 'new_password_placeholder': 'Minimum 8 characters',
+        'confirm_password': 'Confirm Password', 'confirm_password_placeholder': 'Re-enter password',
+        'password_strength': 'Password Strength', 'passwords_match': 'Passwords match',
+        'profession': 'Profession *', 'profession_hint': 'Hold Ctrl/Cmd to select multiple',
+        'preferred_work_area': 'Preferred Work Area *', 'work_area_placeholder': 'e.g. Mumbai, Andheri, Bandra',
+        'street': 'Street', 'city': 'City', 'state': 'State', 'pincode': 'Pincode',
+        'document_type': 'Document Type', 'upload_new': 'Upload New', 'uploaded': 'Uploaded',
+        'clear': 'Clear', 'save_changes': 'Save Changes', 'delete_account': 'Delete Account',
+        'delete_account_title': 'Delete Account', 'delete_confirmation': 'Are you sure you want to permanently delete your worker account?',
+        'yes_delete': 'Yes, Delete', 'cancel': 'Cancel',
+        'back_to_dashboard': 'Back to Dashboard', 'go_to_dashboard': 'Go to Dashboard →',
+        'profile_updated': 'Profile updated successfully!',
+        'fields_cleared': 'All fields have been cleared',
+        'age_restriction': 'You must be 18 years or older',
+        'photo_removed': 'Profile photo removed',
+        'photo_changed': 'Photo change clicked (demo)',
+        'document_uploaded': 'Document upload clicked (demo)',
+        'otp_sent': 'OTP sent successfully!',
+        'otp_verified': 'OTP verified successfully!',
+        'invalid_otp': 'Invalid OTP. Please try again.'
+    },
+    hi: {
+        'language': 'भाषा', 'theme': 'थीम', 'light': 'लाइट', 'dark': 'डार्क', 'system': 'सिस्टम',
+        'edit_profile': 'प्रोफ़ाइल संपादित करें', 'edit_profile_sub': 'अपने व्यक्तिगत और व्यावसायिक विवरण अपडेट करें',
+        'personal_info': 'व्यक्तिगत जानकारी', 'security_verification': 'सुरक्षा और सत्यापन',
+        'identity_documents': 'पहचान और दस्तावेज़',
+        'first_name': 'पहला नाम *', 'last_name': 'अंतिम नाम *', 'enter_first_name': 'पहला नाम दर्ज करें', 'enter_last_name': 'अंतिम नाम दर्ज करें',
+        'date_of_birth': 'जन्म तिथि *', 'gender': 'लिंग *', 'male': 'पुरुष', 'female': 'महिला', 'other': 'अन्य',
+        'email_verification': 'ईमेल सत्यापन', 'enter_email': 'अपना ईमेल दर्ज करें', 'get_otp': 'ओटीपी प्राप्त करें',
+        'verify_otp': 'सत्यापित करें', 'otp_placeholder': 'XXXXXX', 'resend_otp_60s': 'ओटीपी पुनः भेजें (60s)',
+        'email_verified': 'ईमेल सत्यापित', 'mobile_verification': 'मोबाइल सत्यापन',
+        'enter_mobile': 'मोबाइल नंबर दर्ज करें', 'mobile_verified': 'मोबाइल सत्यापित',
+        'change_password': 'पासवर्ड बदलें', 'old_password': 'पुराना पासवर्ड', 'old_password_placeholder': '········',
+        'new_password': 'नया पासवर्ड', 'new_password_placeholder': 'न्यूनतम 8 अक्षर',
+        'confirm_password': 'पासवर्ड की पुष्टि करें', 'confirm_password_placeholder': 'पासवर्ड फिर से दर्ज करें',
+        'password_strength': 'पासवर्ड की मजबूती', 'passwords_match': 'पासवर्ड मेल खाते हैं',
+        'profession': 'व्यवसाय *', 'profession_hint': 'एकाधिक चुनने के लिए Ctrl/Cmd दबाए रखें',
+        'preferred_work_area': 'पसंदीदा कार्य क्षेत्र *', 'work_area_placeholder': 'जैसे मुंबई, अंधेरी, बांद्रा',
+        'street': 'गली', 'city': 'शहर', 'state': 'राज्य', 'pincode': 'पिन कोड',
+        'document_type': 'दस्तावेज़ प्रकार', 'upload_new': 'नया अपलोड करें', 'uploaded': 'अपलोड किया गया',
+        'clear': 'साफ़ करें', 'save_changes': 'बदलाव सहेजें', 'delete_account': 'खाता हटाएं',
+        'delete_account_title': 'खाता हटाएं', 'delete_confirmation': 'क्या आप वाकई अपना खाता स्थायी रूप से हटाना चाहते हैं?',
+        'yes_delete': 'हाँ, हटाएं', 'cancel': 'रद्द करें',
+        'back_to_dashboard': 'डैशबोर्ड पर वापस जाएं', 'go_to_dashboard': 'डैशबोर्ड पर जाएं →',
+        'profile_updated': 'प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई!',
+        'fields_cleared': 'सभी फ़ील्ड साफ़ कर दिए गए हैं',
+        'age_restriction': 'आपकी आयु 18 वर्ष या उससे अधिक होनी चाहिए',
+        'photo_removed': 'प्रोफ़ाइल फोटो हटा दी गई',
+        'photo_changed': 'फोटो बदलें (डेमो)',
+        'document_uploaded': 'दस्तावेज़ अपलोड (डेमो)',
+        'otp_sent': 'ओटीपी सफलतापूर्वक भेजा गया!',
+        'otp_verified': 'ओटीपी सफलतापूर्वक सत्यापित हुआ!',
+        'invalid_otp': 'अमान्य ओटीपी। कृपया पुनः प्रयास करें।'
+    },
+    mr: {
+        'language': 'भाषा', 'theme': 'थीम', 'light': 'लाइट', 'dark': 'डार्क', 'system': 'सिस्टम',
+        'edit_profile': 'प्रोफाइल संपादित करा', 'edit_profile_sub': 'तुमचे वैयक्तिक आणि व्यावसायिक तपशील अद्यतनित करा',
+        'personal_info': 'वैयक्तिक माहिती', 'security_verification': 'सुरक्षा आणि सत्यापन',
+        'identity_documents': 'ओळख आणि दस्तऐवज',
+        'first_name': 'पहिले नाव *', 'last_name': 'आडनाव *', 'enter_first_name': 'पहिले नाव प्रविष्ट करा', 'enter_last_name': 'आडनाव प्रविष्ट करा',
+        'date_of_birth': 'जन्मतारीख *', 'gender': 'लिंग *', 'male': 'पुरुष', 'female': 'स्त्री', 'other': 'इतर',
+        'email_verification': 'ईमेल सत्यापन', 'enter_email': 'तुमचा ईमेल प्रविष्ट करा', 'get_otp': 'ओटीपी मिळवा',
+        'verify_otp': 'सत्यापित करा', 'otp_placeholder': 'XXXXXX', 'resend_otp_60s': 'ओटीपी पुन्हा पाठवा (60s)',
+        'email_verified': 'ईमेल सत्यापित', 'mobile_verification': 'मोबाइल सत्यापन',
+        'enter_mobile': 'मोबाइल नंबर प्रविष्ट करा', 'mobile_verified': 'मोबाइल सत्यापित',
+        'change_password': 'पासवर्ड बदला', 'old_password': 'जुना पासवर्ड', 'old_password_placeholder': '········',
+        'new_password': 'नवीन पासवर्ड', 'new_password_placeholder': 'किमान ८ वर्ण',
+        'confirm_password': 'पासवर्डची पुष्टी करा', 'confirm_password_placeholder': 'पासवर्ड पुन्हा प्रविष्ट करा',
+        'password_strength': 'पासवर्ड सामर्थ्य', 'passwords_match': 'पासवर्ड जुळतात',
+        'profession': 'व्यवसाय *', 'profession_hint': 'एकाधिक निवडण्यासाठी Ctrl/Cmd दाबा',
+        'preferred_work_area': 'प्राधान्य कार्यक्षेत्र *', 'work_area_placeholder': 'उदा. मुंबई, अंधेरी, बांद्रा',
+        'street': 'रस्ता', 'city': 'शहर', 'state': 'राज्य', 'pincode': 'पिन कोड',
+        'document_type': 'दस्तऐवज प्रकार', 'upload_new': 'नवीन अपलोड करा', 'uploaded': 'अपलोड केले',
+        'clear': 'साफ करा', 'save_changes': 'बदल जतन करा', 'delete_account': 'खाते हटवा',
+        'delete_account_title': 'खाते हटवा', 'delete_confirmation': 'तुम्हाला तुमचे खाते कायमचे हटवायचे आहे का?',
+        'yes_delete': 'होय, हटवा', 'cancel': 'रद्द करा',
+        'back_to_dashboard': 'डॅशबोर्डवर परत जा', 'go_to_dashboard': 'डॅशबोर्डवर जा →',
+        'profile_updated': 'प्रोफाइल यशस्वीरित्या अद्यतनित केले!',
+        'fields_cleared': 'सर्व फील्ड साफ केली गेली आहेत',
+        'age_restriction': 'तुमचे वय १८ वर्षे किंवा त्यापेक्षा जास्त असणे आवश्यक आहे',
+        'photo_removed': 'प्रोफाइल फोटो काढला',
+        'photo_changed': 'फोटो बदला (डेमो)',
+        'document_uploaded': 'दस्तऐवज अपलोड (डेमो)',
+        'otp_sent': 'ओटीपी यशस्वीरित्या पाठविला!',
+        'otp_verified': 'ओटीपी यशस्वीरित्या सत्यापित!',
+        'invalid_otp': 'अवैध ओटीपी. कृपया पुन्हा प्रयत्न करा.'
+    }
+};
+
+// ============================================
+// INIT
+// ============================================
+function init() {
+    loadPreferences();
+    applyLanguage(currentLanguage);
+    applyTheme(currentTheme);
+    setupEventListeners();
+    calculateAge();
+    updatePasswordStrength();
+    setupOtpSimulation();
+}
+
+function loadPreferences() {
+    const savedLang = localStorage.getItem('preferredLanguage');
+    if (savedLang) currentLanguage = savedLang;
+    const savedTheme = localStorage.getItem('preferredTheme');
+    if (savedTheme) currentTheme = savedTheme;
+    
+    updateActiveButtons();
+}
+
+function updateActiveButtons() {
+    languageOptions.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
+    });
+    themeOptions.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === currentTheme);
+    });
+}
+
+function applyLanguage(lang) {
+    const t = translations[lang] || translations.en;
+    
+    // Update all elements with data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+            if (el.tagName === 'INPUT' && el.placeholder !== undefined) {
+                if (el.getAttribute('data-i18n-placeholder')) {
+                    el.placeholder = t[key];
+                }
+            } else if (el.tagName === 'OPTION') {
+                el.textContent = t[key];
+            } else {
+                el.textContent = t[key];
+            }
+        }
+    });
+    
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (t[key]) el.placeholder = t[key];
+    });
+    
+    // Update resend texts if countdown active
+    if (emailResendCountdown) updateEmailResendText();
+    if (mobileResendCountdown) updateMobileResendText();
+}
+
+function applyTheme(theme) {
+    let th = theme;
+    if (theme === 'system') {
+        th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(th + '-theme');
+    localStorage.setItem('preferredTheme', theme);
+    
+    themeOptions.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+    });
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+function setupEventListeners() {
+    // Settings toggle
+    settingsIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsDropdown.classList.toggle('active');
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (!settingsIcon.contains(e.target) && !settingsDropdown.contains(e.target)) {
+            settingsDropdown.classList.remove('active');
+        }
+    });
+
+    // Language options
+    languageOptions.forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentLanguage = btn.dataset.lang;
+            localStorage.setItem('preferredLanguage', currentLanguage);
+            applyLanguage(currentLanguage);
+            updateActiveButtons();
+        });
+    });
+
+    // Theme options
+    themeOptions.forEach(btn => {
+        btn.addEventListener('click', () => {
+            applyTheme(btn.dataset.theme);
+            updateActiveButtons();
+        });
+    });
+
+    // System theme change
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (currentTheme === 'system') applyTheme('system');
+    });
+
+    // Profile photo
+    changePhotoBtn.addEventListener('click', () => {
+        showNotification(translations[currentLanguage].photo_changed || 'Photo change (demo)', 'info');
+    });
+    
+    removePhotoBtn.addEventListener('click', () => {
+        profilePreview.innerHTML = '<i class="fas fa-user"></i>';
+        showNotification(translations[currentLanguage].photo_removed || 'Photo removed', 'info');
+    });
+
+    // DOB age calculation & validation
+    dob.addEventListener('change', () => {
+        calculateAge();
+        validateAgeRestriction();
+    });
+
+    // Password strength & match
+    newPassword.addEventListener('input', updatePasswordStrength);
+    confirmPassword.addEventListener('input', updatePasswordStrength);
+
+    // Toggle password visibility
+    togglePasswordBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetInput = document.getElementById(targetId);
+            const type = targetInput.type === 'password' ? 'text' : 'password';
+            targetInput.type = type;
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    });
+
+    // Action buttons
+    clearBtn.addEventListener('click', clearAllFields);
+    
+    saveBtn.addEventListener('click', () => {
+        if (!validateAgeRestriction()) {
+            showNotification(translations[currentLanguage].age_restriction || 'Age restriction', 'error');
+            return;
+        }
+        showNotification(translations[currentLanguage].profile_updated || 'Profile updated!', 'success');
+    });
+
+    // Delete account popup
+    deleteAccountBtn.addEventListener('click', () => {
+        deletePopup.classList.add('active');
+    });
+    
+    closePopupBtn.addEventListener('click', () => deletePopup.classList.remove('active'));
+    cancelDeleteBtn.addEventListener('click', () => deletePopup.classList.remove('active'));
+    
+    confirmDeleteBtn.addEventListener('click', () => {
+        showNotification('Account deleted (demo)', 'error');
+        deletePopup.classList.remove('active');
+    });
+
+    // Back to dashboard
+    backToDashboard.addEventListener('click', () => {
+        window.location.href = 'dashboard.html';
+    });
+
+    // Document upload (demo)
+    uploadDocBtn.addEventListener('click', () => {
+        showNotification(translations[currentLanguage].document_uploaded || 'Document upload (demo)', 'info');
+    });
+}
+
+// ============================================
+// AGE FUNCTIONS
+// ============================================
+function calculateAge() {
+    if (!dob.value) return;
+    const birth = new Date(dob.value);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    ageText.textContent = age + ' years old';
+    return age;
+}
+
+function validateAgeRestriction() {
+    if (!dob.value) return true;
+    const age = calculateAge();
+    if (age < 18) {
+        ageDisplay.classList.add('error');
+        ageText.innerHTML = `${age} years old <span style="color:#DC2626;">(Must be 18+)</span>`;
+        return false;
+    } else {
+        ageDisplay.classList.remove('error');
+        return true;
+    }
+}
+
+// ============================================
+// PASSWORD STRENGTH
+// ============================================
+function updatePasswordStrength() {
+    const val = newPassword.value;
+    let strength = 0;
+    if (val.length >= 8) strength++;
+    if (/[A-Z]/.test(val)) strength++;
+    if (/[a-z]/.test(val)) strength++;
+    if (/\d/.test(val)) strength++;
+    if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+    passwordStrength.className = 'password-strength';
+    
+    if (val.length === 0) {
+        strengthText.textContent = translations[currentLanguage].password_strength || 'Password Strength';
+    } else if (strength <= 2) {
+        passwordStrength.classList.add('weak');
+        strengthText.textContent = 'Weak';
+    } else if (strength === 3) {
+        passwordStrength.classList.add('medium');
+        strengthText.textContent = 'Medium';
+    } else if (strength === 4) {
+        passwordStrength.classList.add('strong');
+        strengthText.textContent = 'Strong';
+    } else {
+        passwordStrength.classList.add('very-strong');
+        strengthText.textContent = 'Very Strong';
+    }
+
+    // Password match
+    if (confirmPassword.value.length > 0) {
+        passwordMatch.classList.toggle('visible', val === confirmPassword.value);
+    } else {
+        passwordMatch.classList.remove('visible');
+    }
+}
+
+// ============================================
+// OTP SIMULATION
+// ============================================
+function setupOtpSimulation() {
+    // Email OTP
+    getEmailOtpBtn.addEventListener('click', () => {
+        if (!validationPatterns.email.test(emailInput.value)) {
+            showNotification('Invalid email', 'error');
+            return;
+        }
+        emailDisplay.textContent = `OTP sent to ${emailInput.value}`;
+        emailDisplay.classList.add('show');
+        emailOtpSection.classList.add('active');
+        getEmailOtpBtn.disabled = true;
+        startEmailResendCountdown();
+        showNotification(translations[currentLanguage].otp_sent || 'OTP sent!', 'success');
+    });
+
+    verifyEmailOtpBtn.addEventListener('click', () => {
+        if (emailOtpInput.value === DUMMY_EMAIL_OTP) {
+            emailVerified = true;
+            emailStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span data-i18n="email_verified">Email Verified</span>';
+            emailOtpSection.classList.remove('active');
+            emailDisplay.classList.remove('show');
+            if (emailResendCountdown) clearInterval(emailResendCountdown);
+            showNotification(translations[currentLanguage].otp_verified || 'OTP verified!', 'success');
+        } else {
+            showNotification(translations[currentLanguage].invalid_otp || 'Invalid OTP', 'error');
+        }
+    });
+
+    emailOtpInput.addEventListener('input', () => {
+        verifyEmailOtpBtn.disabled = emailOtpInput.value.length !== 6;
+    });
+
+    // Mobile OTP
+    getMobileOtpBtn.addEventListener('click', () => {
+        if (!validationPatterns.phone.test(mobileInput.value)) {
+            showNotification('Invalid mobile number', 'error');
+            return;
+        }
+        mobileDisplay.textContent = `OTP sent to ${mobileInput.value}`;
+        mobileDisplay.classList.add('show');
+        mobileOtpSection.classList.add('active');
+        getMobileOtpBtn.disabled = true;
+        startMobileResendCountdown();
+        showNotification(translations[currentLanguage].otp_sent || 'OTP sent!', 'success');
+    });
+
+    verifyMobileOtpBtn.addEventListener('click', () => {
+        if (mobileOtpInput.value === DUMMY_MOBILE_OTP) {
+            mobileVerified = true;
+            mobileStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span data-i18n="mobile_verified">Mobile Verified</span>';
+            mobileOtpSection.classList.remove('active');
+            mobileDisplay.classList.remove('show');
+            if (mobileResendCountdown) clearInterval(mobileResendCountdown);
+            showNotification(translations[currentLanguage].otp_verified || 'OTP verified!', 'success');
+        } else {
+            showNotification(translations[currentLanguage].invalid_otp || 'Invalid OTP', 'error');
+        }
+    });
+
+    mobileOtpInput.addEventListener('input', () => {
+        verifyMobileOtpBtn.disabled = mobileOtpInput.value.length !== 6;
+    });
+}
+
+function startEmailResendCountdown() {
+    if (emailResendCountdown) clearInterval(emailResendCountdown);
+    emailResendTimeLeft = 60;
+    resendEmailOtpBtn.disabled = true;
+    
+    emailResendCountdown = setInterval(() => {
+        emailResendTimeLeft--;
+        updateEmailResendText();
+        if (emailResendTimeLeft <= 0) {
+            clearInterval(emailResendCountdown);
+            resendEmailOtpBtn.disabled = false;
+            emailResendText.textContent = translations[currentLanguage].resend_otp_60s?.replace('60s', '') || 'Resend OTP';
+        }
+    }, 1000);
+}
+
+function updateEmailResendText() {
+    const base = translations[currentLanguage].resend_otp_60s || 'Resend OTP (60s)';
+    emailResendText.textContent = base.replace('60s', `${emailResendTimeLeft}s`);
+}
+
+function startMobileResendCountdown() {
+    if (mobileResendCountdown) clearInterval(mobileResendCountdown);
+    mobileResendTimeLeft = 60;
+    resendMobileOtpBtn.disabled = true;
+    
+    mobileResendCountdown = setInterval(() => {
+        mobileResendTimeLeft--;
+        updateMobileResendText();
+        if (mobileResendTimeLeft <= 0) {
+            clearInterval(mobileResendCountdown);
+            resendMobileOtpBtn.disabled = false;
+            mobileResendText.textContent = translations[currentLanguage].resend_otp_60s?.replace('60s', '') || 'Resend OTP';
+        }
+    }, 1000);
+}
+
+function updateMobileResendText() {
+    const base = translations[currentLanguage].resend_otp_60s || 'Resend OTP (60s)';
+    mobileResendText.textContent = base.replace('60s', `${mobileResendTimeLeft}s`);
+}
+
+// ============================================
+// CLEAR ALL FIELDS
+// ============================================
+function clearAllFields() {
+    firstName.value = '';
+    lastName.value = '';
+    dob.value = '';
+    ageText.textContent = 'Select date';
+    
+    genderRadios.forEach(r => r.checked = false);
+    
+    emailInput.value = '';
+    mobileInput.value = '';
+    oldPassword.value = '';
+    newPassword.value = '';
+    confirmPassword.value = '';
+    
+    workArea.value = '';
+    street.value = '';
+    city.value = '';
+    state.value = '';
+    pincode.value = '';
+    
+    // Reset password indicators
+    passwordStrength.className = 'password-strength';
+    strengthText.textContent = translations[currentLanguage].password_strength || 'Password Strength';
+    passwordMatch.classList.remove('visible');
+    
+    showNotification(translations[currentLanguage].fields_cleared || 'All fields cleared', 'info');
+}
+
+// ============================================
+// NOTIFICATION
+// ============================================
+function showNotification(message, type = 'info') {
+    const notif = document.createElement('div');
+    notif.className = `notification ${type}`;
+    
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+    
+    notif.innerHTML = `
+        <div class="notification-icon"><i class="fas fa-${icon}"></i></div>
+        <div class="notification-content"><p>${message}</p></div>
+        <button class="notification-close"><i class="fas fa-times"></i></button>
+    `;
+    
+    notifWrapper.appendChild(notif);
+    
+    setTimeout(() => notif.classList.add('show'), 10);
+    
+    notif.querySelector('.notification-close').addEventListener('click', () => {
+        notif.remove();
+    });
+    
+    setTimeout(() => notif.remove(), 4000);
+}
+
+// ============================================
+// START
+// ============================================
+document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+{% endblock %}

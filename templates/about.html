@@ -1,18 +1,19 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="en">
-<head>
+{% block title %} About | ShramikConnect {% endblock %}
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | ShramikConnect</title>
     
     <link rel="stylesheet" href="{% static 'css/about.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
+{% endblock %}
+{% block content %}
     <!-- ============================================
          SIDEBAR (EXACT COPY FROM HELP PAGE)
     ============================================ -->
@@ -37,23 +38,23 @@
             </div>
             
             <div class="sidebar-menu">
-                <a href="help_and_contact_page.html" class="menu-item-box">
+                <a href="/help_and_contact/" class="menu-item-box">
                     <i class="fas fa-question-circle"></i>
                     <span data-i18n="help_contact">Help & Contact</span>
                 </a>
-                <a href="#" class="menu-item-box" id="homeLink">
+                <a href="/" class="menu-item-box" id="homeLink">
                     <i class="fas fa-home"></i>
                     <span data-i18n="home">Home</span>
                 </a>
-                <a href="about.html" class="menu-item-box active">
+                <a href="/about/" class="menu-item-box active">
                     <i class="fas fa-info-circle"></i>
                     <span data-i18n="about">About</span>
                 </a>
-                <a href="term_and_condition.html" class="menu-item-box">
+                <a href="/term_and_condition/" class="menu-item-box">
                     <i class="fas fa-file-contract"></i>
                     <span data-i18n="terms_conditions">Terms & Conditions</span>
                 </a>
-                <a href="privacy_policy.html" class="menu-item-box">
+                <a href="/privacy_policy/" class="menu-item-box">
                     <i class="fas fa-shield-alt"></i>
                     <span data-i18n="privacy_policy">Privacy Policy</span>
                 </a>
@@ -100,11 +101,11 @@
         </div>
         
         <div class="nav-right">
-            <a href="#" class="nav-link" id="navHome" data-i18n="home">
+            <a href="/" class="nav-link" id="navHome" data-i18n="home">
                 <i class="fas fa-home"></i>
                 <span class="nav-text" data-i18n="home">Home</span>
             </a>
-            <a href="help_and_contact_page.html" class="nav-link" data-i18n="help">
+            <a href="/help_and_contact/" class="nav-link" data-i18n="help">
                 <i class="fas fa-question-circle"></i>
                 <span class="nav-text" data-i18n="help">Help</span>
             </a>
@@ -123,20 +124,20 @@
 
         <!-- 1️⃣ HERO VIDEO SECTION (NO TEXT, NO LOOP) -->
         <section class="hero-video-section">
-            <div class="video-container">
-                <video class="hero-video" autoplay muted playsinline
-                       poster="images/fallback-poster.jpg" 
-                       aria-label="Background video showing ShramikConnect platform">
-                    <source src="images/Landing_video.mp4" type="video/mp4">
-                    <source src="images/video/Landing_video.webm" type="video/webm">
-                    Your browser does not support the video tag.
-                </video>
-                
-                <div class="video-fallback" id="videoFallback">
-                    <img src="images/fallback-poster.jpg" alt="ShramikConnect Platform">
-                </div>
-            </div>
-        </section>
+    <div class="video-container">
+        <video class="hero-video" autoplay muted playsinline
+               poster="images/fallback-poster.jpg" 
+               aria-label="Background video showing ShramikConnect platform">
+            <source src="/static/images/Landing_video.mp4" type="video/mp4">
+            <source src="/static/images/video/Landing_video.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="video-fallback" id="videoFallback">
+            <img src="images/fallback-poster.jpg" alt="ShramikConnect Platform">
+        </div>
+    </div>
+</section>
 
         <!-- 1️⃣.5️⃣ CTA SECTION (MOVED HERE - SMALLER) -->
         <section class="cta-section-small">
@@ -144,8 +145,8 @@
                 <div class="cta-content-small">
                     <h2 class="cta-title-small" data-i18n="cta_title">Ready to Get Started?</h2>
                     <div class="cta-buttons-small">
-                        <a href="#" class="btn btn-primary btn-small worker-btn" data-i18n="join_worker">Join as Worker</a>
-                        <a href="#" class="btn btn-secondary btn-small employer-btn" data-i18n="hire_employer">Hire as Employer</a>
+                        <a href="/login_worker/" class="btn btn-primary btn-small worker-btn" data-i18n="join_worker">Join as Worker</a>
+                        <a href="/login_employer/" class="btn btn-secondary btn-small employer-btn" data-i18n="hire_employer">Hire as Employer</a>
                     </div>
                 </div>
             </div>
@@ -273,13 +274,13 @@
                     <p class="social-subtitle" data-i18n="social_subtitle">Join our community for updates, support, and more</p>
                 </div>
                 <div class="social-cards-grid">
-                    <a href="#" class="social-card instagram">
+                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-card instagram">
                         <div class="social-card-inner">
                             <i class="fab fa-instagram"></i>
                             <span data-i18n="social_instagram">@shramikconnect</span>
                         </div>
                     </a>
-                    <a href="#" class="social-card facebook">
+                    <a href="https://www.facebook.com/share/1C7zCpyXdQ" class="social-card facebook">
                         <div class="social-card-inner">
                             <i class="fab fa-facebook-f"></i>
                             <span data-i18n="social_facebook">/shramikconnect</span>
@@ -291,7 +292,7 @@
                             <span data-i18n="social_twitter">@shramikconnect</span>
                         </div>
                     </a>
-                    <a href="#" class="social-card youtube">
+                    <a href="https://www.youtube.com/@ShramikConnect" class="social-card youtube">
                         <div class="social-card-inner">
                             <i class="fab fa-youtube"></i>
                             <span data-i18n="social_youtube">/ShramikConnect</span>
@@ -303,7 +304,7 @@
                             <span data-i18n="social_linkedin">company/shramikconnect</span>
                         </div>
                     </a>
-                    <a href="#" class="social-card email">
+                    <a href="mailto:team.shramikconnect@gmail.com" class="social-card email">
                         <div class="social-card-inner">
                             <i class="fas fa-envelope"></i>
                             <span data-i18n="social_email">hello@shramikconnect</span>
@@ -314,82 +315,84 @@
         </section>
 
         <!-- 5️⃣.5️⃣ MENTOR SECTION (FLIP CARD + PARAGRAPH) -->
-        <section class="mentor-section">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="section-title"><span data-i18n="mentor_section_title">Our</span> <span class="highlight" data-i18n="mentor_highlight">Mentor</span></h2>
-                </div>
+      
+<!-- 5️⃣.5️⃣ MENTOR SECTION (FLIP CARD + PARAGRAPH) FIXED -->
+<section class="mentor-section">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2 class="section-title"><span data-i18n="mentor_section_title">Our</span> <span class="highlight" data-i18n="mentor_highlight">Mentor</span></h2>
+        </div>
 
-                <div class="mentor-layout reveal">
-                    <!-- Left side - Mentor Flip Card -->
-                    <div class="mentor-card-wrapper">
-                        <div class="mentor-card">
-                            <div class="mentor-card-inner">
-                                <!-- Front of card -->
-                                <div class="mentor-front">
-                                    <div class="mentor-image-wrapper">
-                                        <img src="images/mentor_niraj.jpg" alt="Niraj Nake" class="mentor-img" onerror="this.src='https://via.placeholder.com/400x500?text=Niraj+Nake'">
-                                    </div>
-                                    <div class="mentor-info">
-                                        <h3 data-i18n="mentor_name">Niraj Nake</h3>
-                                        <p class="mentor-role" data-i18n="mentor_role">Lecturer and Mentor</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Back of card -->
-                                <div class="mentor-back">
-                                    <div class="mentor-back-content">
-                                        <h3 data-i18n="mentor_name">Niraj Nake</h3>
-                                        <p class="back-highlight"><strong data-i18n="mentor_tag">Passionate Educator</strong></p>
-                                        <p class="back-college"><span data-i18n="from_label">From</span> <strong data-i18n="mentor_college">Government Polytechnic Khamgaon</strong></p>
-                                        <p class="back-description" data-i18n="mentor_back_desc">Dedicated mentor with 10+ years of experience in teaching computer science. Expert in Operating Systems, C, and C++ programming languages.</p>
-                                        <div class="skill-tags">
-                                            <span class="skill-tag" data-i18n="mentor_skill1">Operating System</span>
-                                            <span class="skill-tag" data-i18n="mentor_skill2">C</span>
-                                            <span class="skill-tag" data-i18n="mentor_skill3">C++</span>
-                                        </div>
-                                        <div class="mentor-social">
-                                            <a href="#" class="mentor-social-link"><i class="fab fa-linkedin-in"></i></a>
-                                            <a href="#" class="mentor-social-link"><i class="fab fa-twitter"></i></a>
-                                            <a href="#" class="mentor-social-link"><i class="fas fa-envelope"></i></a>
-                                        </div>
-                                        <!-- Know More Button -->
-                                        <a href="nakesir.html" class="know-more-btn" data-developer="nakesir">
-                                            <span data-i18n="know_more_btn">Know more</span>
-                                            <i class="fas fa-arrow-right"></i>
-                                        </a>
-                                    </div>
-                                </div>
+        <div class="mentor-layout reveal">
+            <!-- Left side - Mentor Flip Card -->
+            <div class="mentor-card-wrapper">
+                <div class="mentor-card">
+                    <div class="mentor-card-inner">
+                        <!-- FRONT OF CARD - Image side -->
+                        <div class="mentor-front">
+                            <div class="mentor-image-wrapper">
+                                <img src="{% static 'images/nake_sir.png' %}" alt="Niraj Nake" class="mentor-img" onerror="this.src='https://via.placeholder.com/400x500?text=Niraj+Nake'">
+                            </div>
+                            <div class="mentor-info">
+                                <h3 data-i18n="mentor_name">Niraj Nake</h3>
+                                <p class="mentor-role" data-i18n="mentor_role">Lecturer and Mentor</p>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Right side - Paragraph about mentor -->
-                    <div class="mentor-paragraph">
-                        <h3 data-i18n="mentor_para_title">About Niraj Nake</h3>
-                        <p data-i18n="mentor_para1">Niraj Nake is a dedicated lecturer and mentor at Government Polytechnic Khamgaon, where he has been teaching computer science for over a decade. His expertise lies in Operating Systems, C, and C++ programming languages.</p>
-                        <p data-i18n="mentor_para2">As a mentor to the ShramikConnect developer team, he has guided them through complex technical challenges, helping them build a robust and scalable platform. His teaching philosophy emphasizes practical learning and problem-solving skills.</p>
-                        <p data-i18n="mentor_para3">Under his mentorship, the team has grown from five college students to confident developers capable of building real-world applications. He continues to inspire and guide them in their journey of innovation and technological excellence.</p>
                         
-                        <div class="mentor-stats">
-                            <div class="mentor-stat-item">
-                                <span class="stat-number">10+</span>
-                                <span class="stat-label" data-i18n="mentor_stat1">Years Experience</span>
-                            </div>
-                            <div class="mentor-stat-item">
-                                <span class="stat-number">500+</span>
-                                <span class="stat-label" data-i18n="mentor_stat2">Students Mentored</span>
-                            </div>
-                            <div class="mentor-stat-item">
-                                <span class="stat-number">3</span>
-                                <span class="stat-label" data-i18n="mentor_stat3">Tech Stacks</span>
+                        <!-- BACK OF CARD - Info side -->
+                        <div class="mentor-back">
+                            <div class="mentor-back-content">
+                                <h3 data-i18n="mentor_name">Niraj Nake</h3>
+                                <p class="back-highlight"><strong data-i18n="mentor_tag">Passionate Educator</strong></p>
+                                <p class="back-college"><span data-i18n="from_label">From</span> <strong data-i18n="mentor_college">Government Polytechnic Khamgaon</strong></p>
+                                <p class="back-description" data-i18n="mentor_back_desc">Dedicated mentor with 10+ years of experience in teaching computer science. Expert in Operating Systems, C, and C++ programming languages.</p>
+                                <div class="skill-tags">
+                                    <span class="skill-tag" data-i18n="mentor_skill1">Operating System</span>
+                                    <span class="skill-tag" data-i18n="mentor_skill2">C</span>
+                                    <span class="skill-tag" data-i18n="mentor_skill3">C++</span>
+                                </div>
+                                <div class="mentor-social">
+                                    <a href="#" class="mentor-social-link"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#" class="mentor-social-link"><i class="fab fa-twitter"></i></a>
+                                    <a href="#" class="mentor-social-link"><i class="fas fa-envelope"></i></a>
+                                </div>
+                                <!-- Know More Button -->
+                                <a href="https://www.gpk.edu.in/NBNProfile.pdf
+" class="know-more-btn" data-developer="nakesir">
+                                    <span data-i18n="know_more_btn">Know more</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
 
+            <!-- Right side - Paragraph about mentor -->
+            <div class="mentor-paragraph">
+                <h3 data-i18n="mentor_para_title">About Niraj Nake</h3>
+                <p data-i18n="mentor_para1">Niraj Nake is a dedicated lecturer and mentor at Government Polytechnic Khamgaon, where he has been teaching computer science for over a decade. His expertise lies in Operating Systems, C, and C++ programming languages.</p>
+                <p data-i18n="mentor_para2">As a mentor to the ShramikConnect developer team, he has guided them through complex technical challenges, helping them build a robust and scalable platform. His teaching philosophy emphasizes practical learning and problem-solving skills.</p>
+                <p data-i18n="mentor_para3">Under his mentorship, the team has grown from five college students to confident developers capable of building real-world applications. He continues to inspire and guide them in their journey of innovation and technological excellence.</p>
+                
+                <div class="mentor-stats">
+                    <div class="mentor-stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label" data-i18n="mentor_stat1">Years Experience</span>
+                    </div>
+                    <div class="mentor-stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label" data-i18n="mentor_stat2">Students Mentored</span>
+                    </div>
+                    <div class="mentor-stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label" data-i18n="mentor_stat3">Tech Stacks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
         <!-- 6️⃣ DEVELOPERS SECTION (UPDATED) -->
         <section class="developers-section">
             <div class="container">
@@ -401,7 +404,7 @@
                         <div class="team-card" data-pos="-2">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_1.png" alt="Nagesh Daberao" class="dev-img">
+                                    <img src="/static/images/nagnow.png"alt="Nagesh Daberao" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Nagesh <span>Daberao</span></h3>
                                         <p class="dev-role" data-i18n="nagesh_role">Co-Founder & Frontend Developer</p>
@@ -420,13 +423,13 @@
                                         </div>
                                         <div class="back-social-grid">
                                             <div class="social-row">
-                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href="https://www.instagram.com/nage_sh210?igsh=YXYzazNqaHFxYWox"><i class="fab fa-instagram"></i></a>
                                                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                                                 <a href="#"><i class="fab fa-x-twitter"></i></a>
                                             </div>
                                             <div class="social-row">
-                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                                <a href="#"><i class="fab fa-youtube"></i></a>
+                                                <a href="https://www.linkedin.com/in/nagesh-daberao-0b4308360?utm_source=share_via&utm_content=profile&utm_medium=member_android"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href="https://youtube.com/@nagnow?si=aQ7lSECZL4B4rbpB"><i class="fab fa-youtube"></i></a>
                                                 <a href="#"><i class="fas fa-envelope"></i></a>
                                             </div>
                                         </div>
@@ -442,7 +445,7 @@
                         <div class="team-card" data-pos="-1">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_2.png" alt="Rohan Dharpawar" class="dev-img">
+                                    <img src="/static/images/rohan.png" alt="Rohan Dharpawar" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Rohan <span>Dharpawar</span></h3>
                                         <p class="dev-role" data-i18n="rohan_role">Co-Founder & Backend Developer</p>
@@ -483,18 +486,16 @@
                         <div class="team-card" data-pos="0">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_3.png" alt="Shaan Shukla" class="dev-img">
+                                    <img src="/static/images/shukla.png" alt="Shaan Shukla" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Shaan <span>Shukla</span></h3>
                                         <p class="dev-role" data-i18n="shaan_role">Founder & Full Stack Developer</p>
                                     </div>
-                                    <div class="featured-badge">
-                                        <i class="fas fa-crown"></i>
-                                    </div>
+                                   
                                 </div>
                                 <div class="card-back">
                                     <div class="back-content">
-                                        <h3>Shaan Shukla <span class="highlight-star">⭐</span></h3>
+                                        <h3>Shaan Shukla <span class="highlight-star"></span></h3>
                                         <p class="back-highlight"><strong data-i18n="shaan_tag">Lead Architect & Founder</strong></p>
                                         <p class="back-college"><span data-i18n="from_label">From</span> <strong data-i18n="gp_khamgaon">Government Polytechnic Khamgaon</strong></p>
                                         <p class="back-description" data-i18n="shaan_desc">Visionary leader with expertise in full-stack development. Creating innovative solutions that connect workers with opportunities.</p>
@@ -510,9 +511,9 @@
                                                 <a href="#"><i class="fab fa-x-twitter"></i></a>
                                             </div>
                                             <div class="social-row">
-                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href=" https://www.linkedin.com/in/shaan-shukla-1b583837b"><i class="fab fa-linkedin-in"></i></a>
                                                 <a href="#"><i class="fab fa-github"></i></a>
-                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                                <a href="mailto:shaanshuklaoriginal@gmail.com"><i class="fas fa-envelope"></i></a>
                                             </div>
                                         </div>
                                         <a href="shaan.html" class="know-more-btn" data-developer="shaan">
@@ -527,7 +528,7 @@
                         <div class="team-card" data-pos="1">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_4.png" alt="Mohmmad Wasif" class="dev-img">
+                                    <img src="/static/images/wasu.png" alt="Mohmmad Wasif" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Mohmmad <span>Wasif</span></h3>
                                         <p class="dev-role" data-i18n="wasif_role">Co-Founder & Frontend Developer</p>
@@ -546,14 +547,14 @@
                                         </div>
                                         <div class="back-social-grid">
                                             <div class="social-row">
-                                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                                <a href=" https://www.instagram.com/mohdwasif_05?igsh=MWVzdzhxcG9uMzNxbw=="><i class="fab fa-instagram"></i></a>
                                                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                                                 <a href="#"><i class="fab fa-x-twitter"></i></a>
                                             </div>
                                             <div class="social-row">
-                                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                <a href=" https://www.linkedin.com/in/mohammad-wasif-7196653b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin-in"></i></a>
                                                 <a href="#"><i class="fab fa-behance"></i></a>
-                                                <a href="#"><i class="fas fa-envelope"></i></a>
+                                                <a href="mailto:wasif18112005@gmail.com"><i class="fas fa-envelope"></i></a>
                                             </div>
                                         </div>
                                         <a href="wasif.html" class="know-more-btn" data-developer="wasif">
@@ -568,7 +569,7 @@
                         <div class="team-card" data-pos="2">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_5.png" alt="Sumedh Ingle" class="dev-img">
+                                    <img src="/static/images/sumedha.png" alt="Sumedh Ingle" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Sumedh <span>Ingle</span></h3>
                                         <p class="dev-role" data-i18n="sumedh_role">Co-Founder & Frontend Developer</p>
@@ -610,7 +611,7 @@
                 </div>
                
                 <div class="developer-cta">
-                    <a href="developer.html" class="btn-developer">
+                    <a href="/know_more_about_developers/" class="btn-developer">
                         <span data-i18n="know_more">Know More About Developers</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
@@ -619,54 +620,86 @@
         </section>
 
         <!-- 7️⃣ FOOTER (EXACT COPY FROM HELP PAGE) -->
-        <footer class="footer">
-            <div class="footer-wave">
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                    <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
-                    <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
-                    <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
-                </svg>
-            </div>
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-brand">
-                        <div class="brand-text" id="brandText">
-                            <span class="shramik">Shramik</span><span class="connect">Connect</span>
-                        </div>
-                        <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
-                        <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
-                    </div>
-                    <div class="footer-links">
-                        <div class="links-column">
-                            <h3 class="column-title" data-i18n="footer_platform">Platform</h3>
-                            <a href="#" class="footer-link" data-i18n="footer_workers">For Workers</a>
-                            <a href="#" class="footer-link" data-i18n="footer_employers">For Employers</a>
-                        </div>
-                        <div class="links-column">
-                            <h3 class="column-title" data-i18n="footer_company">Company</h3>
-                            <a href="about.html" class="footer-link" data-i18n="about">About</a>
-                            <a href="#" class="footer-link" data-i18n="footer_how">How It Works</a>
-                        </div>
-                        <div class="links-column">
-                            <h3 class="column-title" data-i18n="footer_support">Support</h3>
-                            <a href="help_and_contact_page.html" class="footer-link" data-i18n="help_contact">Help & Contact</a>
-                            <a href="privacy_policy.html" class="footer-link" data-i18n="privacy">Privacy Policy</a>
-                            <a href="term_and_condition.html" class="footer-link" data-i18n="terms">Terms & Conditions</a>
-                        </div>
-                    </div>
+       <!-- ============================================
+     SHRAMIKCONNECT FOOTER COMPONENT
+     ============================================ -->
+<footer class="footer">
+    <!-- Wave Animation -->
+    <div class="footer-wave">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <div class="footer-content">
+            <!-- Brand Section -->
+            <div class="footer-brand">
+                <div class="brand-text" id="brandText">
+                    <span class="shramik">Shramik</span><span class="connect">Connect</span>
                 </div>
-                <div class="footer-bottom">
-                    <div class="social-links">
-                        <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    </div>
+                <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                <p class="copyright" data-i18n="copyright">© 2025 ShramikConnect. All rights reserved.</p>
+            </div>
+            
+            <!-- Footer Links -->
+            <div class="footer-links">
+                <div class="links-column">
+                    <h3 class="column-title" data-i18n="platform">Platform</h3>
+                    <a href="/login_worker/" class="footer-link" data-i18n="for_workers">For Workers</a>
+                    <a href="/login_employer/" class="footer-link" data-i18n="for_employers">For Employers</a>
+                </div>
+                
+                <div class="links-column">
+                    <h3 class="column-title" data-i18n="company">Company</h3>
+                    <a href="/about/" class="footer-link" data-i18n="about">About</a>
+                    <a href="/how-platform-works/" class="footer-link" data-i18n="how_it_works">How It Works</a>
+                </div>
+                
+                <div class="links-column">
+                    <h3 class="column-title" data-i18n="support">Support</h3>
+                    <a href="/help_and_contact/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                    <a href="/privacy_policy/" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                    <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
                 </div>
             </div>
-        </footer>
+        </div>
+        
+        <!-- SOCIAL MEDIA LINKS - with YouTube and X -->
+        <div class="footer-bottom">
+            <div class="social-links">
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                
+                <!-- YouTube -->
+                <a href="https://www.youtube.com/@ShramikConnect" class="social-link" aria-label="YouTube" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                
+                <!-- X (Twitter) -->
+                <a href="https://x.com/shramikconnect" class="social-link" aria-label="X (Twitter)" target="_blank">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                
+                <!-- Email -->
+                <a href="mailto:team.shramikconnect@gmail.com" class="social-link" aria-label="Email" target="_blank">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
     </main>
 
     <script src="{% static 'js/about.js' %}"></script>
 </body>
-</html>
+{% endblock %}

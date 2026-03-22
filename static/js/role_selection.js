@@ -28,7 +28,15 @@ const translations = {
         theme: "Theme",
         light: "Light",
         dark: "Dark",
-        system: "System"
+        system: "System",
+        platform: "Platform",
+        for_workers: "For Workers",
+        for_employers: "For Employers",
+        company: "Company",
+        about: "About",
+        how_it_works: "How It Works",
+        support: "Support",
+        help_contact: "Help & Contact"
     },
     hi: {
         choose_role: "अपनी भूमिका चुनें",
@@ -51,12 +59,20 @@ const translations = {
         privacy: "गोपनीयता नीति",
         terms: "सेवा की शर्तें",
         help: "सहायता केंद्र",
-        copyright: "© 2024 ShramikConnect. सर्वाधिकार सुरक्षित।",
+        copyright: "© 2025 ShramikConnect. सर्वाधिकार सुरक्षित।",
         language: "भाषा",
         theme: "थीम",
         light: "लाइट",
         dark: "डार्क",
-        system: "सिस्टम"
+        system: "सिस्टम",
+        platform: "प्लेटफॉर्म",
+        for_workers: "कर्मचारियों के लिए",
+        for_employers: "नियोक्ताओं के लिए",
+        company: "कंपनी",
+        about: "के बारे में",
+        how_it_works: "यह कैसे काम करता है",
+        support: "सहायता",
+        help_contact: "सहायता और संपर्क"
     },
     mr: {
         choose_role: "तुमची भूमिका निवडा",
@@ -79,17 +95,29 @@ const translations = {
         privacy: "गोपनीयता धोरण",
         terms: "सेवा अटी",
         help: "मदत केंद्र",
-        copyright: "© 2024 ShramikConnect. सर्व हक्क राखीव.",
+        copyright: "© 2025 ShramikConnect. सर्व हक्क राखीव.",
         language: "भाषा",
         theme: "थीम",
         light: "लाइट",
         dark: "डार्क",
-        system: "सिस्टम"
+        system: "सिस्टम",
+        platform: "प्लॅटफॉर्म",
+        for_workers: "कामगारांसाठी",
+        for_employers: "नियोक्त्यांसाठी",
+        company: "कंपनी",
+        about: "विषयी",
+        how_it_works: "हे कसे कार्य करते",
+        support: "सहाय्य",
+        help_contact: "मदत आणि संपर्क"
     }
 };
 
-// Current language
+// Current language and theme
 let currentLanguage = 'en';
+let currentTheme = 'light';
+
+// All themes constant
+const ALL_THEMES = ["light", "dark", "system"];
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -100,12 +128,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log('Initializing role selection page...');
 
-    // Set initial theme and language
-    const initialTheme = getPreferredTheme();
-    const initialLanguage = getStoredLanguage();
-
-    setTheme(initialTheme);
-    setLanguage(initialLanguage);
+    // Initialize theme and language from localStorage
+    initTheme();
+    initLanguage();
 
     // Initialize components
     initializeAnimations();
@@ -113,53 +138,75 @@ function initializeApp() {
     initializeSystemThemeListener();
     initializeAccessibility();
     initializeSettingsDropdown();
-
-    // Update active buttons
-    updateActiveThemeButton(initialTheme);
-    updateActiveLanguageButton(initialLanguage);
 }
 
-// Theme Management
-function getStoredTheme() {
-    return localStorage.getItem('theme') || 'system';
-}
+// ============================================
+// THEME MANAGEMENT - MATCHING HELP & CONTACT PAGE
+// ============================================
 
-function setStoredTheme(theme) {
-    localStorage.setItem('theme', theme);
-}
+function applyTheme(theme) {
+    const body = document.body;
 
-function getPreferredTheme() {
-    const storedTheme = getStoredTheme();
-    if (storedTheme) return storedTheme;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-function setTheme(theme) {
+    // Remove all theme classes
+    ALL_THEMES.forEach(t => body.classList.remove(t));
+    
+    // Add the selected theme class
     if (theme === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.body.classList.toggle('dark-theme', systemTheme === 'dark');
+        const systemTheme = getSystemDefaultTheme();
+        body.classList.add(systemTheme);
+        body.classList.add('system');
     } else {
-        document.body.classList.toggle('dark-theme', theme === 'dark');
+        body.classList.add(theme);
     }
-    setStoredTheme(theme);
-    updateActiveThemeButton(theme);
-}
 
-function updateActiveThemeButton(theme) {
-    const themeButtons = document.querySelectorAll('.theme-option');
-    if (!themeButtons.length) return;
-    themeButtons.forEach(button => {
-        button.classList.toggle('active', button.dataset.theme === theme);
+    localStorage.setItem("selectedTheme", theme);
+    currentTheme = theme;
+    
+    // Update theme buttons
+    const themeOptions = document.querySelectorAll('.theme-option');
+    themeOptions.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
     });
 }
 
-// Language Management
+function getSystemDefaultTheme() {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark";
+    }
+    return "light";
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem("selectedTheme");
+
+    if (savedTheme && ALL_THEMES.includes(savedTheme)) {
+        applyTheme(savedTheme);
+    } else {
+        const systemTheme = getSystemDefaultTheme();
+        applyTheme(systemTheme);
+    }
+}
+
+function handleThemeChange(theme) {
+    if (!ALL_THEMES.includes(theme)) {
+        console.error('Invalid theme:', theme);
+        return;
+    }
+    
+    applyTheme(theme);
+    closeSettingsDropdown();
+}
+
+// ============================================
+// LANGUAGE MANAGEMENT
+// ============================================
+
 function getStoredLanguage() {
-    return localStorage.getItem('language') || 'en';
+    return localStorage.getItem('helpLanguage') || 'en';
 }
 
 function setStoredLanguage(lang) {
-    localStorage.setItem('language', lang);
+    localStorage.setItem('helpLanguage', lang);
 }
 
 function setLanguage(lang) {
@@ -180,6 +227,11 @@ function updateActiveLanguageButton(lang) {
     });
 }
 
+function initLanguage() {
+    const savedLanguage = getStoredLanguage();
+    setLanguage(savedLanguage);
+}
+
 // Update all translatable content
 function updateContent() {
     const elements = document.querySelectorAll('[data-i18n]');
@@ -190,6 +242,14 @@ function updateContent() {
             element.textContent = translations[currentLanguage][key];
         }
     });
+    
+    // Update placeholders if any
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (translations[currentLanguage] && translations[currentLanguage][key]) {
+            element.placeholder = translations[currentLanguage][key];
+        }
+    });
 }
 
 // Role Button Handlers
@@ -198,36 +258,25 @@ function initializeRoleButtons() {
     const kaamKaraoBtn = document.querySelector('.kaam-karao-btn');
     
     if (kaamDhundhoBtn) {
-        kaamDhundhoBtn.addEventListener('click', function() {
-            handleRoleSelection('worker');
+        kaamDhundhoBtn.addEventListener('click', function(e) {
+            // Let the href handle navigation, just add animation
+            const btn = this;
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = '';
+            }, 150);
         });
     }
     
     if (kaamKaraoBtn) {
-        kaamKaraoBtn.addEventListener('click', function() {
-            handleRoleSelection('employer');
+        kaamKaraoBtn.addEventListener('click', function(e) {
+            const btn = this;
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = '';
+            }, 150);
         });
     }
-}
-
-function handleRoleSelection(role) {
-    console.log('Role selected:', role);
-    
-    // Add button click animation
-    const button = document.querySelector(`.${role === 'worker' ? 'kaam-dhundho-btn' : 'kaam-karao-btn'}`);
-    if (button) {
-        button.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            button.style.transform = '';
-        }, 150);
-    }
-    
-    // In a real implementation, this would redirect to the appropriate login page
-    // For now, we'll simulate a redirect with a timeout
-    setTimeout(() => {
-        alert(`Redirecting to ${role} login page...`);
-        // window.location.href = `/accounts/login/${role}/`;
-    }, 300);
 }
 
 // Animations
@@ -269,9 +318,9 @@ function initializeAnimations() {
 // System Theme Change Listener
 function initializeSystemThemeListener() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        const storedTheme = getStoredTheme();
+        const storedTheme = localStorage.getItem('selectedTheme');
         if (storedTheme === 'system') {
-            setTheme('system');
+            applyTheme('system');
         }
     });
 }
@@ -313,7 +362,7 @@ function initializeSettingsDropdown() {
     
     if (!settingsIcon || !settingsDropdown) return;
 
-    // Ensure ARIA attributes exist and initial visual state matches aria-hidden
+    // Ensure ARIA attributes exist
     settingsIcon.setAttribute('aria-haspopup', 'true');
     settingsIcon.setAttribute('aria-expanded', 'false');
     settingsDropdown.setAttribute('aria-hidden', 'true');
@@ -342,6 +391,10 @@ function initializeSettingsDropdown() {
         settingsIcon.focus();
     }
 
+    // Expose functions globally for event handlers
+    window.closeSettingsDropdown = closeSettingsDropdown;
+    window.toggleSettingsDropdown = toggleSettingsDropdown;
+
     // Toggle on click
     settingsIcon.addEventListener('click', function(e) {
         e.stopPropagation();
@@ -356,13 +409,11 @@ function initializeSettingsDropdown() {
         }
     });
 
-    // Language switcher - FIXED: Now properly calls setLanguage
+    // Language switcher
     document.querySelectorAll('.language-option').forEach(option => {
         option.addEventListener('click', function (evt) {
             evt.stopPropagation();
-            document.querySelectorAll('.language-option').forEach(o => o.classList.remove('active'));
-            this.classList.add('active');
-            setLanguage(this.dataset.lang); // This line was missing!
+            setLanguage(this.dataset.lang);
             closeSettingsDropdown();
         });
     });
@@ -371,9 +422,7 @@ function initializeSettingsDropdown() {
     document.querySelectorAll('.theme-option').forEach(option => {
         option.addEventListener('click', function (evt) {
             evt.stopPropagation();
-            document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
-            this.classList.add('active');
-            setTheme(this.dataset.theme);
+            handleThemeChange(this.dataset.theme);
             closeSettingsDropdown();
         });
     });

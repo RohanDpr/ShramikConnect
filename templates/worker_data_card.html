@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Worker Data | ShramikConnect Privacy {% endblock %}
+
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Data | ShramikConnect Privacy</title>
+    <!-- Base styles from privacy page -->
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/worker_data_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - WORKER DATA PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="worker_title">Worker Data</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the specific types of personal information we collect from workers on the ShramikConnect platform. We collect only the information necessary to help workers find suitable job opportunities and connect with employers.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Basic Account Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="basic_info_title">Basic Account Information</h3>
+                        <p data-i18n="basic_info_desc">When workers register on ShramikConnect, we collect essential account information:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user"></i> <span data-i18n="basic_info1">Full name</span></li>
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="basic_info2">Mobile number (verified via OTP)</span></li>
+                            <li><i class="fas fa-envelope"></i> <span data-i18n="basic_info3">Email address (optional)</span></li>
+                            <li><i class="fas fa-lock"></i> <span data-i18n="basic_info4">Password (encrypted)</span></li>
+                        </ul>
+                        <p data-i18n="basic_info_note">This information is necessary to create and maintain your worker account and to communicate with you about job opportunities.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Profile Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="profile_info_title">Profile Information</h3>
+                        <p data-i18n="profile_info_desc">To help employers find you and understand your capabilities, we collect additional profile details:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="profile_info1">Location (city/area where you're available for work)</span></li>
+                            <li><i class="fas fa-tools"></i> <span data-i18n="profile_info2">Skills and work categories (e.g., plumber, electrician, painter, construction worker, etc.)</span></li>
+                            <li><i class="fas fa-briefcase"></i> <span data-i18n="profile_info3">Work experience (years of experience, previous work history - optional)</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="profile_info4">Preferred working hours and availability</span></li>
+                            <li><i class="fas fa-rupee-sign"></i> <span data-i18n="profile_info5">Expected wages or payment preferences (optional)</span></li>
+                        </ul>
+                        <p data-i18n="profile_info_note">This information helps employers understand your skills and experience, making it easier for them to offer you relevant job opportunities.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Identity Verification Documents -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="identity_title">Identity Verification Documents</h3>
+                        <p data-i18n="identity_desc">To enhance trust and safety on the platform, we may request identity verification documents:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="identity1"><strong>Aadhar card</strong> - Optional but recommended for verification. Helps build trust with employers.</span></li>
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="identity2"><strong>PAN card</strong> - Optional alternative for identity verification.</span></li>
+                        </ul>
+                        
+                        <div class="important-box">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4 data-i18n="identity_storage_title">Secure Storage</h4>
+                                <p data-i18n="identity_storage_desc">When provided, identity documents are stored securely in our database and used only for verification purposes. We take appropriate measures to protect this sensitive information. You can choose not to provide these documents, but verified workers may receive more job opportunities from employers.</p>
+                            </div>
+                        </div>
+                        
+                        <p data-i18n="identity_note">Providing identity documents is completely voluntary. However, employers often prefer to hire workers who have completed verification as it increases trust.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Job Application Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="job_data_title">Job Application Data</h3>
+                        <p data-i18n="job_data_desc">When you apply for jobs or interact with employers, we collect information related to your job-seeking activities:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-history"></i> <span data-i18n="job_data1">Job application history (jobs you've applied for)</span></li>
+                            <li><i class="fas fa-comments"></i> <span data-i18n="job_data2">Messages exchanged with employers</span></li>
+                            <li><i class="fas fa-calendar-check"></i> <span data-i18n="job_data3">Job start dates and work duration (when applicable)</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="job_data4">Ratings and feedback received from employers</span></li>
+                        </ul>
+                        <p data-i18n="job_data_note">This information helps us improve your job recommendations and allows employers to see your work history and reliability.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Ratings and Feedback -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="ratings_title">Ratings and Feedback</h3>
+                        <p data-i18n="ratings_desc">After job completion, employers may provide ratings and feedback about your work:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-star"></i> <span data-i18n="ratings1"><strong>Star ratings</strong> - 1 to 5 stars based on work quality, behavior, punctuality, and professionalism</span></li>
+                            <li><i class="fas fa-comment"></i> <span data-i18n="ratings2"><strong>Written feedback</strong> - Comments about your work performance</span></li>
+                        </ul>
+                        
+                        <div class="note-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p data-i18n="ratings_note">Your ratings and feedback are visible to other employers on the platform. Good ratings can help you get more job opportunities. You cannot delete individual ratings, but you can respond to feedback if needed.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Worker Rights Regarding Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="worker_rights_title">Worker Rights Regarding Data</h3>
+                        <p data-i18n="worker_rights_desc">As a worker on ShramikConnect, you have the following rights regarding your data:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-eye"></i> <span data-i18n="worker_rights1"><strong>Access</strong> - Request a copy of your data anytime</span></li>
+                            <li><i class="fas fa-edit"></i> <span data-i18n="worker_rights2"><strong>Update</strong> - Edit your profile information through account settings</span></li>
+                            <li><i class="fas fa-trash-alt"></i> <span data-i18n="worker_rights3"><strong>Delete</strong> - Request account deletion via email (processed within 2 days)</span></li>
+                        </ul>
+                        <p data-i18n="worker_rights_note">For any requests related to your data, please contact us at <strong>support@shramikconnect.in</strong>.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice for Workers</span></h3>
+                <p data-i18n="important_notice_desc">The information you provide as a worker helps employers find and hire you. Providing accurate and complete information increases your chances of finding suitable work opportunities.</p>
+                <p data-i18n="important_notice_footer">You are in control of your profile. You can update your information at any time, and you have the right to request deletion of your account when you no longer wish to use ShramikConnect.</p>
+            </div>
+
+            <!-- Big Back to Privacy Policy Button -->
+            <div class="big-back">
+                <a href="/privacy_policy/" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_privacy">Back to Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/worker_data_card.js' %}"></script>
+</body>
+{% endblock %}

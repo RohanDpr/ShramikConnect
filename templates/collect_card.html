@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{%load static %}
+{% block title %} Information We Collect | ShramikConnect Privacy {% endblock %}
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information We Collect | ShramikConnect Privacy</title>
+    <!-- Base styles from privacy page -->
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" href="{% static 'css/collect_card.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<body class="light">
+    <!-- ============================================
+         SETTINGS ICON (Right Side)
+         ============================================ -->
+    <div class="settings-icon-right" id="settingsIconRight">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+    </div>
+
+    <!-- ============================================
+         SETTINGS DROPDOWN
+         ============================================ -->
+    <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="language">Language</h3>
+            <div class="language-switcher">
+                <button class="language-option active" data-lang="en">English</button>
+                <button class="language-option" data-lang="hi">हिन्दी</button>
+                <button class="language-option" data-lang="mr">मराठी</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h3 class="settings-heading" data-i18n="theme">Theme</h3>
+            <div class="theme-switcher">
+                <button class="theme-option active" data-theme="light">Light</button>
+                <button class="theme-option" data-theme="dark">Dark</button>
+                <button class="theme-option" data-theme="system">System</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SMALL BACK BUTTON (Go to previous page)
+         ============================================ -->
+    <div class="small-back">
+        <button class="small-back-btn" id="smallBackBtn">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="back">Back</span>
+        </button>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT - INFORMATION WE COLLECT PAGE
+         ============================================ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="collect_title">Information We Collect</h1>
+                
+                <!-- Last Updated -->
+                <div class="last-updated">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-i18n="last_updated">Last Updated: March 2026</span>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="overview-box">
+                <h2 data-i18n="overview_title">Overview</h2>
+                <p data-i18n="overview_desc">This section explains the types of personal information we collect from users of the ShramikConnect platform. We collect only the information necessary to provide our services and maintain a safe, trustworthy environment for workers and employers.</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="terms-content">
+                <!-- 1. Account Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">1.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="account_info_title">Account Information</h3>
+                        <p data-i18n="account_info_desc">When you create an account on ShramikConnect, we collect basic information required for registration:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-user"></i> <span data-i18n="account_info1">Full name</span></li>
+                            <li><i class="fas fa-mobile-alt"></i> <span data-i18n="account_info2">Mobile number (verified via OTP)</span></li>
+                            <li><i class="fas fa-envelope"></i> <span data-i18n="account_info3">Email address (optional)</span></li>
+                            <li><i class="fas fa-lock"></i> <span data-i18n="account_info4">Password (encrypted)</span></li>
+                        </ul>
+                        <p data-i18n="account_info_note">We do not allow users under 18 years of age to create accounts on our platform.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Profile Information -->
+                <section class="terms-section">
+                    <h2 class="section-number">2.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="profile_info_title">Profile Information</h3>
+                        <p data-i18n="profile_info_desc">To help workers and employers connect effectively, we collect additional profile details:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="profile_info1">Location (city/area)</span></li>
+                            <li><i class="fas fa-tools"></i> <span data-i18n="profile_info2">Skills and work category (for workers)</span></li>
+                            <li><i class="fas fa-briefcase"></i> <span data-i18n="profile_info3">Work experience (optional)</span></li>
+                            <li><i class="fas fa-star"></i> <span data-i18n="profile_info4">Ratings and feedback from employers/workers</span></li>
+                        </ul>
+                        <p data-i18n="profile_info_note">This information helps us match workers with relevant job opportunities and build trust within the community.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Identity Verification Documents -->
+                <section class="terms-section">
+                    <h2 class="section-number">3.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="identity_title">Identity Verification Documents</h3>
+                        <p data-i18n="identity_desc">In certain cases, we may request identity verification documents to enhance trust and safety on the platform:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="identity1">Aadhar card (optional but recommended for verification)</span></li>
+                            <li><i class="fas fa-id-card"></i> <span data-i18n="identity2">PAN card (optional alternative)</span></li>
+                        </ul>
+                        <div class="important-box">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4 data-i18n="identity_storage_title">Secure Storage</h4>
+                                <p data-i18n="identity_storage_desc">When provided, identity documents are stored securely in our database and used only for verification purposes. We take appropriate measures to protect this sensitive information.</p>
+                            </div>
+                        </div>
+                        <p data-i18n="identity_note">Providing identity documents is voluntary but may help build trust with employers and increase your chances of getting hired.</p>
+                    </div>
+                </section>
+
+                <!-- 4. Technical and Usage Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">4.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="technical_title">Technical and Usage Data</h3>
+                        <p data-i18n="technical_desc">When you use our platform, we automatically collect certain technical information:</p>
+                        <ul class="styled-list">
+                            <li><i class="fas fa-server"></i> <span data-i18n="technical1">Device information (browser type, operating system)</span></li>
+                            <li><i class="fas fa-network-wired"></i> <span data-i18n="technical2">IP address</span></li>
+                            <li><i class="fas fa-clock"></i> <span data-i18n="technical3">Usage patterns (pages visited, time spent)</span></li>
+                            <li><i class="fas fa-cookie-bite"></i> <span data-i18n="technical4">Cookies and similar tracking technologies</span></li>
+                        </ul>
+                        <p data-i18n="technical_note">This data helps us improve our services, fix technical issues, and enhance user experience.</p>
+                    </div>
+                </section>
+
+                <!-- 5. Hosting and Infrastructure -->
+                <section class="terms-section">
+                    <h2 class="section-number">5.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="hosting_title">Hosting and Infrastructure</h3>
+                        <p data-i18n="hosting_desc">ShramikConnect is hosted on <strong>Render</strong>, a cloud platform that provides reliable and secure hosting services. Your data is stored on Render's secure servers located in accordance with industry standards.</p>
+                        <p data-i18n="hosting_note">Render implements security measures to protect hosted data, and we choose trusted infrastructure partners to ensure your information remains safe.</p>
+                        <div class="note-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p data-i18n="hosting_info">For more information about Render's security practices, you can refer to their security documentation.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Information from Third Parties -->
+                <section class="terms-section">
+                    <h2 class="section-number">6.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="third_party_title">Information from Third Parties</h3>
+                        <p data-i18n="third_party_desc">We may receive information about you from third parties in limited circumstances:</p>
+                        <ul class="styled-list">
+                            <li><i class="fab fa-youtube"></i> <span data-i18n="third_party1">YouTube videos embedded on our platform (standard YouTube API)</span></li>
+                            <li><i class="fas fa-share-alt"></i> <span data-i18n="third_party2">Information shared by other users about you (e.g., feedback, ratings)</span></li>
+                        </ul>
+                        <p data-i18n="third_party_note">Embedded YouTube videos may collect data according to Google's privacy policy. We do not control how YouTube collects or uses this information.</p>
+                    </div>
+                </section>
+
+                <!-- 7. Children's Data -->
+                <section class="terms-section">
+                    <h2 class="section-number">7.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="children_title">Children's Data</h3>
+                        <p data-i18n="children_desc">ShramikConnect is not intended for users under 18 years of age. We do not knowingly collect personal information from individuals under 18.</p>
+                        <p data-i18n="children_note">If we become aware that we have collected personal information from a user under 18, we will take steps to delete that information.</p>
+                    </div>
+                </section>
+
+                <!-- 8. International Users -->
+                <section class="terms-section">
+                    <h2 class="section-number">8.</h2>
+                    <div class="section-content">
+                        <h3 data-i18n="international_title">International Users</h3>
+                        <p data-i18n="international_desc">Currently, ShramikConnect services are available only to users located in India. We do not intentionally collect data from international users.</p>
+                        <p data-i18n="international_note">If this changes in the future, we will update this policy accordingly.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="important-notice">
+                <h3><i class="fas fa-exclamation-triangle"></i> <span data-i18n="important_notice_title">Important Notice</span></h3>
+                <p data-i18n="important_notice_desc">ShramikConnect collects only the information necessary to provide our services and maintain a safe platform for workers and employers.</p>
+                <p data-i18n="important_notice_footer">We do not sell your personal information to third parties. Any sensitive data (such as identity documents) is stored securely and used only for verification purposes.</p>
+            </div>
+
+            <!-- Big Back to Privacy Policy Button -->
+            <div class="big-back">
+                <a href="/privacy_policy/" class="big-back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="back_to_privacy">Back to Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/collect_card.js' %}"></script>
+</body>
+{% endblock %}

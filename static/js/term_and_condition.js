@@ -42,15 +42,7 @@ const ALL_THEMES = ["light", "dark", "system"];
 // TERMS CARDS DATA - SIRF 9 CARDS (NO DUPLICATES)
 // ============================================
 const termsCards = [
-    {
-        id: 'intro',
-        icon: 'fa-file-contract',
-        titleKey: 'terms_intro_title',
-        descKey: 'terms_intro_desc',
-        tags: ['intro', 'overview'],
-        url: 'terms/introduction.html',
-        special: true
-    },
+   
     {
         id: 'eligibility',
         icon: 'fa-user-check',
@@ -437,9 +429,17 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    previousPage = localStorage.getItem('previousPage') || 'index.html';
+    // Get the previous page from localStorage
+    let previousPage = localStorage.getItem('previousPage');
     
-    [homeLink, navHome, logoContainer].forEach(el => {
+    // If no previous page exists, go to homepage
+    if (!previousPage) {
+        previousPage = '/';
+    }
+    
+    const homeElements = [homeLink, navHome, logoContainer];
+    
+    homeElements.forEach(el => {
         if (el) {
             el.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -501,9 +501,7 @@ function handleCardClick(cardId) {
     // =====================================
     switch(cardId) {
         
-        case 'intro':
-            window.location.href = '/terms/introduction/';  // ← APNA URL
-            break;
+       
         
         case 'eligibility':
             window.location.href = '/eligibility-card/';  // ← APNA URL
@@ -522,7 +520,7 @@ function handleCardClick(cardId) {
             break;
         
         case 'conduct':
-            window.location.href = '/terms/conduct/';  // ← APNA URL
+            window.location.href = '/conduct_card/';  // ← APNA URL
             break;
         
         case 'termination':
@@ -583,16 +581,22 @@ function setupEventListeners() {
 function init() {
     console.log('Terms & Conditions Page Initialized');
     
-    const currentPage = window.location.pathname.split('/').pop();
-    if (currentPage !== 'term_and_condition.html') {
-        localStorage.setItem('previousPage', currentPage);
+    // Save the previous page from referrer
+    const referrer = document.referrer;
+    const currentPage = window.location.href;
+    
+    // Only save if coming from another page on the same site
+    if (referrer && referrer !== currentPage && referrer.includes(window.location.hostname)) {
+        localStorage.setItem('previousPage', referrer);
+    } else if (!localStorage.getItem('previousPage')) {
+        // If no previous page, set default
+        localStorage.setItem('previousPage', '/');
     }
     
     const savedLanguage = localStorage.getItem('helpLanguage') || 'en';
-    handleLanguageChange(savedLanguage); // yeh andar createTermsCards() already call karta hai
+    handleLanguageChange(savedLanguage);
     initTheme();
     setupNavigation();
-    // createTermsCards() hataya — handleLanguageChange → applyLanguage → refreshCards se already ho jaata hai
     setupEventListeners();
 }
 

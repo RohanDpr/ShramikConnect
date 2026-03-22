@@ -366,9 +366,23 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    const prev = localStorage.getItem('previousPage') || 'index.html';
-    [homeLink, navHome, logoContainer].forEach(el => {
-        if (el) el.addEventListener('click', (e) => { e.preventDefault(); window.location.href = prev; });
+    // Get the previous page from localStorage
+    let previousPage = localStorage.getItem('previousPage');
+    
+    // If no previous page exists, go to homepage
+    if (!previousPage) {
+        previousPage = '/';
+    }
+    
+    const homeElements = [homeLink, navHome, logoContainer];
+    
+    homeElements.forEach(el => {
+        if (el) {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = previousPage;
+            });
+        }
     });
 }
 
@@ -440,15 +454,29 @@ function setupEventListeners() {
 // ============================================
 // INIT
 // ============================================
+
 function init() {
-    localStorage.setItem('previousPage', window.location.pathname.split('/').pop() || 'privacy_policy.html');
-    const savedLang = localStorage.getItem('helpLanguage') || 'en';
+    console.log('Privacy Policy Page Initialized');
+    
+    // Save the previous page from referrer
+    const referrer = document.referrer;
+    const currentPage = window.location.href;
+    
+    // Only save if coming from another page on the same site
+    if (referrer && referrer !== currentPage && referrer.includes(window.location.hostname)) {
+        localStorage.setItem('previousPage', referrer);
+    } else if (!localStorage.getItem('previousPage')) {
+        // If no previous page, set default
+        localStorage.setItem('previousPage', '/');
+    }
+    
+    const savedLang = localStorage.getItem('privacyLanguage') || 'en';
     handleLanguageChange(savedLang);
+    
     initTheme();
     setupNavigation();
     createPrivacyCards();
     setupEventListeners();
 }
-
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();

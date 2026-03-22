@@ -1,6 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Meet Our Developers | ShramikConnect {% endblock %}
+
+{% block head %}
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +21,8 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+{% endblock %}
+{% block content %}
 <body class="light">
     <!-- ============================================
          SETTINGS ICON (Right Side)
@@ -89,7 +94,7 @@
                         <div class="team-card" data-pos="-2">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_1.png" alt="Nagesh Daberao" class="dev-img">
+                                    <img src="/static/images/nagnow.png" alt="Nagesh Daberao" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Nagesh <span>Daberao</span></h3>
                                         <p class="dev-role">Co-Founder & Frontend Developer</p>
@@ -109,14 +114,14 @@
                                             </div>
                                             <div class="back-social-grid">
                                                 <div class="social-row">
-                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="https://www.instagram.com/nage_sh210?igsh=YXYzazNqaHFxYWox"><i class="fab fa-instagram"></i></a>
                                                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                                                     <a href="#"><i class="fab fa-x-twitter"></i></a>
                                                 </div>
                                                 <div class="social-row">
-                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                                    <a href="#"><i class="fab fa-youtube"></i></a>
-                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                    <a href="https://www.linkedin.com/in/nagesh-daberao-0b4308360?utm_source=share_via&utm_content=profile&utm_medium=member_android"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="https://youtube.com/@nagnow?si=aQ7lSECZL4B4rbpB"><i class="fab fa-youtube"></i></a>
+                                                    <a href=""><i class="fas fa-envelope"></i></a>
                                                 </div>
                                             </div>
                                             <!-- Small Know More Button -->
@@ -134,7 +139,7 @@
                         <div class="team-card" data-pos="-1">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_2.png" alt="Rohan Dharpawar" class="dev-img">
+                                    <img src="/static/images/rohan.png" alt="Rohan Dharpawar" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Rohan <span>Dharpawar</span></h3>
                                         <p class="dev-role">Co-Founder & Backend Developer</p>
@@ -176,58 +181,57 @@
                         </div>
 
                         <!-- Developer Card 3: Shaan Shukla (Center - Highlighted) exact copy from about.html -->
-                        <div class="team-card center-highlight" data-pos="0">
-                            <div class="card-inner">
-                                <div class="card-front">
-                                    <img src="images/dev_3.png" alt="Shaan Shukla" class="dev-img">
-                                    <div class="dev-info">
-                                        <h3>Shaan <span>Shukla</span></h3>
-                                        <p class="dev-role">Founder & Frontend + Backend Developer</p>
-                                    </div>
-                                    <div class="featured-badge">
-                                        <i class="fas fa-crown"></i>
-                                    </div>
-                                </div>
-                                <div class="card-back">
-                                    <div class="back-content-scroll">
-                                        <div class="back-content">
-                                            <h3>Shaan Shukla <span class="highlight-star">⭐</span></h3>
-                                            <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
-                                            <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
-                                            <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
-                                            <div class="skill-tags">
-                                                <span class="skill-tag">cyber security</span>
-                                                <span class="skill-tag">ai</span>
-                                                <span class="skill-tag">ml</span>
-                                            </div>
-                                            <div class="back-social-grid">
-                                                <div class="social-row">
-                                                    <a href="#"><i class="fab fa-instagram"></i></a>
-                                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                                    <a href="#"><i class="fab fa-x-twitter"></i></a>
-                                                </div>
-                                                <div class="social-row">
-                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                                    <a href="#"><i class="fab fa-youtube"></i></a>
-                                                    <a href="#"><i class="fas fa-envelope"></i></a>
-                                                </div>
-                                            </div>
-                                            <!-- Small Know More Button - Primary style for center -->
-                                            <a href="shaan.html" class="know-more-back-btn primary" data-developer="shaan">
-                                                <span>Know more</span>
-                                                <i class="fas fa-arrow-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                       <!-- Developer Card 3: Shaan Shukla (Center - Highlighted) exact copy from about.html -->
+<div class="team-card center-highlight" data-pos="0">
+    <div class="card-inner">
+        <div class="card-front">
+            <img src="/static/images/shukla.png" alt="Shaan Shukla" class="dev-img">
+            <div class="dev-info">
+                <h3>Shaan <span>Shukla</span></h3>
+                <p class="dev-role">Founder & Frontend + Backend Developer</p>
+            </div>
+            <!-- featured-badge REMOVED as requested -->
+        </div>
+        <div class="card-back">
+            <div class="back-content-scroll">
+                <div class="back-content">
+                    <h3>Shaan Shukla <span class="highlight-star"></span></h3>
+                    <p class="back-highlight"><strong>Passionate Software Developer</strong></p>
+                    <p class="back-college">From <strong>Government Polytechnic Khamgaon</strong></p>
+                    <p class="back-description">Focused on building impactful digital solutions, solving real-world problems, and continuously growing in the world of technology and innovation.</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">cyber security</span>
+                        <span class="skill-tag">ai</span>
+                        <span class="skill-tag">ml</span>
+                    </div>
+                    <div class="back-social-grid">
+                        <div class="social-row">
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-x-twitter"></i></a>
                         </div>
+                        <div class="social-row">
+                            <a href="https://www.linkedin.com/in/shaan-shukla-1b583837b"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            <a href="mailto:shaanshuklaoriginal@gmail.com"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                    <!-- Small Know More Button - Primary style for center -->
+                    <a href="shaan.html" class="know-more-back-btn primary" data-developer="shaan">
+                        <span>Know more</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                         <!-- Developer Card 4: Mohmmad Wasif (exact copy from about.html) -->
                         <div class="team-card" data-pos="1">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_4.png" alt="Mohmmad Wasif" class="dev-img">
+                                    <img src="/static/images/wasu.png" alt="Mohmmad Wasif" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Mohmmad <span>Wasif</span></h3>
                                         <p class="dev-role">Co-Founder & Frontend Developer</p>
@@ -247,14 +251,14 @@
                                             </div>
                                             <div class="back-social-grid">
                                                 <div class="social-row">
-                                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                                    <a href="https://www.instagram.com/mohdwasif_05?igsh=MWVzdzhxcG9uMzNxbw=="><i class="fab fa-instagram"></i></a>
                                                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                                                     <a href="#"><i class="fab fa-x-twitter"></i></a>
                                                 </div>
                                                 <div class="social-row">
-                                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                                    <a href="https://www.linkedin.com/in/mohammad-wasif-7196653b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin-in"></i></a>
                                                     <a href="#"><i class="fab fa-youtube"></i></a>
-                                                    <a href="#"><i class="fas fa-envelope"></i></a>
+                                                    <a href="mailto:wasif18112005@gmail.com"><i class="fas fa-envelope"></i></a>
                                                 </div>
                                             </div>
                                             <!-- Small Know More Button -->
@@ -272,7 +276,7 @@
                         <div class="team-card" data-pos="2">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <img src="images/dev_5.png" alt="Sumedh Ingle" class="dev-img">
+                                    <img src="/static/images/sumedha.png" alt="Sumedh Ingle" class="dev-img">
                                     <div class="dev-info">
                                         <h3>Sumedh <span>Ingle</span></h3>
                                         <p class="dev-role">Co-Founder & Frontend Developer</p>
@@ -330,4 +334,4 @@
 
     <script src="{% static 'js/contact_developer_card.js'%}"></script>
 </body>
-</html>
+{% endblock %}

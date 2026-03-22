@@ -1,12 +1,19 @@
-<!DOCTYPE html>
-{%load static%}
-<html lang="en">
-<head>
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Privacy Policy | ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy | ShramikConnect</title>
     <!-- CSS -->
     <link rel="stylesheet" href="/static/css/privacy_policy.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -1195,16 +1202,28 @@ body {
 /* ============================================
    FOOTER
    ============================================ */
-.footer {
+
+   .footer {
     background: var(--footer-bg);
     color: var(--footer-text);
     padding: 60px 0 30px;
     position: relative;
     overflow: hidden;
-    margin-top: 0;
+    margin-top: 50px;
     border-top: 2px solid var(--border-black);
+    transition: all 0.3s ease;
 }
 
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ============================================
+   FOOTER WAVE ANIMATION
+   ============================================ */
 .footer-wave {
     position: absolute;
     top: -50px;
@@ -1223,9 +1242,12 @@ body {
 }
 
 .footer-wave .shape-fill {
-    fill: var(--bg-primary);
+    fill: var(--wave-fill);
 }
 
+/* ============================================
+   FOOTER CONTENT LAYOUT
+   ============================================ */
 .footer-content {
     display: flex;
     justify-content: space-between;
@@ -1235,6 +1257,7 @@ body {
     margin-bottom: 30px;
 }
 
+/* Brand Section */
 .footer-brand {
     flex: 1;
     min-width: 280px;
@@ -1263,8 +1286,10 @@ body {
 
 .tagline {
     font-size: 0.95rem;
+    color: var(--footer-text);
     opacity: 0.8;
     margin-bottom: 15px;
+    line-height: 1.5;
 }
 
 .copyright {
@@ -1273,6 +1298,7 @@ body {
     margin-top: 15px;
 }
 
+/* Footer Links */
 .footer-links {
     display: flex;
     gap: 50px;
@@ -1289,6 +1315,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 15px;
+    color: var(--footer-text);
     position: relative;
     padding-bottom: 5px;
 }
@@ -1303,6 +1330,7 @@ body {
     transition: width 0.3s ease;
 }
 
+/* Column Title Underline Colors */
 .links-column:nth-child(1) .column-title::after {
     background: var(--accent-1);
 }
@@ -1315,6 +1343,23 @@ body {
     background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
 }
 
+/* Hover Effects on Columns */
+.links-column:nth-child(1):hover .column-title::after {
+    width: 40px;
+    background: var(--accent-2);
+}
+
+.links-column:nth-child(2):hover .column-title::after {
+    width: 40px;
+    background: var(--accent-1);
+}
+
+.links-column:nth-child(3):hover .column-title::after {
+    width: 40px;
+    background: var(--accent-2);
+}
+
+/* Footer Links */
 .footer-link {
     color: var(--footer-text);
     text-decoration: none;
@@ -1324,8 +1369,7 @@ body {
     opacity: 0.8;
 }
 
-.footer-link:nth-child(odd):hover,
-.footer-link.active {
+.footer-link:nth-child(odd):hover {
     color: var(--accent-1);
     transform: translateX(4px);
     opacity: 1;
@@ -1337,6 +1381,9 @@ body {
     opacity: 1;
 }
 
+/* ============================================
+   SOCIAL MEDIA ICONS
+   ============================================ */
 .footer-bottom {
     display: flex;
     justify-content: center;
@@ -1348,39 +1395,186 @@ body {
 .social-links {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .social-link {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border-black);
-    border-radius: var(--border-radius-circle);
+    width: 42px;
+    height: 42px;
+    border: 2px solid var(--border-black);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--footer-text);
     text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine Effect */
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.social-link:hover::before {
+    left: 100%;
+}
+
+.social-link i {
+    font-size: 18px;
     transition: all 0.3s ease;
-    background: transparent;
-    opacity: 0.7;
+    position: relative;
+    z-index: 2;
 }
 
-.social-link:nth-child(odd):hover {
-    background: var(--accent-1);
-    border-color: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateY(-3px) scale(1.1);
-    opacity: 1;
+/* Individual Icon Hover Effects */
+
+/* Instagram */
+.social-link:nth-child(1):hover {
+    background: radial-gradient(circle at 30% 30%, #fdf497, #fdf497, #fd5949, #d6249f, #285AEB);
+    border-color: transparent;
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(225, 48, 108, 0.4);
+}
+.social-link:nth-child(1):hover i {
+    color: white;
+    transform: scale(1.1);
 }
 
-.social-link:nth-child(even):hover {
-    background: var(--accent-2);
-    border-color: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateY(-3px) scale(1.1);
-    opacity: 1;
+/* Facebook */
+.social-link:nth-child(2):hover {
+    background: #1877F2;
+    border-color: #1877F2;
+    transform: translateY(-8px) scale(1.15) rotate(360deg);
+    box-shadow: 0 10px 20px rgba(24, 119, 242, 0.4);
+}
+.social-link:nth-child(2):hover i {
+    color: white;
 }
 
+/* YouTube */
+.social-link:nth-child(3):hover {
+    background: #FF0000;
+    border-color: #FF0000;
+    transform: translateY(-8px) scale(1.15) rotateX(10deg);
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+}
+.social-link:nth-child(3):hover i {
+    color: white;
+    animation: youtubePulse 0.8s ease;
+}
+
+/* X (Twitter) */
+.social-link:nth-child(4):hover {
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-8px) scale(1.15) rotate(10deg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+.social-link:nth-child(4):hover i {
+    color: white;
+}
+
+/* Email */
+.social-link:nth-child(5):hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+.social-link:nth-child(5):hover i {
+    color: white;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes youtubePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+    
+    .column-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-link:hover {
+        transform: translateY(-2px) !important;
+    }
+    
+    .social-links {
+        gap: 12px;
+    }
+    
+    .social-link {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .social-link i {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-links {
+        gap: 8px;
+    }
+    
+    .social-link {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+.footer-link:focus-visible,
+.social-link:focus-visible {
+    outline: 2px solid var(--accent-1);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .social-link:hover {
+        transform: translateY(-2px) scale(1.05) !important;
+    }
+}
 /* ============================================
    RESPONSIVE DESIGN
    ============================================ */
@@ -1517,7 +1711,8 @@ body {
     }
 }
     </style>
-</head>
+{% endblock %}
+{% block content %}
 <body>
     <!-- ============================================
          SIDEBAR (EXACT COPY FROM ABOUT PAGE)
@@ -1543,23 +1738,23 @@ body {
             </div>
             
             <div class="sidebar-menu">
-                <a href="help_and_contact_page.html" class="menu-item-box">
+                <a href="/help_and_contact/" class="menu-item-box">
                     <i class="fas fa-question-circle"></i>
                     <span data-i18n="help_contact">Help & Contact</span>
                 </a>
-                <a href="#" class="menu-item-box" id="homeLink">
+                <a href="/" class="menu-item-box" id="homeLink">
                     <i class="fas fa-home"></i>
                     <span data-i18n="home">Home</span>
                 </a>
-                <a href="about.html" class="menu-item-box">
+                <a href="/about/" class="menu-item-box">
                     <i class="fas fa-info-circle"></i>
                     <span data-i18n="about">About</span>
                 </a>
-                <a href="term_and_condition.html" class="menu-item-box">
+                <a href="/term_and_condition/" class="menu-item-box">
                     <i class="fas fa-file-contract"></i>
                     <span data-i18n="terms_conditions">Terms & Conditions</span>
                 </a>
-                <a href="privacy_policy.html" class="menu-item-box active">
+                <a href="/privacy_policy/" class="menu-item-box active">
                     <i class="fas fa-shield-alt"></i>
                     <span data-i18n="privacy_policy">Privacy Policy</span>
                 </a>
@@ -1610,11 +1805,11 @@ body {
                 <i class="fas fa-home"></i>
                 <span class="nav-text" data-i18n="home">Home</span>
             </a>
-            <a href="help_and_contact_page.html" class="nav-link" data-i18n="help">
+            <a href="/help_and_contact/" class="nav-link" data-i18n="help">
                 <i class="fas fa-question-circle"></i>
                 <span class="nav-text" data-i18n="help">Help</span>
             </a>
-            <a href="about.html" class="nav-link" data-i18n="about">
+            <a href="/about/" class="nav-link" data-i18n="about">
                 <i class="fas fa-info-circle"></i>
                 <span class="nav-text" data-i18n="about">About</span>
             </a>
@@ -1655,51 +1850,80 @@ body {
          FOOTER (EXACT COPY FROM ABOUT PAGE)
     ============================================ -->
     <footer class="footer">
-        <div class="footer-wave">
-            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
-                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
-                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
-            </svg>
-        </div>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="brand-text" id="brandText">
-                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
-                    </div>
-                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
-                    <p class="copyright" data-i18n="copyright">&copy; 2025 ShramikConnect. All rights reserved.</p>
+    <!-- Wave Animation -->
+    <div class="footer-wave">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <div class="footer-content">
+            <!-- Brand Section -->
+            <div class="footer-brand">
+                <div class="brand-text" id="brandText">
+                    <span class="shramik">Shramik</span><span class="connect">Connect</span>
                 </div>
-                <div class="footer-links">
-                    <div class="links-column">
-                        <h3 class="column-title">Platform</h3>
-                        <a href="#" class="footer-link">For Workers</a>
-                        <a href="#" class="footer-link">For Employers</a>
-                    </div>
-                    <div class="links-column">
-                        <h3 class="column-title">Company</h3>
-                        <a href="about.html" class="footer-link" data-i18n="about">About</a>
-                        <a href="#" class="footer-link">How It Works</a>
-                    </div>
-                    <div class="links-column">
-                        <h3 class="column-title">Support</h3>
-                        <a href="help_and_contact_page.html" class="footer-link" data-i18n="help_contact">Help & Contact</a>
-                        <a href="privacy_policy.html" class="footer-link active" data-i18n="privacy">Privacy Policy</a>
-                        <a href="term_and_condition.html" class="footer-link" data-i18n="terms">Terms & Conditions</a>
-                    </div>
-                </div>
+                <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                <p class="copyright" data-i18n="copyright">© 2025 ShramikConnect. All rights reserved.</p>
             </div>
-            <div class="footer-bottom">
-                <div class="social-links">
-                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-link" aria-label="X (Twitter)"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            
+            <!-- Footer Links -->
+            <div class="footer-links">
+                <div class="links-column">
+                    <h3 class="column-title" data-i18n="platform">Platform</h3>
+                    <a href="/login_worker/" class="footer-link" data-i18n="for_workers">For Workers</a>
+                    <a href="/login_employer/" class="footer-link" data-i18n="for_employers">For Employers</a>
+                </div>
+                
+                <div class="links-column">
+                    <h3 class="column-title" data-i18n="company">Company</h3>
+                    <a href="/about/" class="footer-link" data-i18n="about">About</a>
+                    <a href="/how-platform-works/" class="footer-link" data-i18n="how_it_works">How It Works</a>
+                </div>
+                
+                <div class="links-column">
+                    <h3 class="column-title" data-i18n="support">Support</h3>
+                    <a href="/help_and_contact/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                    <a href="/privacy_policy/" class="footer-link" data-i18n="privacy">Privacy Policy</a>
+                    <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
                 </div>
             </div>
         </div>
-    </footer>
+        
+        <!-- SOCIAL MEDIA LINKS - with YouTube and X -->
+        <div class="footer-bottom">
+            <div class="social-links">
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                
+                <!-- YouTube -->
+                <a href="https://www.youtube.com/@ShramikConnect" class="social-link" aria-label="YouTube" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                
+                <!-- X (Twitter) -->
+                <a href="https://x.com/shramikconnect" class="social-link" aria-label="X (Twitter)" target="_blank">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                
+                <!-- Email -->
+                <a href="mailto:team.shramikconnect@gmail.com" class="social-link" aria-label="Email" target="_blank">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
 
     <script src="/static/js/privacy_policy.js"></script>
     <script>
@@ -1773,20 +1997,7 @@ const privacyCards = [
         descKey: 'privacy_location_desc',
         tags: ['location', 'gps', 'tracking']
     },
-    {
-        id: 'payments',
-        icon: 'fa-credit-card',
-        titleKey: 'privacy_payments_title',
-        descKey: 'privacy_payments_desc',
-        tags: ['payment', 'transaction', 'financial']
-    },
-    {
-        id: 'cookies',
-        icon: 'fa-cookie-bite',
-        titleKey: 'privacy_cookies_title',
-        descKey: 'privacy_cookies_desc',
-        tags: ['cookies', 'tracking', 'preferences']
-    },
+    
     {
         id: 'security',
         icon: 'fa-shield-halved',
@@ -1968,9 +2179,23 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    const prev = localStorage.getItem('previousPage') || 'index.html';
-    [homeLink, navHome, logoContainer].forEach(el => {
-        if (el) el.addEventListener('click', (e) => { e.preventDefault(); window.location.href = prev; });
+    // Get the previous page from localStorage
+    let previousPage = localStorage.getItem('previousPage');
+    
+    // If no previous page exists, go to homepage
+    if (!previousPage) {
+        previousPage = '/';
+    }
+    
+    const homeElements = [homeLink, navHome, logoContainer];
+    
+    homeElements.forEach(el => {
+        if (el) {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = previousPage;
+            });
+        }
     });
 }
 
@@ -1984,51 +2209,44 @@ function handleCardClick(cardId) {
     switch(cardId) {
         
         case 'collect':
-            window.location.href = '/privacy/collect/';  // ← APNA URL
+            window.location.href = '/collect-card/';  // ← APNA URL
             break;
         
         case 'use':
-            window.location.href = '/privacy/use/';  // ← APNA URL
+            window.location.href = '/use_data_card/';  // ← APNA URL
             break;
         
         case 'worker':
-            window.location.href = '/privacy/worker/';  // ← APNA URL
+            window.location.href = '/worker_data_card/';  // ← APNA URL
             break;
         
         case 'employer':
-            window.location.href = '/privacy/employer/';  // ← APNA URL
+            window.location.href = '/employer_data_card/';  // ← APNA URL
             break;
         
         case 'location':
             window.location.href = '/location-data-card/';  // ← APNA URL
             break;
-        
-        case 'payments':
-            window.location.href = '/privacy/payments/';  // ← APNA URL
-            break;
-        
-        case 'cookies':
-            window.location.href = '/privacy/cookies/';  // ← APNA URL
-            break;
+    
         
         case 'security':
-            window.location.href = '/privacy/security/';  // ← APNA URL
+            window.location.href = '/data_security/';  // ← APNA URL
             break;
         
         case 'sharing':
-            window.location.href = '/privacy/sharing/';  // ← APNA URL
+            window.location.href = '/data_sharing/';  // ← APNA URL
             break;
         
         case 'rights':
-            window.location.href = '/privacy/rights/';  // ← APNA URL
+            window.location.href = '/user_rights/';  // ← APNA URL
             break;
         
         case 'retention':
-            window.location.href = '/privacy/retention/';  // ← APNA URL
+            window.location.href = '/data_retention/';  // ← APNA URL
             break;
         
         case 'contact':
-            window.location.href = '/privacy/contact/';  // ← APNA URL
+            window.location.href = '/help_and_contact/';  // ← APNA URL
             break;
         
         default:
@@ -2110,14 +2328,24 @@ function setupEventListeners() {
 function init() {
     console.log('Privacy Policy Page Initialized');
     
-    const currentPage = window.location.pathname.split('/').pop() || 'privacy_policy.html';
-    localStorage.setItem('previousPage', currentPage);
+    // Save the previous page from referrer
+    const referrer = document.referrer;
+    const currentPage = window.location.href;
+    
+    // Only save if coming from another page on the same site
+    if (referrer && referrer !== currentPage && referrer.includes(window.location.hostname)) {
+        localStorage.setItem('previousPage', referrer);
+    } else if (!localStorage.getItem('previousPage')) {
+        // If no previous page, set default
+        localStorage.setItem('previousPage', '/');
+    }
     
     const savedLang = localStorage.getItem('privacyLanguage') || 'en';
     handleLanguageChange(savedLang);
     
     initTheme();
     setupNavigation();
+    createPrivacyCards();
     setupEventListeners();
 }
 
@@ -2129,4 +2357,4 @@ if (document.readyState === 'loading') {
 }
     </script>
 </body>
-</html>
+{% endblock %}

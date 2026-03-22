@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Worker Signup | BlueCollar Jobs {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Signup | BlueCollar Jobs</title>
@@ -37,7 +40,7 @@
         window.firebaseAuth = auth;
         window.RecaptchaVerifier = RecaptchaVerifier;
         window.signInWithPhoneNumber = signInWithPhoneNumber;
-    </script> -->
+    </script>
 </head>
 <body class="light-theme">
     <!-- Settings Icon -->
@@ -696,4 +699,4 @@
 
     <script src="{% static 'js/worker/signup_worker.js' %}"></script>
 </body>
-</html>
+{% endblock %}

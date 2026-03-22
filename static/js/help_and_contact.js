@@ -748,28 +748,24 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    previousPage = localStorage.getItem('previousPage') || 'index.html';
+    // Get the previous page from localStorage
+    let previousPage = localStorage.getItem('previousPage');
     
-    if (homeLink) {
-        homeLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = previousPage;
-        });
+    // If no previous page exists, go to homepage
+    if (!previousPage) {
+        previousPage = '/';
     }
     
-    if (navHome) {
-        navHome.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = previousPage;
-        });
-    }
+    const homeElements = [homeLink, navHome, logoContainer];
     
-    if (logoContainer) {
-        logoContainer.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = previousPage;
-        });
-    }
+    homeElements.forEach(el => {
+        if (el) {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = previousPage;
+            });
+        }
+    });
 }
 
 // ============================================
@@ -1609,41 +1605,29 @@ function handleWindowResize() {
 // ============================================
 // INITIALIZATION
 // ============================================
-
 function init() {
-    console.log('Enhanced Help & Contact Page Initialized with 3-theme system');
+    console.log('Enhanced Help & Contact Page Initialized');
     
-    // Save current page as previous for home navigation
-    const currentPage = window.location.pathname.split('/').pop();
-    if (currentPage !== 'help_and_contact_page.html') {
-        localStorage.setItem('previousPage', currentPage);
+    // Save the previous page from referrer
+    const referrer = document.referrer;
+    const currentPage = window.location.href;
+    
+    if (referrer && referrer !== currentPage && referrer.includes(window.location.hostname)) {
+        localStorage.setItem('previousPage', referrer);
+    } else if (!localStorage.getItem('previousPage')) {
+        localStorage.setItem('previousPage', '/');
     }
     
-    // Load preferences
     const savedLanguage = localStorage.getItem('helpLanguage') || 'en';
-    
-    // Apply language
     handleLanguageChange(savedLanguage);
-    
-    // Apply theme with clean logic
     initTheme();
-    
-    // Setup navigation
     setupNavigation();
-    
-    // Create dynamic content
     createHelpCards();
     createFAQ();
-    
-    // Setup forms and services
     setupForm();
     setupChatFunctions();
     setupFAQChatButtons();
-    
-    // Setup event listeners
     setupEventListeners();
-    
-    // Initial FAQ search results count
     filterFAQ('');
 }
 

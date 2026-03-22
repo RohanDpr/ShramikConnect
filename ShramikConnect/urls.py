@@ -48,6 +48,18 @@ urlpatterns = [
     path('dispute-resolution-card/', views.dispute_resolution_card, name='dispute_resolution_card'),
     path('liability-card/', views.liability_card, name='liability_card'),
     path('location-data-card/', views.location_data_card, name='location_data_card'),
+    path('collect-card/', views.collect_card, name='collect_card'),
+    path('use_data_card/', views.use_data_card, name='use_data_card'),
+    path('worker_data_card/', views.worker_data_card, name='worker_data_card'),
+    path('employer_data_card/', views.employer_data_card, name='employer_data_card'),
+    path('data_security/', views.data_security, name='data_security'),
+    path('data_sharing/', views.data_sharing, name='data_sharing'),
+    path('user_rights/', views.user_rights, name='user_rights'),
+    path('data_retention/', views.data_retention, name='data_retention'),
+    path('conduct_card/', views.conduct_card, name='conduct_card'),
+    path('employer_edit_profile_page/', views.employer_edit_profile_page, name='employer_edit_profile_page'),
+    path('worker_edit_profile_page/', views.worker_edit_profile_page, name='worker_edit_profile_page'),
+    path('know_more_about_developers/', views.know_more_about_developers, name='know_more_about_developers'),
 
     # Info pages
     path('forgot_password_card/', views.forgot_password_card, name='forgot_password_card'),
