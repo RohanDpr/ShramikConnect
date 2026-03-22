@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="en">
+{% block title %} ShramikConnect - Choose Your Role {% endblock %}
 
-<head>
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShramikConnect - Choose Your Role</title>
@@ -16,9 +16,9 @@
     <!-- Font Awesome 6 - X (Twitter) icon ke saath -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="{% static 'images/logo/Logo only.png' %}">
-</head>
+{% endblock %}
 
-<body>
+{% block content %}
     <!-- Settings Icon -->
     <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -223,4 +223,4 @@
     <script src="{% static 'js/role_selection.js' %}"></script>
 </body>
 
-</html>
+{% endblock %}
