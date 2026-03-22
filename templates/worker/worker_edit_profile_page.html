@@ -1,6 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Edit Profile | Worker · ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile | Worker · ShramikConnect</title>
@@ -781,7 +785,9 @@ body.dark-theme .verification-section h4 { color: #E2E8F0; }
     .photo-btn { flex: 1; justify-content: center; }
 }  
     </style>
-</head>
+{% endblock %}
+
+{% block content %}
 <body class="light-theme">
     <!-- Notification Container -->
     <div class="notification-wrapper" id="notificationWrapper"></div>
@@ -1701,4 +1707,4 @@ function showNotification(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>
+{% endblock %}

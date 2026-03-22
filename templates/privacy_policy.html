@@ -1,7 +1,10 @@
-<!DOCTYPE html>
-{%load static%}
-<html lang="en">
-<head>
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Privacy Policy | ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy | ShramikConnect</title>
@@ -1708,7 +1711,8 @@ body {
     }
 }
     </style>
-</head>
+{% endblock %}
+{% block content %}
 <body>
     <!-- ============================================
          SIDEBAR (EXACT COPY FROM ABOUT PAGE)
@@ -2353,4 +2357,4 @@ if (document.readyState === 'loading') {
 }
     </script>
 </body>
-</html>
+{% endblock %}

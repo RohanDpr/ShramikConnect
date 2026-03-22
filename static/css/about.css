@@ -1064,9 +1064,15 @@ body.dark-theme {
 }
 
 @media (max-width: 768px) {
+    .hero-video-section {
+        height: 65vh;
+        background: #ffffff;
+    }
+
     .hero-video {
         object-fit: contain;
         background: #ffffff;
+        transform: scale(1.18);
     }
 }
 

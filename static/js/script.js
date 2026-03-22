@@ -112,6 +112,45 @@ const translations = {
 };
 
 // ============================================
+// POPUP TRANSLATIONS (EN, HI, MR)
+// ============================================
+const popupTranslations = {
+    en: {
+        popup_lang_label:    'Language',
+        popup_title:         '⚠️ Important Notice',
+        popup_line1:         'This website is currently hosted for <strong>testing purposes only.</strong> Please use it carefully.',
+        popup_line2:         'You hire someone or go to work for someone <strong>entirely at your own risk.</strong>',
+        popup_line3:         'If you face any kind of <strong>fraud or cheating</strong>, please immediately <strong>contact the Police.</strong>',
+        popup_line4:         'The website owners are <strong>not responsible</strong> for any disputes, fraud, or losses that occur through this platform.',
+        popup_choose_lang:   '🌐 CHOOSE YOUR LANGUAGE',
+        popup_translate_hint:'Select a language — it will apply across all pages as long as you are on this website.',
+        popup_btn:           'I Understand, Continue →'
+    },
+    hi: {
+        popup_lang_label:    'भाषा',
+        popup_title:         '⚠️ महत्वपूर्ण सूचना',
+        popup_line1:         'यह वेबसाइट फिलहाल केवल <strong>परीक्षण उद्देश्यों के लिए</strong> होस्ट की गई है। कृपया इसे सावधानी से उपयोग करें।',
+        popup_line2:         'आप किसी को काम पर रखते हैं या किसी के यहाँ काम करने जाते हैं — यह <strong>पूरी तरह आपके अपने जोखिम पर है।</strong>',
+        popup_line3:         'यदि आपके साथ किसी भी प्रकार का <strong>धोखा या फ्रॉड</strong> होता है, तो कृपया तुरंत <strong>पुलिस से संपर्क करें।</strong>',
+        popup_line4:         'वेबसाइट के मालिक इस प्लेटफ़ॉर्म के माध्यम से होने वाले किसी भी विवाद, धोखे या नुकसान के लिए <strong>जिम्मेदार नहीं हैं।</strong>',
+        popup_choose_lang:   '🌐 अपनी भाषा चुनें',
+        popup_translate_hint:'एक भाषा चुनें — यह तब तक सभी पेजों पर लागू रहेगी जब तक आप इस वेबसाइट पर हैं।',
+        popup_btn:           'मैं समझ गया, आगे बढ़ें →'
+    },
+    mr: {
+        popup_lang_label:    'भाषा',
+        popup_title:         '⚠️ महत्त्वाची सूचना',
+        popup_line1:         'ही वेबसाइट सध्या केवळ <strong>चाचणी उद्देशाने</strong> होस्ट केली आहे. कृपया ती काळजीपूर्वक वापरा.',
+        popup_line2:         'तुम्ही कोणाला कामावर ठेवता किंवा कोणाकडे काम करायला जाता — हे <strong>पूर्णपणे तुमच्या स्वतःच्या जोखमीवर आहे.</strong>',
+        popup_line3:         'जर तुमच्यासोबत कोणत्याही प्रकारची <strong>फसवणूक</strong> झाली, तर कृपया त्वरित <strong>पोलिसांशी संपर्क करा.</strong>',
+        popup_line4:         'वेबसाइट मालक या प्लॅटफॉर्मद्वारे होणाऱ्या कोणत्याही वाद, फसवणूक किंवा नुकसानीसाठी <strong>जबाबदार नाहीत.</strong>',
+        popup_choose_lang:   '🌐 तुमची भाषा निवडा',
+        popup_translate_hint:'एक भाषा निवडा — जोपर्यंत तुम्ही या वेबसाइटवर आहात तोपर्यंत ती सर्व पेजांवर लागू राहील.',
+        popup_btn:           'मला समजले, पुढे जा →'
+    }
+};
+
+// ============================================
 // THEME MANAGEMENT (3 THEMES)
 // ============================================
 const ALL_THEMES = ['light', 'dark', 'system'];
@@ -203,24 +242,391 @@ function closeSettingsOnClickOutside(e) {
 }
 
 // ============================================
-// VIDEO HANDLING
+// VIDEO HANDLING — play once after popup closes
 // ============================================
-function handleVideoAutoplay() {
-    const video = document.querySelector('.hero-video');
+function startVideoOnce() {
+    const video = document.getElementById('mainVideo');
     const fallback = document.getElementById('videoFallback');
     if (!video) return;
 
-    video.play().catch(() => {
+    // Only play if not already played
+    if (video.dataset.played === 'true') return;
+    video.dataset.played = 'true';
+
+    // Force muted — required for autoplay in all browsers
+    video.muted = true;
+    video.volume = 0;
+
+    // If video not loaded yet, wait for it
+    if (video.readyState === 0) {
+        video.load();
+    }
+
+    const tryPlay = () => {
+        video.play().then(() => {
+            console.log('Video playing ✅');
+        }).catch((err) => {
+            console.warn('Video play failed:', err);
+            // Still try once more after small delay
+            setTimeout(() => {
+                video.muted = true;
+                video.play().catch(() => {
+                    if (fallback) {
+                        fallback.classList.add('active');
+                        video.style.display = 'none';
+                    }
+                });
+            }, 500);
+        });
+    };
+
+    if (video.readyState >= 3) {
+        tryPlay();
+    } else {
+        video.addEventListener('canplay', tryPlay, { once: true });
+        // Also try after 1s regardless
+        setTimeout(tryPlay, 1000);
+    }
+
+    video.addEventListener('error', (e) => {
+        console.warn('Video error:', e);
         if (fallback) {
             fallback.classList.add('active');
             video.style.display = 'none';
         }
     });
 
-    video.addEventListener('error', () => {
-        if (fallback) {
-            fallback.classList.add('active');
-            video.style.display = 'none';
+    // Stop after one play — no loop
+    video.addEventListener('ended', () => {
+        video.pause();
+    });
+}
+
+function handleVideoAutoplay() {
+    // Video starts after popup close
+    // Fallback: if popup already hidden on load, play immediately
+    const overlay = document.getElementById('popupOverlay');
+    if (!overlay || overlay.classList.contains('hidden')) {
+        startVideoOnce();
+    }
+}
+
+// ============================================
+// CUSTOM LANGUAGE DROPDOWN — Google Translate cookie method
+// Works on all pages, persists via googtrans cookie
+// ============================================
+const LANGUAGES = [
+    { code: 'en',    name: 'English',                flag: '🇬🇧' },
+    { code: 'hi',    name: 'हिन्दी (Hindi)',           flag: '🇮🇳' },
+    { code: 'mr',    name: 'मराठी (Marathi)',          flag: '🇮🇳' },
+    { code: 'af',    name: 'Afrikaans',               flag: '🌍' },
+    { code: 'sq',    name: 'Albanian',                flag: '🇦🇱' },
+    { code: 'ar',    name: 'العربية (Arabic)',         flag: '🇸🇦' },
+    { code: 'hy',    name: 'Armenian',                flag: '🇦🇲' },
+    { code: 'az',    name: 'Azerbaijani',             flag: '🇦🇿' },
+    { code: 'eu',    name: 'Basque',                  flag: '🌍' },
+    { code: 'be',    name: 'Belarusian',              flag: '🇧🇾' },
+    { code: 'bn',    name: 'বাংলা (Bengali)',          flag: '🇧🇩' },
+    { code: 'bs',    name: 'Bosnian',                 flag: '🇧🇦' },
+    { code: 'bg',    name: 'Bulgarian',               flag: '🇧🇬' },
+    { code: 'ca',    name: 'Catalan',                 flag: '🌍' },
+    { code: 'zh-CN', name: '中文简体 (Chinese Simplified)', flag: '🇨🇳' },
+    { code: 'zh-TW', name: '中文繁體 (Chinese Traditional)', flag: '🇹🇼' },
+    { code: 'hr',    name: 'Croatian',                flag: '🇭🇷' },
+    { code: 'cs',    name: 'Czech',                   flag: '🇨🇿' },
+    { code: 'da',    name: 'Danish',                  flag: '🇩🇰' },
+    { code: 'nl',    name: 'Dutch',                   flag: '🇳🇱' },
+    { code: 'et',    name: 'Estonian',                flag: '🇪🇪' },
+    { code: 'tl',    name: 'Filipino',                flag: '🇵🇭' },
+    { code: 'fi',    name: 'Finnish',                 flag: '🇫🇮' },
+    { code: 'fr',    name: 'Français (French)',       flag: '🇫🇷' },
+    { code: 'gl',    name: 'Galician',                flag: '🌍' },
+    { code: 'ka',    name: 'Georgian',                flag: '🇬🇪' },
+    { code: 'de',    name: 'Deutsch (German)',        flag: '🇩🇪' },
+    { code: 'el',    name: 'Ελληνικά (Greek)',        flag: '🇬🇷' },
+    { code: 'gu',    name: 'ગુજરાતી (Gujarati)',      flag: '🇮🇳' },
+    { code: 'ht',    name: 'Haitian Creole',          flag: '🇭🇹' },
+    { code: 'he',    name: 'עברית (Hebrew)',           flag: '🇮🇱' },
+    { code: 'hu',    name: 'Hungarian',               flag: '🇭🇺' },
+    { code: 'id',    name: 'Indonesian',              flag: '🇮🇩' },
+    { code: 'ga',    name: 'Irish',                   flag: '🇮🇪' },
+    { code: 'it',    name: 'Italiano (Italian)',      flag: '🇮🇹' },
+    { code: 'ja',    name: '日本語 (Japanese)',        flag: '🇯🇵' },
+    { code: 'kn',    name: 'ಕನ್ನಡ (Kannada)',         flag: '🇮🇳' },
+    { code: 'ko',    name: '한국어 (Korean)',           flag: '🇰🇷' },
+    { code: 'lv',    name: 'Latvian',                 flag: '🇱🇻' },
+    { code: 'lt',    name: 'Lithuanian',              flag: '🇱🇹' },
+    { code: 'mk',    name: 'Macedonian',              flag: '🇲🇰' },
+    { code: 'ms',    name: 'Malay',                   flag: '🇲🇾' },
+    { code: 'ml',    name: 'മലയാളം (Malayalam)',      flag: '🇮🇳' },
+    { code: 'mt',    name: 'Maltese',                 flag: '🇲🇹' },
+    { code: 'ne',    name: 'नेपाली (Nepali)',          flag: '🇳🇵' },
+    { code: 'no',    name: 'Norwegian',               flag: '🇳🇴' },
+    { code: 'fa',    name: 'فارسی (Persian)',         flag: '🇮🇷' },
+    { code: 'pl',    name: 'Polish',                  flag: '🇵🇱' },
+    { code: 'pt',    name: 'Português (Portuguese)', flag: '🇵🇹' },
+    { code: 'pa',    name: 'ਪੰਜਾਬੀ (Punjabi)',        flag: '🇮🇳' },
+    { code: 'ro',    name: 'Romanian',                flag: '🇷🇴' },
+    { code: 'ru',    name: 'Русский (Russian)',       flag: '🇷🇺' },
+    { code: 'sr',    name: 'Serbian',                 flag: '🇷🇸' },
+    { code: 'sk',    name: 'Slovak',                  flag: '🇸🇰' },
+    { code: 'sl',    name: 'Slovenian',               flag: '🇸🇮' },
+    { code: 'es',    name: 'Español (Spanish)',       flag: '🇪🇸' },
+    { code: 'sw',    name: 'Swahili',                 flag: '🌍' },
+    { code: 'sv',    name: 'Swedish',                 flag: '🇸🇪' },
+    { code: 'ta',    name: 'தமிழ் (Tamil)',           flag: '🇮🇳' },
+    { code: 'te',    name: 'తెలుగు (Telugu)',         flag: '🇮🇳' },
+    { code: 'th',    name: 'ภาษาไทย (Thai)',          flag: '🇹🇭' },
+    { code: 'tr',    name: 'Türkçe (Turkish)',        flag: '🇹🇷' },
+    { code: 'uk',    name: 'Ukrainian',               flag: '🇺🇦' },
+    { code: 'ur',    name: 'اردو (Urdu)',             flag: '🇵🇰' },
+    { code: 'vi',    name: 'Vietnamese',              flag: '🇻🇳' },
+    { code: 'cy',    name: 'Welsh',                   flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
+    { code: 'yi',    name: 'Yiddish',                 flag: '✡️' },
+];
+
+let customLangOpen = false;
+
+function setGoogTransCookie(lang) {
+    // Google Translate reads this cookie to apply translation across pages
+    if (lang === 'en') {
+        // Remove cookie to reset to English
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+    } else {
+        const val = '/en/' + lang;
+        document.cookie = 'googtrans=' + val + '; path=/';
+        document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
+    }
+    localStorage.setItem('sc_language', lang);
+}
+
+function getSelectedLang() {
+    return localStorage.getItem('sc_language') || 'en';
+}
+
+function buildLangOptions(filter) {
+    const list = document.getElementById('langOptionsList');
+    if (!list) return;
+    const query = (filter || '').toLowerCase();
+    const filtered = LANGUAGES.filter(l =>
+        l.name.toLowerCase().includes(query) || l.code.toLowerCase().includes(query)
+    );
+    list.innerHTML = filtered.map(l => `
+        <div class="lang-option-item ${getSelectedLang() === l.code ? 'selected' : ''}"
+             data-code="${l.code}" data-name="${l.name}">
+            <span class="lang-opt-flag">${l.flag}</span>
+            <span class="lang-opt-name">${l.name}</span>
+            ${getSelectedLang() === l.code ? '<span class="lang-opt-check">✓</span>' : ''}
+        </div>
+    `).join('');
+
+    // Attach click events
+    list.querySelectorAll('.lang-option-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const code = item.dataset.code;
+            const name = item.dataset.name;
+            selectLanguage(code, name);
+        });
+    });
+}
+
+function selectLanguage(code, name) {
+    // Update display
+    const langName = document.getElementById('customLangName');
+    const langFlag = document.querySelector('.custom-lang-selected .lang-flag');
+    const found = LANGUAGES.find(l => l.code === code);
+    if (langName) langName.textContent = found ? found.name : name;
+    if (langFlag) langFlag.textContent = found ? found.flag : '🌐';
+
+    // Save to localStorage
+    localStorage.setItem('sc_language', code);
+
+    // Rebuild list to show checkmark
+    buildLangOptions(document.getElementById('langSearchInput')?.value || '');
+
+    // Close dropdown
+    closeLangDropdown();
+
+    // Use Google Translate's doGTranslate function directly
+    // This is the proper way — no reload needed
+    const tryTranslate = () => {
+        if (typeof doGTranslate === 'function') {
+            if (code === 'en') {
+                doGTranslate('en|en');
+            } else {
+                doGTranslate('en|' + code);
+            }
+        } else {
+            // doGTranslate not ready yet — set cookie and reload as fallback
+            const val = code === 'en' ? '' : '/en/' + code;
+            if (code === 'en') {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+            } else {
+                document.cookie = 'googtrans=' + val + '; path=/';
+                document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
+            }
+            setTimeout(() => window.location.reload(), 300);
+        }
+    };
+
+    // Try immediately, retry after short delay if not ready
+    if (typeof doGTranslate === 'function') {
+        tryTranslate();
+    } else {
+        setTimeout(tryTranslate, 800);
+    }
+}
+
+function openLangDropdown() {
+    const dropdown = document.getElementById('customLangDropdown');
+    const select   = document.getElementById('customLangSelect');
+    const input    = document.getElementById('langSearchInput');
+    if (!dropdown) return;
+    customLangOpen = true;
+    dropdown.classList.add('open');
+    select && select.classList.add('active');
+    buildLangOptions('');
+    setTimeout(() => input && input.focus(), 50);
+}
+
+function closeLangDropdown() {
+    const dropdown = document.getElementById('customLangDropdown');
+    const select   = document.getElementById('customLangSelect');
+    if (!dropdown) return;
+    customLangOpen = false;
+    dropdown.classList.remove('open');
+    select && select.classList.remove('active');
+}
+
+function initCustomLangDropdown() {
+    const selected = document.getElementById('customLangSelected');
+    const input    = document.getElementById('langSearchInput');
+    if (!selected) return;
+
+    // Set current selection display
+    const currentCode = getSelectedLang();
+    const currentLang = LANGUAGES.find(l => l.code === currentCode);
+    const langName = document.getElementById('customLangName');
+    const langFlag = document.querySelector('.custom-lang-selected .lang-flag');
+    if (currentLang) {
+        if (langName) langName.textContent = currentLang.name;
+        if (langFlag) langFlag.textContent = currentLang.flag;
+    }
+
+    // Toggle open/close
+    selected.addEventListener('click', (e) => {
+        e.stopPropagation();
+        customLangOpen ? closeLangDropdown() : openLangDropdown();
+    });
+
+    // Search filter
+    input && input.addEventListener('input', () => {
+        buildLangOptions(input.value);
+    });
+    input && input.addEventListener('click', e => e.stopPropagation());
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!document.getElementById('customLangSelect')?.contains(e.target)) {
+            closeLangDropdown();
+        }
+    });
+
+    // Build initial list
+    buildLangOptions('');
+}
+
+// ============================================
+// POPUP MANAGEMENT
+// ============================================
+let currentPopupLang = 'en';
+
+function applyPopupLanguage(lang) {
+    currentPopupLang = lang;
+    const t = popupTranslations[lang] || popupTranslations.en;
+
+    // Update all data-popup-i18n elements with innerHTML (supports <strong>)
+    document.querySelectorAll('[data-popup-i18n]').forEach(el => {
+        const key = el.getAttribute('data-popup-i18n');
+        if (t[key] !== undefined) {
+            el.innerHTML = t[key];
+        }
+    });
+
+    // Update active popup lang buttons
+    document.querySelectorAll('.popup-lang-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.popupLang === lang);
+    });
+}
+
+function closePopup() {
+    const overlay = document.getElementById('popupOverlay');
+    if (!overlay) return;
+
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.35s ease';
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        // Start video after popup closes
+        startVideoOnce();
+    }, 350);
+}
+
+function initPopup() {
+    const overlay    = document.getElementById('popupOverlay');
+    const closeBtn   = document.getElementById('popupCloseBtn');
+    const understandBtn = document.getElementById('popupUnderstandBtn');
+    const settingsIcon  = document.getElementById('popupSettingsIcon');
+    const settingsDropdown = document.getElementById('popupSettingsDropdown');
+
+    if (!overlay) return;
+
+    // Set initial popup language based on saved page language
+    const savedLang = localStorage.getItem('helpLanguage') || 'en';
+    const popupLang = ['en', 'hi', 'mr'].includes(savedLang) ? savedLang : 'en';
+    applyPopupLanguage(popupLang);
+
+    // Init custom language dropdown
+    initCustomLangDropdown();
+
+    // Close buttons
+    closeBtn && closeBtn.addEventListener('click', closePopup);
+    understandBtn && understandBtn.addEventListener('click', closePopup);
+
+    // Close on overlay background click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closePopup();
+    });
+
+    // Popup Settings Icon toggle
+    if (settingsIcon && settingsDropdown) {
+        settingsIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+
+        // Close popup dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!settingsIcon.contains(e.target) && !settingsDropdown.contains(e.target)) {
+                settingsDropdown.classList.remove('active');
+            }
+        });
+    }
+
+    // Popup language buttons
+    document.querySelectorAll('.popup-lang-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            applyPopupLanguage(btn.dataset.popupLang);
+            if (settingsDropdown) settingsDropdown.classList.remove('active');
+        });
+    });
+
+    // ESC key closes popup
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) {
+            closePopup();
         }
     });
 }
@@ -281,6 +687,9 @@ function initializeAnimations() {
 // INITIALIZATION
 // ============================================
 function init() {
+    // Initialize popup first
+    initPopup();
+
     // Load saved language or default to 'en'
     const savedLang = localStorage.getItem('helpLanguage') || 'en';
     handleLanguageChange(savedLang);

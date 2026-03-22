@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="en">
-<head>
+{% block title %} About | ShramikConnect {% endblock %}
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | ShramikConnect</title>
@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
+{% endblock %}
+{% block content %}
     <!-- ============================================
          SIDEBAR (EXACT COPY FROM HELP PAGE)
     ============================================ -->
@@ -125,7 +125,7 @@
         <!-- 1️⃣ HERO VIDEO SECTION (NO TEXT, NO LOOP) -->
         <section class="hero-video-section">
     <div class="video-container">
-        <video class="hero-video" autoplay muted loop playsinline
+        <video class="hero-video" autoplay muted playsinline
                poster="images/fallback-poster.jpg" 
                aria-label="Background video showing ShramikConnect platform">
             <source src="/static/images/Landing_video.mp4" type="video/mp4">
@@ -702,4 +702,4 @@
 
     <script src="{% static 'js/about.js' %}"></script>
 </body>
-</html>
+{% endblock %}

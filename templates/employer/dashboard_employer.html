@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Employer Dashboard | ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employer Dashboard | ShramikConnect</title>
@@ -12,7 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-</head>
+{% endblock %}
+{% block content %}
 <body class="light-theme">
     <!-- ============================================
          NOTIFICATION CONTAINER
@@ -1279,4 +1283,4 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="{% static 'js/employer/dashboard_employer.js' %}"></script>
 </body>
-</html>
+{% endblock %}

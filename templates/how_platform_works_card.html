@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} How ShramikConnect Works | Platform Guide {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How ShramikConnect Works | Platform Guide</title>
@@ -17,7 +20,8 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+{% endblock %}
+{% block content %}
 <body class="light">
     <!-- ============================================
          SETTINGS ICON (Right Side)
@@ -406,4 +410,4 @@
 
      <script src="{% static 'js/how_platform_works_card.js' %}"></script>
 </body>
-</html>
+{% endblock %}
