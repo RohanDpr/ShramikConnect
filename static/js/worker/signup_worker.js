@@ -162,10 +162,6 @@ let mobileResendTimeLeft = 60;
 let termsPopupTimer = null;
 let termsPopupCountdown = 10;
 
-// 🔥 FIREBASE VARIABLES
-let firebaseRecaptchaVerifier = null;
-let firebaseConfirmationResult = null;
-
 // Password strength texts for different languages
 const passwordStrengthTexts = {
     weak: { en: 'Weak', hi: 'कमजोर', mr: 'कमकुवत' },
@@ -357,29 +353,6 @@ const translations = {
 };
 
 // ============================================
-// 🔥 FIREBASE SETUP FUNCTION
-// ============================================
-function setupFirebaseRecaptcha() {
-    if (!firebaseRecaptchaVerifier && window.firebaseAuth) {
-        try {
-            firebaseRecaptchaVerifier = new window.RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
-                'size': 'invisible',
-                'callback': (response) => {
-                    console.log('✅ reCAPTCHA verified');
-                },
-                'expired-callback': () => {
-                    console.log('❌ reCAPTCHA expired');
-                    showNotification('Info', 'reCAPTCHA expired. Please try again.', 'info');
-                }
-            });
-            console.log('✅ Firebase reCAPTCHA setup complete');
-        } catch (error) {
-            console.error('❌ Firebase setup error:', error);
-        }
-    }
-}
-
-// ============================================
 // INITIALIZATION
 // ============================================
 
@@ -398,18 +371,6 @@ function init() {
     updateProgressBar();
     initializeDOB();
     termsCheckbox.disabled = false;
-    
-    // Setup Firebase when step 2 becomes active
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class') {
-                if (step2.classList.contains('active')) {
-                    setupFirebaseRecaptcha();
-                }
-            }
-        });
-    });
-    observer.observe(step2, { attributes: true });
 }
 
 function loadPreferences() {
@@ -1100,185 +1061,143 @@ function updateMobileResendText() {
 }
 
 /**
- * 🔥 Handle Get Mobile OTP - Firebase Version
+ * Handle Get Mobile OTP - Fast2SMS Version
  */
 function handleGetMobileOtp() {
     const mobile = mobileInput.value.trim();
-    
+
     if (!validateMobileInput()) {
         showNotification('Error', 'Please enter a valid 10-digit mobile number', 'error');
         return;
     }
-    
-    // Pehle check karo mobile already exists ya nahi
-    fetch(`/api/check-mobile-exists/?mobile=${encodeURIComponent(mobile)}`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.exists) {
-            showNotification('Error', 'This mobile number is already registered', 'error');
-            return;
-        }
-        
-        // Mobile exists nahi karta, proceed with Firebase OTP
-        userData.mobile = mobile;
-        
-        // UI updates
-        getMobileOtpBtn.disabled = true;
-        const originalText = getMobileOtpBtn.innerHTML;
-        getMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
-        
-        // Setup reCAPTCHA
-        setupFirebaseRecaptcha();
-        
-        // Firebase se OTP bhejo
-        const phoneNumber = '+91' + mobile; // India country code
-        
-        window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, firebaseRecaptchaVerifier)
-            .then((confirmationResult) => {
-                // OTP sent successfully
-                firebaseConfirmationResult = confirmationResult;
-                console.log('✅ OTP sent via Firebase');
-                
-                // Show OTP input section
-                mobileOtpSection.classList.add('active');
-                mobileOtpInput.value = '';
-                mobileDisplay.textContent = `OTP sent to ${mobile}`;
-                mobileDisplay.classList.add('show');
-                
-                // Hide Get OTP button, show OTP section
-                getMobileOtpBtn.classList.add('hidden');
-                
-                // Start 60 second timer
-                startMobileResendCountdown();
-                
-                showNotification('OTP Sent!', 'OTP has been sent to your mobile', 'success');
-            })
-            .catch((error) => {
-                console.error('❌ Firebase error:', error);
-                
-                // Handle specific errors
-                let errorMessage = error.message;
-                if (error.code === 'auth/invalid-phone-number') {
-                    errorMessage = 'Invalid mobile number. Please enter a valid Indian number.';
-                } else if (error.code === 'auth/too-many-requests') {
-                    errorMessage = 'Too many attempts. Please try after some time.';
-                } else if (error.code === 'auth/quota-exceeded') {
-                    errorMessage = 'Free quota exceeded. Please try email verification.';
-                }
-                
-                showNotification('Error', errorMessage, 'error');
-                
-                // Reset button
-                getMobileOtpBtn.disabled = false;
-                getMobileOtpBtn.innerHTML = originalText;
-            });
+
+    userData.mobile = mobile;
+
+    getMobileOtpBtn.disabled = true;
+    const originalHTML = getMobileOtpBtn.innerHTML;
+    getMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
+
+    fetch('/api/send-mobile-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ mobile: mobile })
     })
-    .catch(error => {
-        console.error('Error checking mobile:', error);
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            mobileOtpSection.classList.add('active');
+            mobileOtpInput.value = '';
+            mobileDisplay.textContent = `OTP sent to ${mobile}`;
+            mobileDisplay.classList.add('show');
+            getMobileOtpBtn.classList.add('hidden');
+            startMobileResendCountdown();
+            showNotification('OTP Sent!', data.message, 'success');
+        } else {
+            showNotification('Error', data.message, 'error');
+            getMobileOtpBtn.disabled = false;
+            getMobileOtpBtn.innerHTML = originalHTML;
+        }
+    })
+    .catch(() => {
         showNotification('Error', 'Network error. Please try again.', 'error');
+        getMobileOtpBtn.disabled = false;
+        getMobileOtpBtn.innerHTML = originalHTML;
     });
 }
 
 /**
- * 🔥 Handle Verify Mobile OTP - Firebase Version
+ * Handle Verify Mobile OTP - Fast2SMS Version
  */
 function handleVerifyMobileOtp() {
     const enteredOtp = mobileOtpInput.value.trim();
-    
+
     if (!validateMobileOtp()) {
         showNotification('Error', 'Please enter a valid 6-digit OTP', 'error');
         return;
     }
-    
-    if (!firebaseConfirmationResult) {
-        showNotification('Error', 'Please request OTP first', 'error');
-        return;
-    }
-    
-    // Disable verify button
+
     verifyMobileOtpBtn.disabled = true;
-    const originalText = verifyMobileOtpBtn.innerHTML;
+    const originalHTML = verifyMobileOtpBtn.innerHTML;
     verifyMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Verifying...</span>';
-    
-    // Firebase se OTP verify karayo
-    firebaseConfirmationResult.confirm(enteredOtp)
-        .then((result) => {
-            // Success! Phone number verified
-            const user = result.user;
-            console.log('✅ Mobile verified:', user.phoneNumber);
-            
-            // Update userData
+
+    fetch('/api/verify-mobile-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ mobile: userData.mobile, otp: enteredOtp })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
             userData.mobileVerified = true;
-            
-            // Update UI
+
             mobileStatus.classList.add('verified');
             mobileStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Mobile Verified</span>';
-            
+
             mobileOtpSection.classList.remove('active');
             mobileDisplay.classList.remove('show');
-            
-            // Clear timer
+
             if (mobileResendCountdown) {
                 clearInterval(mobileResendCountdown);
                 mobileResendCountdown = null;
             }
-            
+
             showNotification('Success!', 'Mobile number verified successfully', 'success');
-            
-            // Validate step 2
             validateStep2();
-        })
-        .catch((error) => {
-            console.error('❌ Verification error:', error);
-            
-            let errorMessage = 'Invalid OTP. Please try again.';
-            if (error.code === 'auth/invalid-verification-code') {
-                errorMessage = 'Wrong OTP. Please check and try again.';
-            } else if (error.code === 'auth/code-expired') {
-                errorMessage = 'OTP expired. Please request new OTP.';
-            }
-            
-            showNotification('Error', errorMessage, 'error');
-            
-            // Reset button
+        } else {
+            showNotification('Error', data.message, 'error');
             verifyMobileOtpBtn.disabled = false;
-            verifyMobileOtpBtn.innerHTML = originalText;
-            
+            verifyMobileOtpBtn.innerHTML = originalHTML;
             mobileOtpInput.value = '';
             validateMobileOtp();
-        });
+        }
+    })
+    .catch(() => {
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        verifyMobileOtpBtn.disabled = false;
+        verifyMobileOtpBtn.innerHTML = originalHTML;
+    });
 }
 
 /**
- * 🔥 Handle Resend Mobile OTP - Firebase Version
+ * Handle Resend Mobile OTP - Fast2SMS Version
  */
 function handleResendMobileOtp() {
     resendMobileOtpBtn.disabled = true;
-    const originalText = mobileResendText.innerHTML;
+    const originalHTML = mobileResendText.innerHTML;
     mobileResendText.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
-    
-    // Firebase se dobara OTP bhejo
-    const phoneNumber = '+91' + userData.mobile;
-    
-    window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, firebaseRecaptchaVerifier)
-        .then((confirmationResult) => {
-            firebaseConfirmationResult = confirmationResult;
-            console.log('✅ OTP resent via Firebase');
-            
+
+    fetch('/api/resend-mobile-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ mobile: userData.mobile })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
             mobileOtpInput.value = '';
             verifyMobileOtpBtn.disabled = true;
-            
             startMobileResendCountdown();
-            
-            showNotification('OTP Sent!', 'New OTP sent to your mobile', 'success');
-        })
-        .catch((error) => {
-            console.error('❌ Firebase error:', error);
-            showNotification('Error', error.message, 'error');
-            
+            showNotification('OTP Sent!', data.message, 'success');
+        } else {
+            showNotification('Error', data.message, 'error');
             resendMobileOtpBtn.disabled = false;
-            mobileResendText.innerHTML = originalText;
-        });
+            mobileResendText.innerHTML = originalHTML;
+        }
+    })
+    .catch(() => {
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        resendMobileOtpBtn.disabled = false;
+        mobileResendText.innerHTML = originalHTML;
+    });
 }
 
 // ============================================

@@ -141,3 +141,8 @@ SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
 
 # OTP Settings
 OTP_EXPIRY_MINUTES = 5
+
+# ============================================
+# FAST2SMS CONFIGURATION
+# ============================================
+FAST2SMS_API_KEY = os.environ.get('FAST2SMS_API_KEY', '')

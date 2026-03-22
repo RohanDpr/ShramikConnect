@@ -2030,46 +2030,61 @@ def check_email_exists(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def send_mobile_otp(request):
-    """
-    Send OTP to mobile number
-    Currently using console backend for development
-    """
+    """Send OTP to mobile number via Fast2SMS"""
     try:
         data = json.loads(request.body)
         mobile = data.get('mobile')
-        
+
         if not mobile:
             return JsonResponse({
                 'success': False,
                 'message': 'Mobile number is required'
             })
-        
+
         # Check if mobile already registered
         if Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists():
             return JsonResponse({
                 'success': False,
                 'message': 'This mobile number is already registered. Please login or use a different number.'
             })
-        
-        # Generate OTP
+
+        # Generate OTP and save to DB
         otp = MobileOTP.generate_otp()
-        
-        # Save to database
         MobileOTP.objects.create(mobile=mobile, otp=otp)
-        
-        # For development - log OTP to console
-        print(f"📱 OTP for {mobile}: {otp}")
-        
-        # TODO: Integrate with SMS service like MSG91, Twilio, etc.
-        # For now, we'll just return success and show OTP in response for testing
-        # REMOVE THIS IN PRODUCTION!
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'OTP sent successfully to your mobile',
-            'otp': otp  # Remove in production!
-        })
-        
+
+        # Send via Fast2SMS
+        import requests as http_requests
+        api_key = settings.FAST2SMS_API_KEY
+
+        url = "https://www.fast2sms.com/dev/bulkV2"
+        payload = {
+            "message": f"Your ShramikConnect OTP is {otp}. Valid for 5 minutes. Do not share with anyone.",
+            "language": "english",
+            "route": "q",
+            "numbers": mobile,
+        }
+        headers = {
+            "authorization": api_key,
+            "Content-Type": "application/json"
+        }
+
+        response = http_requests.post(url, json=payload, headers=headers, timeout=10)
+        result = response.json()
+        logger.info(f"Fast2SMS send_otp response: {result}")
+
+        if result.get('return') is True:
+            return JsonResponse({
+                'success': True,
+                'message': 'OTP sent successfully to your mobile'
+            })
+        else:
+            error_msg = result.get('message', ['SMS sending failed'])[0] if isinstance(result.get('message'), list) else result.get('message', 'SMS sending failed')
+            logger.error(f"Fast2SMS error: {result}")
+            return JsonResponse({
+                'success': False,
+                'message': error_msg
+            })
+
     except json.JSONDecodeError:
         return JsonResponse({
             'success': False,
@@ -2154,39 +2169,61 @@ def verify_mobile_otp(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def resend_mobile_otp(request):
-    """Resend mobile OTP"""
+    """Resend mobile OTP via Fast2SMS"""
     try:
         data = json.loads(request.body)
         mobile = data.get('mobile')
-        
+
         if not mobile:
             return JsonResponse({
                 'success': False,
                 'message': 'Mobile number is required'
             })
-        
+
         # Check if mobile already registered
         if Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists():
             return JsonResponse({
                 'success': False,
                 'message': 'This mobile number is already registered. Please login or use a different number.'
             })
-        
-        # Generate new OTP
+
+        # Generate new OTP and save to DB
         otp = MobileOTP.generate_otp()
-        
-        # Save to database
         MobileOTP.objects.create(mobile=mobile, otp=otp)
-        
-        # For development - log OTP to console
-        print(f"📱 New OTP for {mobile}: {otp}")
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'New OTP sent successfully to your mobile',
-            'otp': otp  # Remove in production!
-        })
-        
+
+        # Send via Fast2SMS
+        import requests as http_requests
+        api_key = settings.FAST2SMS_API_KEY
+
+        url = "https://www.fast2sms.com/dev/bulkV2"
+        payload = {
+            "message": f"Your ShramikConnect OTP is {otp}. Valid for 5 minutes. Do not share with anyone.",
+            "language": "english",
+            "route": "q",
+            "numbers": mobile,
+        }
+        headers = {
+            "authorization": api_key,
+            "Content-Type": "application/json"
+        }
+
+        response = http_requests.post(url, json=payload, headers=headers, timeout=10)
+        result = response.json()
+        logger.info(f"Fast2SMS resend_otp response: {result}")
+
+        if result.get('return') is True:
+            return JsonResponse({
+                'success': True,
+                'message': 'New OTP sent successfully to your mobile'
+            })
+        else:
+            error_msg = result.get('message', ['SMS sending failed'])[0] if isinstance(result.get('message'), list) else result.get('message', 'SMS sending failed')
+            logger.error(f"Fast2SMS error: {result}")
+            return JsonResponse({
+                'success': False,
+                'message': error_msg
+            })
+
     except json.JSONDecodeError:
         return JsonResponse({
             'success': False,
