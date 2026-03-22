@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Employer Login | Find Your Next Talent {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employer Login | Find Your Next Talent</title>
@@ -10,7 +13,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+{% endblock %}
+{% block content %}
 <body class="light-theme">
     <!-- Settings Icon (EXACT AS GIVEN - NO CHANGES) -->
     <div class="settings-icon" id="settingsIcon" aria-label="Settings" tabindex="0" role="button">
@@ -206,4 +210,4 @@
 
     <script src="{% static 'js/employer/login_employer.js' %}?v=2"></script>
 </body>
-</html>
+{% endblock %}
