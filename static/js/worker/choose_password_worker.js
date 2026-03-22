@@ -241,17 +241,8 @@ function closeSettingsOnClickOutside(event) {
  * Redirects to worker_get_password.html
  */
 function handleGetPassword() {
-    console.log('Get Password button clicked - Redirecting to worker_get_password.html');
-    
-    // Add click feedback
+    // Animation only - navigation handled by <a> tag in HTML
     getPasswordBtn.style.transform = 'scale(0.98)';
-    
-    // Redirect after short delay
-    setTimeout(() => {
-        window.location.href = 'worker_get_password.html';
-    }, 150);
-    
-    // Reset button style
     setTimeout(() => {
         getPasswordBtn.style.transform = 'scale(1)';
     }, 200);
@@ -262,17 +253,8 @@ function handleGetPassword() {
  * Redirects to worker_change_password.html
  */
 function handleResetPassword() {
-    console.log('Reset Password button clicked - Redirecting to worker_change_password.html');
-    
-    // Add click feedback
+    // Animation only - navigation handled by <a> tag in HTML
     resetPasswordBtn.style.transform = 'scale(0.98)';
-    
-    // Redirect after short delay
-    setTimeout(() => {
-        window.location.href = 'worker_change_password.html';
-    }, 150);
-    
-    // Reset button style
     setTimeout(() => {
         resetPasswordBtn.style.transform = 'scale(1)';
     }, 200);

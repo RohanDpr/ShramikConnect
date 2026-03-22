@@ -561,7 +561,6 @@ function handleGetOtp(event) {
     
     // Simulate API call to send OTP
     setTimeout(() => {
-        // In real app, this would be an API call to backend
         console.log(`OTP would be sent to: ${userContact}`);
         
         // Update OTP message with correct contact type
@@ -897,19 +896,18 @@ function handleUpdatePassword(event) {
 
 /**
  * Handle alternative link click
+ * Redirects to /choose_password_employer/ (Django URL)
  */
 function handleAlternativeLinkClick(event) {
-    // Prevent default navigation if needed
-    // event.preventDefault();
-    
     showNotification(
         'Recovery Options',
         'Redirecting to alternative recovery methods...',
         'info'
     );
-    
-    // In real implementation, this would redirect to employer_choose_password.html
-    // window.location.href = 'employer_choose_password.html';
+    // Redirect to correct Django URL
+    setTimeout(() => {
+        window.location.href = '/choose_password_employer/';
+    }, 800);
 }
 
 // ============================================
@@ -1002,6 +1000,7 @@ function closeNotification(notification) {
 
 /**
  * Redirect to login page
+ * Uses correct Django URL: /login_employer/
  */
 function redirectToLogin() {
     // Show redirecting notification
@@ -1011,9 +1010,9 @@ function redirectToLogin() {
         'info'
     );
     
-    // Redirect after 1 second
+    // Redirect after 1 second using correct Django URL
     setTimeout(() => {
-        window.location.href = 'login_employer.html';
+        window.location.href = '/login_employer/';  // ✅ Fixed Django URL
     }, 1000);
 }
 

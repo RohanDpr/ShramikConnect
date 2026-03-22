@@ -1012,7 +1012,7 @@ function redirectToLogin() {
     
     // Redirect after 1 second
     setTimeout(() => {
-        window.location.href = 'login_worker.html';
+        window.location.href = '/login_worker/';
     }, 1000);
 }
 

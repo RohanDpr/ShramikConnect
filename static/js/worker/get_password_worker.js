@@ -450,7 +450,7 @@ function redirectToLogin() {
     
     // ✅ FIXED: Correct redirect URL
     setTimeout(() => {
-        window.location.href = 'login_worker.html'; // ✅ यही correct file name है
+        window.location.href = '/login_worker/'; // ✅ यही correct file name है
     }, 1000);
 }
 

@@ -449,7 +449,7 @@ function redirectToLogin() {
     
     // Redirect to correct login page
     setTimeout(() => {
-        window.location.href = 'login_employer.html';
+        window.location.href = '/login_employer/';
     }, 1000);
 }
 
