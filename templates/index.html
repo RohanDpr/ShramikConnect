@@ -199,8 +199,21 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <link rel="icon" type="image/png" href="{% static 'images/logo/Logo only.png' %}">
+
+    <!-- Google Translate — hidden widget, required for translation to work -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'gt_widget');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
+    <!-- Hidden Google Translate widget container -->
+    <div id="gt_widget" style="display:none;visibility:hidden;position:absolute;"></div>
 
     <!-- ============================================
          WELCOME / WARNING POPUP MODAL
@@ -471,6 +484,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
