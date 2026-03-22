@@ -134,7 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ============================================
 # EMAIL CONFIGURATION - SENDGRID (HTTP API)
 # ============================================
-DEFAULT_FROM_EMAIL = 'team.shramikconnect@gmail.com'
+DEFAULT_FROM_EMAIL = 'noreply@shramikconnect.online'
 
 # SendGrid API Key - .env se locally, Render env se production mein
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')

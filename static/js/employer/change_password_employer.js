@@ -1,1031 +1,523 @@
 /**
  * Employer Change Password Page - JavaScript
- * Handles multi-step password change process with OTP verification
- * Green Theme Version (#01A060)
+ * Real implementation: DB check → OTP via email/SMS → password update
+ * Green theme (#01A060)
  */
 
-// ============================================
-// DOM ELEMENTS
-// ============================================
+// ── DOM Elements ──────────────────────────────────────────────────────────────
+const settingsIcon      = document.getElementById('settingsIcon');
+const settingsDropdown  = document.getElementById('settingsDropdown');
+const languageOptions   = document.querySelectorAll('.language-option');
+const themeOptions      = document.querySelectorAll('.theme-option');
 
-// Settings Elements
-const settingsIcon = document.getElementById('settingsIcon');
-const settingsDropdown = document.getElementById('settingsDropdown');
-const languageOptions = document.querySelectorAll('.language-option');
-const themeOptions = document.querySelectorAll('.theme-option');
-
-// Step Elements
 const step1 = document.getElementById('step1');
 const step2 = document.getElementById('step2');
 const step3 = document.getElementById('step3');
 
-// Step 1 Elements
-const contactInput = document.getElementById('contactInput');
-const getOtpBtn = document.getElementById('getOtpBtn');
+const contactInput  = document.getElementById('contactInput');
+const getOtpBtn     = document.getElementById('getOtpBtn');
 
-// Step 2 Elements
-const backToStep1 = document.getElementById('backToStep1');
-const otpMessage = document.getElementById('otpMessage');
-const otpInput = document.getElementById('otpInput');
-const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-const otpTimer = document.getElementById('otpTimer');
-const timerDisplay = document.getElementById('timerDisplay');
-const resendOtpBtn = document.getElementById('resendOtpBtn');
-const resendText = document.getElementById('resendText');
+const backToStep1   = document.getElementById('backToStep1');
+const otpMessage    = document.getElementById('otpMessage');
+const otpInput      = document.getElementById('otpInput');
+const verifyOtpBtn  = document.getElementById('verifyOtpBtn');
+const otpTimer      = document.getElementById('otpTimer');
+const timerDisplay  = document.getElementById('timerDisplay');
+const resendOtpBtn  = document.getElementById('resendOtpBtn');
+const resendText    = document.getElementById('resendText');
 
-// Step 3 Elements
-const backToStep2 = document.getElementById('backToStep2');
-const newPassword = document.getElementById('newPassword');
-const confirmPassword = document.getElementById('confirmPassword');
-const toggleNewPassword = document.getElementById('toggleNewPassword');
+const backToStep2        = document.getElementById('backToStep2');
+const newPassword        = document.getElementById('newPassword');
+const confirmPassword    = document.getElementById('confirmPassword');
+const toggleNewPassword  = document.getElementById('toggleNewPassword');
 const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-const passwordStrength = document.getElementById('passwordStrength');
-const passwordMatch = document.getElementById('passwordMatch');
-const updatePasswordBtn = document.getElementById('updatePasswordBtn');
+const passwordStrength   = document.getElementById('passwordStrength');
+const passwordMatch      = document.getElementById('passwordMatch');
+const updatePasswordBtn  = document.getElementById('updatePasswordBtn');
 
-// Alternative Options Section
-const alternativeLink = document.querySelector('.alternative-link');
-
-// ============================================
-// STATE VARIABLES
-// ============================================
-let currentStep = 1;
+// ── State ─────────────────────────────────────────────────────────────────────
+let currentStep     = 1;
 let currentLanguage = 'en';
-let currentTheme = 'light';
-let otpCountdown = null;
-let otpTimeLeft = 60; // 1 minute in seconds
+let currentTheme    = 'light';
+let otpCountdown    = null;
+let otpTimeLeft     = 60;
 let resendCountdown = null;
-let resendTimeLeft = 60; // 1 minute in seconds
-let userContact = ''; // Store user's contact info
-let contactType = ''; // Store contact type (email/phone)
+let resendTimeLeft  = 60;
+let userContact     = '';
+let contactType     = '';
 
-// Validation patterns
-const validationPatterns = {
-    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    phone: /^[\+]?[1-9][\d]{9,14}$/, // Minimum 10 digits, maximum 15 with country code
-    otp: /^\d{6}$/
-};
+// ── Validation ────────────────────────────────────────────────────────────────
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^[6-9]\d{9}$/;
+const otpRegex   = /^\d{6}$/;
 
-// Dummy OTP for testing
-const DUMMY_OTP = '123456';
-
-// Translation dictionary
+// ── i18n ──────────────────────────────────────────────────────────────────────
 const translations = {
     en: {
-        // Header
-        'change_password': 'Change Password',
-        
-        // Instructions
-        'secure_password_change': 'Change Your Password',
-        'change_password_instruction': 'Enter your registered email or phone number to receive OTP',
-        
-        // Step 1
-        'email_phone': 'Email or Phone Number',
-        'email_phone_placeholder': 'Email or phone',
-        'get_otp': 'Get OTP',
-        'enter_registered_contact': 'Enter registered email or phone',
-        'security_notice': 'For security reasons, we verify your identity before allowing password change.',
-        
-        // Step 2
-        'back': 'Back',
-        'enter_otp': 'Enter OTP',
-        'otp_sent': 'OTP sent to your contact',
-        'enter_otp_label': 'Enter OTP',
-        'otp_placeholder': 'XXXXXX',
-        'enter_6digit_otp': 'Enter 6-digit OTP received',
-        'verify_otp': 'Verify OTP',
-        'didnt_receive_otp': 'Didn\'t receive OTP?',
-        'resend_otp_60s': 'Resend OTP (60s)',
-        
-        // Step 3
-        'set_new_password': 'Set New Password',
-        'password_requirements': 'Password Requirements:',
-        'min_8_chars': 'Minimum 8 characters',
-        'new_password_label': 'New Password',
-        'enter_new_password': 'Enter new password',
-        'password_strength': 'Password Strength',
-        'confirm_password_label': 'Confirm Password',
-        're_enter_password': 'Re-enter password',
-        'passwords_match': 'Passwords match',
-        'password_security_note': 'Your new password must be strong and unique.',
-        'update_password': 'Update Password',
-        
-        // Alternative Options Section
-        'cant_access': 'Can\'t access this email/phone?',
-        'try_another_method': 'Try another recovery method',
-        
-        // Settings
-        'language': 'Language',
-        'theme': 'Theme',
-        'light': 'Light',
-        'dark': 'Dark',
-        'system': 'System'
+        change_password: 'Change Password', secure_password_change: 'Change Your Password',
+        change_password_instruction: 'Enter your registered email or phone number to receive OTP',
+        email_phone: 'Email or Phone Number', email_phone_placeholder: 'Email or phone',
+        get_otp: 'Get OTP', enter_registered_contact: 'Enter registered email or phone',
+        security_notice: 'For security reasons, we verify your identity before allowing password change.',
+        back: 'Back', enter_otp: 'Enter OTP', otp_sent: 'OTP sent to your contact',
+        enter_otp_label: 'Enter OTP', otp_placeholder: 'XXXXXX',
+        enter_6digit_otp: 'Enter 6-digit OTP received', verify_otp: 'Verify OTP',
+        didnt_receive_otp: "Didn't receive OTP?", resend_otp_60s: 'Resend OTP (60s)',
+        set_new_password: 'Set New Password', password_requirements: 'Password Requirements:',
+        min_8_chars: 'Minimum 8 characters', new_password_label: 'New Password',
+        enter_new_password: 'Enter new password', password_strength: 'Password Strength',
+        confirm_password_label: 'Confirm Password', re_enter_password: 'Re-enter password',
+        passwords_match: 'Passwords match',
+        password_security_note: 'Your new password must be strong and unique.',
+        update_password: 'Update Password',
+        cant_access: "Can't access this email/phone?", try_another_method: 'Try another recovery method',
+        language: 'Language', theme: 'Theme', light: 'Light', dark: 'Dark', system: 'System',
+        not_found_email: 'No employer account found with this email.',
+        not_found_phone: 'No employer account found with this phone number.',
+        invalid_contact: 'Enter a valid email or 10-digit phone number.',
+        sending_otp: 'Sending OTP...',
+        otp_sent_email: 'OTP has been sent to your email address.',
+        otp_sent_phone: 'OTP has been sent to your phone number via SMS.',
+        verifying: 'Verifying...',
+        otp_verified: 'OTP Verified!', otp_verified_msg: 'Your identity has been verified successfully.',
+        invalid_otp: 'Invalid OTP. Please try again.',
+        updating: 'Updating Password...',
+        password_updated: 'Password Updated!', password_updated_msg: 'Your password has been changed successfully.',
     },
     hi: {
-        // Header
-        'change_password': 'पासवर्ड बदलें',
-        
-        // Instructions
-        'secure_password_change': 'अपना पासवर्ड बदलें',
-        'change_password_instruction': 'OTP प्राप्त करने के लिए अपना पंजीकृत ईमेल या फोन नंबर दर्ज करें',
-        
-        // Step 1
-        'email_phone': 'ईमेल या फोन नंबर',
-        'email_phone_placeholder': 'ईमेल या फोन',
-        'get_otp': 'OTP प्राप्त करें',
-        'enter_registered_contact': 'पंजीकृत ईमेल या फोन दर्ज करें',
-        'security_notice': 'सुरक्षा कारणों से, हम पासवर्ड बदलने की अनुमति देने से पहले आपकी पहचान सत्यापित करते हैं।',
-        
-        // Step 2
-        'back': 'वापस',
-        'enter_otp': 'OTP दर्ज करें',
-        'otp_sent': 'OTP आपके संपर्क पर भेजा गया',
-        'enter_otp_label': 'OTP दर्ज करें',
-        'otp_placeholder': 'XXXXXX',
-        'enter_6digit_otp': 'प्राप्त 6-अंकीय OTP दर्ज करें',
-        'verify_otp': 'OTP सत्यापित करें',
-        'didnt_receive_otp': 'OTP प्राप्त नहीं हुआ?',
-        'resend_otp_60s': 'OTP पुनः भेजें (60s)',
-        
-        // Step 3
-        'set_new_password': 'नया पासवर्ड सेट करें',
-        'password_requirements': 'पासवर्ड आवश्यकताएँ:',
-        'min_8_chars': 'न्यूनतम 8 वर्ण',
-        'new_password_label': 'नया पासवर्ड',
-        'enter_new_password': 'नया पासवर्ड दर्ज करें',
-        'password_strength': 'पासवर्ड की मजबूती',
-        'confirm_password_label': 'पासवर्ड की पुष्टि करें',
-        're_enter_password': 'पासवर्ड पुनः दर्ज करें',
-        'passwords_match': 'पासवर्ड मेल खाते हैं',
-        'password_security_note': 'आपका नया पासवर्ड मजबूत और अद्वितीय होना चाहिए।',
-        'update_password': 'पासवर्ड अपडेट करें',
-        
-        // Alternative Options Section
-        'cant_access': 'इस ईमेल/फोन तक पहुंच नहीं हो सकती?',
-        'try_another_method': 'दूसरी पुनर्प्राप्ति विधि आज़माएं',
-        
-        // Settings
-        'language': 'भाषा',
-        'theme': 'थीम',
-        'light': 'हल्का',
-        'dark': 'गहरा',
-        'system': 'सिस्टम'
+        change_password: 'पासवर्ड बदलें', secure_password_change: 'अपना पासवर्ड बदलें',
+        change_password_instruction: 'OTP प्राप्त करने के लिए अपना पंजीकृत ईमेल या फोन नंबर दर्ज करें',
+        email_phone: 'ईमेल या फोन नंबर', email_phone_placeholder: 'ईमेल या फोन',
+        get_otp: 'OTP प्राप्त करें', enter_registered_contact: 'पंजीकृत ईमेल या फोन दर्ज करें',
+        security_notice: 'सुरक्षा कारणों से, हम पासवर्ड बदलने की अनुमति देने से पहले आपकी पहचान सत्यापित करते हैं।',
+        back: 'वापस', enter_otp: 'OTP दर्ज करें', otp_sent: 'OTP आपके संपर्क पर भेजा गया',
+        enter_otp_label: 'OTP दर्ज करें', otp_placeholder: 'XXXXXX',
+        enter_6digit_otp: 'प्राप्त 6-अंकीय OTP दर्ज करें', verify_otp: 'OTP सत्यापित करें',
+        didnt_receive_otp: 'OTP प्राप्त नहीं हुआ?', resend_otp_60s: 'OTP पुनः भेजें (60s)',
+        set_new_password: 'नया पासवर्ड सेट करें', password_requirements: 'पासवर्ड आवश्यकताएँ:',
+        min_8_chars: 'न्यूनतम 8 वर्ण', new_password_label: 'नया पासवर्ड',
+        enter_new_password: 'नया पासवर्ड दर्ज करें', password_strength: 'पासवर्ड की मजबूती',
+        confirm_password_label: 'पासवर्ड की पुष्टि करें', re_enter_password: 'पासवर्ड पुनः दर्ज करें',
+        passwords_match: 'पासवर्ड मेल खाते हैं',
+        password_security_note: 'आपका नया पासवर्ड मजबूत और अद्वितीय होना चाहिए।',
+        update_password: 'पासवर्ड अपडेट करें',
+        cant_access: 'इस ईमेल/फोन तक पहुंच नहीं हो सकती?', try_another_method: 'दूसरी पुनर्प्राप्ति विधि आज़माएं',
+        language: 'भाषा', theme: 'थीम', light: 'हल्का', dark: 'गहरा', system: 'सिस्टम',
+        not_found_email: 'इस ईमेल से कोई नियोक्ता खाता नहीं मिला।',
+        not_found_phone: 'इस फोन नंबर से कोई नियोक्ता खाता नहीं मिला।',
+        invalid_contact: 'मान्य ईमेल या 10-अंकीय फोन नंबर दर्ज करें।',
+        sending_otp: 'OTP भेजा जा रहा है...', otp_sent_email: 'OTP आपके ईमेल पते पर भेजा गया है।',
+        otp_sent_phone: 'OTP SMS के माध्यम से आपके फोन नंबर पर भेजा गया है।',
+        verifying: 'सत्यापित किया जा रहा है...',
+        otp_verified: 'OTP सत्यापित!', otp_verified_msg: 'आपकी पहचान सफलतापूर्वक सत्यापित हो गई।',
+        invalid_otp: 'अमान्य OTP। कृपया पुनः प्रयास करें।',
+        updating: 'पासवर्ड अपडेट किया जा रहा है...',
+        password_updated: 'पासवर्ड अपडेट!', password_updated_msg: 'आपका पासवर्ड सफलतापूर्वक बदल दिया गया है।',
     },
     mr: {
-        // Header
-        'change_password': 'पासवर्ड बदला',
-        
-        // Instructions
-        'secure_password_change': 'तुमचा पासवर्ड बदला',
-        'change_password_instruction': 'OTP प्राप्त करण्यासाठी तुमचा नोंदणीकृत ईमेल किंवा फोन नंबर प्रविष्ट करा',
-        
-        // Step 1
-        'email_phone': 'ईमेल किंवा फोन नंबर',
-        'email_phone_placeholder': 'ईमेल किंवा फोन',
-        'get_otp': 'OTP मिळवा',
-        'enter_registered_contact': 'नोंदणीकृत ईमेल किंवा फोन प्रविष्ट करा',
-        'security_notice': 'सुरक्षेच्या कारणांसाठी, आम्ही पासवर्ड बदलण्याची परवानगी देण्यापूर्वी तुमची ओळख सत्यापित करतो.',
-        
-        // Step 2
-        'back': 'मागे',
-        'enter_otp': 'OTP प्रविष्ट करा',
-        'otp_sent': 'OTP तुमच्या संपर्कावर पाठवला',
-        'enter_otp_label': 'OTP प्रविष्ट करा',
-        'otp_placeholder': 'XXXXXX',
-        'enter_6digit_otp': 'प्राप्त 6-अंकीय OTP प्रविष्ट करा',
-        'verify_otp': 'OTP सत्यापित करा',
-        'didnt_receive_otp': 'OTP प्राप्त झाला नाही?',
-        'resend_otp_60s': 'OTP पुन्हा पाठवा (60s)',
-        
-        // Step 3
-        'set_new_password': 'नवीन पासवर्ड सेट करा',
-        'password_requirements': 'पासवर्ड आवश्यकता:',
-        'min_8_chars': 'किमान 8 वर्ण',
-        'new_password_label': 'नवीन पासवर्ड',
-        'enter_new_password': 'नवीन पासवर्ड प्रविष्ट करा',
-        'password_strength': 'पासवर्ड सामर्थ्य',
-        'confirm_password_label': 'पासवर्डची पुष्टी करा',
-        're_enter_password': 'पासवर्ड पुन्हा प्रविष्ट करा',
-        'passwords_match': 'पासवर्ड जुळतात',
-        'password_security_note': 'तुमचा नवीन पासवर्ड मजबूत आणि अद्वितीय असावा.',
-        'update_password': 'पासवर्ड अपडेट करा',
-        
-        // Alternative Options Section
-        'cant_access': 'या ईमेल/फोनवर प्रवेश मिळू शकत नाही?',
-        'try_another_method': 'दुसरी पुनर्प्राप्ती पद्धत वापरा',
-        
-        // Settings
-        'language': 'भाषा',
-        'theme': 'थीम',
-        'light': 'फिका',
-        'dark': 'गडद',
-        'system': 'सिस्टीम'
+        change_password: 'पासवर्ड बदला', secure_password_change: 'तुमचा पासवर्ड बदला',
+        change_password_instruction: 'OTP प्राप्त करण्यासाठी तुमचा नोंदणीकृत ईमेल किंवा फोन नंबर प्रविष्ट करा',
+        email_phone: 'ईमेल किंवा फोन नंबर', email_phone_placeholder: 'ईमेल किंवा फोन',
+        get_otp: 'OTP मिळवा', enter_registered_contact: 'नोंदणीकृत ईमेल किंवा फोन प्रविष्ट करा',
+        security_notice: 'सुरक्षेच्या कारणांसाठी, आम्ही पासवर्ड बदलण्याची परवानगी देण्यापूर्वी तुमची ओळख सत्यापित करतो.',
+        back: 'मागे', enter_otp: 'OTP प्रविष्ट करा', otp_sent: 'OTP तुमच्या संपर्कावर पाठवला',
+        enter_otp_label: 'OTP प्रविष्ट करा', otp_placeholder: 'XXXXXX',
+        enter_6digit_otp: 'प्राप्त 6-अंकीय OTP प्रविष्ट करा', verify_otp: 'OTP सत्यापित करा',
+        didnt_receive_otp: 'OTP प्राप्त झाला नाही?', resend_otp_60s: 'OTP पुन्हा पाठवा (60s)',
+        set_new_password: 'नवीन पासवर्ड सेट करा', password_requirements: 'पासवर्ड आवश्यकता:',
+        min_8_chars: 'किमान 8 वर्ण', new_password_label: 'नवीन पासवर्ड',
+        enter_new_password: 'नवीन पासवर्ड प्रविष्ट करा', password_strength: 'पासवर्ड सामर्थ्य',
+        confirm_password_label: 'पासवर्डची पुष्टी करा', re_enter_password: 'पासवर्ड पुन्हा प्रविष्ट करा',
+        passwords_match: 'पासवर्ड जुळतात',
+        password_security_note: 'तुमचा नवीन पासवर्ड मजबूत आणि अद्वितीय असावा.',
+        update_password: 'पासवर्ड अपडेट करा',
+        cant_access: 'या ईमेल/फोनवर प्रवेश मिळू शकत नाही?', try_another_method: 'दुसरी पुनर्प्राप्ती पद्धत वापरा',
+        language: 'भाषा', theme: 'थीम', light: 'फिका', dark: 'गडद', system: 'सिस्टीम',
+        not_found_email: 'या ईमेलसह कोणतेही नियोक्ता खाते सापडले नाही.',
+        not_found_phone: 'या फोन नंबरसह कोणतेही नियोक्ता खाते सापडले नाही.',
+        invalid_contact: 'वैध ईमेल किंवा 10-अंकी फोन नंबर प्रविष्ट करा.',
+        sending_otp: 'OTP पाठवत आहे...', otp_sent_email: 'OTP तुमच्या ईमेल पत्त्यावर पाठवला गेला आहे.',
+        otp_sent_phone: 'OTP SMS द्वारे तुमच्या फोन नंबरवर पाठवला गेला आहे.',
+        verifying: 'सत्यापित करत आहे...',
+        otp_verified: 'OTP सत्यापित!', otp_verified_msg: 'तुमची ओळख यशस्वीरित्या सत्यापित झाली.',
+        invalid_otp: 'अवैध OTP. कृपया पुन्हा प्रयत्न करा.',
+        updating: 'पासवर्ड अपडेट करत आहे...',
+        password_updated: 'पासवर्ड अपडेट!', password_updated_msg: 'तुमचा पासवर्ड यशस्वीरित्या बदलला गेला आहे.',
     }
 };
 
-// ============================================
-// INITIALIZATION
-// ============================================
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function t(key) { return (translations[currentLanguage] || translations.en)[key] || key; }
 
-/**
- * Initialize the application
- */
-function init() {
-    console.log('Employer Change Password Page Initialized - Green Theme');
-    
-    // Load saved preferences
-    loadPreferences();
-    
-    // Setup event listeners
-    setupEventListeners();
-    
-    // Initialize form validation
-    initializeFormValidation();
-    
-    // Apply current language
-    applyLanguage(currentLanguage);
-}
-
-/**
- * Load saved user preferences
- */
-function loadPreferences() {
-    // Load theme preference
-    const savedTheme = localStorage.getItem('preferredTheme') || 'light';
-    setTheme(savedTheme);
-    
-    // Load language preference
-    const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
-    setLanguage(savedLanguage);
-    
-    // Update active buttons
-    updateActiveButtons();
-}
-
-/**
- * Update active state of settings buttons
- */
-function updateActiveButtons() {
-    // Update language button
-    languageOptions.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
-    });
-    
-    // Update theme button
-    themeOptions.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.theme === currentTheme);
-    });
-}
-
-// ============================================
-// EVENT LISTENERS SETUP
-// ============================================
-
-/**
- * Setup all event listeners
- */
-function setupEventListeners() {
-    // Settings dropdown toggle
-    settingsIcon.addEventListener('click', toggleSettingsDropdown);
-    
-    // Close settings when clicking outside
-    document.addEventListener('click', closeSettingsOnClickOutside);
-    
-    // Language switcher
-    languageOptions.forEach(btn => {
-        btn.addEventListener('click', handleLanguageChange);
-    });
-    
-    // Theme switcher
-    themeOptions.forEach(btn => {
-        btn.addEventListener('click', handleThemeChange);
-    });
-    
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange);
-    
-    // Step 1: Contact validation
-    contactInput.addEventListener('input', validateContactInput);
-    
-    // Step 1: Get OTP button
-    getOtpBtn.addEventListener('click', handleGetOtp);
-    
-    // Step 2: Back button
-    backToStep1.addEventListener('click', () => goToStep(1));
-    
-    // Step 2: OTP validation
-    otpInput.addEventListener('input', validateOtpInput);
-    
-    // Step 2: Verify OTP button
-    verifyOtpBtn.addEventListener('click', handleVerifyOtp);
-    
-    // Step 2: Resend OTP button
-    resendOtpBtn.addEventListener('click', handleResendOtp);
-    
-    // Step 3: Back button
-    backToStep2.addEventListener('click', () => goToStep(2));
-    
-    // Step 3: Toggle password visibility
-    toggleNewPassword.addEventListener('click', () => togglePasswordVisibility(newPassword, toggleNewPassword));
-    toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPassword, toggleConfirmPassword));
-    
-    // Step 3: Password validation
-    newPassword.addEventListener('input', validatePassword);
-    confirmPassword.addEventListener('input', checkPasswordMatch);
-    
-    // Step 3: Update password button
-    updatePasswordBtn.addEventListener('click', handleUpdatePassword);
-    
-    // Alternative link click handler
-    if (alternativeLink) {
-        alternativeLink.addEventListener('click', handleAlternativeLinkClick);
+function getCookie(name) {
+    if (!document.cookie) return null;
+    for (const c of document.cookie.split(';')) {
+        const part = c.trim();
+        if (part.startsWith(name + '=')) return decodeURIComponent(part.slice(name.length + 1));
     }
+    return null;
 }
 
-/**
- * Initialize form validation
- */
-function initializeFormValidation() {
-    // Initial validation
+async function apiPost(body) {
+    const res = await fetch('/change_password_employer/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify(body)
+    });
+    return { res, data: await res.json() };
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function init() {
+    loadPreferences();
+    setupEventListeners();
     validateContactInput();
     validateOtpInput();
-    validatePassword();
     checkPasswordMatch();
 }
 
-// ============================================
-// SETTINGS FUNCTIONS
-// ============================================
-
-/**
- * Toggle settings dropdown visibility
- */
-function toggleSettingsDropdown() {
-    const isActive = settingsDropdown.classList.toggle('active');
-    settingsDropdown.setAttribute('aria-hidden', !isActive);
-    
-    if (isActive) {
-        settingsIcon.setAttribute('aria-expanded', 'true');
-    } else {
-        settingsIcon.setAttribute('aria-expanded', 'false');
-    }
+function loadPreferences() {
+    setTheme(localStorage.getItem('preferredTheme') || 'light');
+    setLanguage(localStorage.getItem('preferredLanguage') || 'en');
+    updateActiveButtons();
 }
 
-/**
- * Close settings when clicking outside
- */
-function closeSettingsOnClickOutside(event) {
-    if (!settingsIcon.contains(event.target) && !settingsDropdown.contains(event.target)) {
+function updateActiveButtons() {
+    languageOptions.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
+    themeOptions.forEach(b => b.classList.toggle('active', b.dataset.theme === currentTheme));
+}
+
+// ── Event Listeners ───────────────────────────────────────────────────────────
+function setupEventListeners() {
+    settingsIcon.addEventListener('click', toggleSettingsDropdown);
+    document.addEventListener('click', closeSettingsOnClickOutside);
+    languageOptions.forEach(b => b.addEventListener('click', handleLanguageChange));
+    themeOptions.forEach(b => b.addEventListener('click', handleThemeChange));
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange);
+
+    contactInput.addEventListener('input', validateContactInput);
+    getOtpBtn.addEventListener('click', handleGetOtp);
+
+    backToStep1.addEventListener('click', () => goToStep(1));
+    otpInput.addEventListener('input', validateOtpInput);
+    verifyOtpBtn.addEventListener('click', handleVerifyOtp);
+    resendOtpBtn.addEventListener('click', handleResendOtp);
+
+    backToStep2.addEventListener('click', () => goToStep(2));
+    toggleNewPassword.addEventListener('click', () => togglePasswordVisibility(newPassword, toggleNewPassword));
+    toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPassword, toggleConfirmPassword));
+    newPassword.addEventListener('input', validatePassword);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+    updatePasswordBtn.addEventListener('click', handleUpdatePassword);
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────────
+function toggleSettingsDropdown() {
+    const active = settingsDropdown.classList.toggle('active');
+    settingsDropdown.setAttribute('aria-hidden', !active);
+    settingsIcon.setAttribute('aria-expanded', active ? 'true' : 'false');
+}
+function closeSettingsOnClickOutside(e) {
+    if (!settingsIcon.contains(e.target) && !settingsDropdown.contains(e.target)) {
         settingsDropdown.classList.remove('active');
         settingsDropdown.setAttribute('aria-hidden', 'true');
         settingsIcon.setAttribute('aria-expanded', 'false');
     }
 }
 
-// ============================================
-// LANGUAGE FUNCTIONS
-// ============================================
-
-/**
- * Handle language change
- */
-function handleLanguageChange(event) {
-    const lang = event.currentTarget.dataset.lang;
-    setLanguage(lang);
-    
-    // Update active button
-    languageOptions.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
+// ── Step Navigation ───────────────────────────────────────────────────────────
+function goToStep(n) {
+    [step1, step2, step3].forEach(s => s.classList.remove('active'));
+    if (n === 1) { step1.classList.add('active'); currentStep = 1; }
+    else if (n === 2) { step2.classList.add('active'); currentStep = 2; startOtpTimer(); }
+    else if (n === 3) { step3.classList.add('active'); currentStep = 3; stopOtpTimer(); }
 }
 
-/**
- * Set language and apply translations
- */
-function setLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('preferredLanguage', lang);
-    applyLanguage(lang);
-}
-
-/**
- * Apply language translations to all elements
- */
-function applyLanguage(lang) {
-    const translation = translations[lang] || translations.en;
-    
-    // Update all elements with data-i18n attribute
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (translation[key]) {
-            if (element.tagName === 'INPUT' && element.hasAttribute('data-i18n-placeholder')) {
-                // Handle placeholder separately
-                const placeholderKey = element.getAttribute('data-i18n-placeholder');
-                if (translation[placeholderKey]) {
-                    element.placeholder = translation[placeholderKey];
-                }
-            } else {
-                element.textContent = translation[key];
-            }
-        }
-    });
-    
-    // Update placeholders separately
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-i18n-placeholder');
-        if (translation[key] && element.placeholder !== undefined) {
-            element.placeholder = translation[key];
-        }
-    });
-}
-
-// ============================================
-// THEME FUNCTIONS
-// ============================================
-
-/**
- * Handle theme change
- */
-function handleThemeChange(event) {
-    const theme = event.currentTarget.dataset.theme;
-    setTheme(theme);
-    
-    // Update active button
-    themeOptions.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.theme === theme);
-    });
-}
-
-/**
- * Set theme
- */
-function setTheme(theme) {
-    currentTheme = theme;
-    localStorage.setItem('preferredTheme', theme);
-    
-    let themeToApply = theme;
-    
-    if (theme === 'system') {
-        themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    
-    // Update body class
-    document.body.className = themeToApply + '-theme';
-}
-
-/**
- * Handle system theme change
- */
-function handleSystemThemeChange(event) {
-    if (currentTheme === 'system') {
-        const theme = event.matches ? 'dark' : 'light';
-        document.body.className = theme + '-theme';
-    }
-}
-
-// ============================================
-// STEP NAVIGATION FUNCTIONS
-// ============================================
-
-/**
- * Navigate to specific step
- */
-function goToStep(stepNumber) {
-    // Hide all steps
-    step1.classList.remove('active');
-    step2.classList.remove('active');
-    step3.classList.remove('active');
-    
-    // Show target step
-    if (stepNumber === 1) {
-        step1.classList.add('active');
-        currentStep = 1;
-    } else if (stepNumber === 2) {
-        step2.classList.add('active');
-        currentStep = 2;
-        startOtpTimer();
-    } else if (stepNumber === 3) {
-        step3.classList.add('active');
-        currentStep = 3;
-        stopOtpTimer();
-    }
-}
-
-// ============================================
-// STEP 1: CONTACT VERIFICATION
-// ============================================
-
-/**
- * Validate contact input - Only enable when COMPLETE valid contact is entered
- */
+// ── Step 1: Get OTP ───────────────────────────────────────────────────────────
 function validateContactInput() {
-    const value = contactInput.value.trim();
-    
-    // Check if input is COMPLETE valid email
-    const isCompleteEmail = validationPatterns.email.test(value);
-    
-    // Check if input is COMPLETE valid phone (minimum 10 digits)
-    const isCompletePhone = validationPatterns.phone.test(value.replace(/\D/g, ''));
-    
-    // Enable Get OTP button only when COMPLETE valid contact is entered
-    const isValidContact = isCompleteEmail || isCompletePhone;
-    getOtpBtn.disabled = !isValidContact;
-    
-    return isValidContact;
+    const val = contactInput.value.trim();
+    const valid = emailRegex.test(val) || phoneRegex.test(val.replace(/\D/g, ''));
+    getOtpBtn.disabled = !valid;
+    return valid;
 }
 
-/**
- * Handle Get OTP button click
- */
-function handleGetOtp(event) {
-    event.preventDefault();
-    
-    const value = contactInput.value.trim();
-    
-    if (!validateContactInput()) {
-        showNotification('Error', 'Please enter a complete valid email or phone number', 'error');
-        return;
-    }
-    
-    // Store contact info for later use
-    userContact = value;
-    
-    // Determine contact type for notification
-    const isEmail = validationPatterns.email.test(value);
-    contactType = isEmail ? 'email' : 'phone';
-    
-    // Disable Get OTP button and show loading
+async function handleGetOtp() {
+    const val = contactInput.value.trim();
+    if (!validateContactInput()) { showNotification('Error', t('invalid_contact'), 'error'); return; }
+
+    userContact = val;
+    contactType = emailRegex.test(val) ? 'email' : 'phone';
+
     getOtpBtn.disabled = true;
-    const originalText = getOtpBtn.innerHTML;
-    getOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
-    
-    // Simulate API call to send OTP
-    setTimeout(() => {
-        console.log(`OTP would be sent to: ${userContact}`);
-        
-        // Update OTP message with correct contact type
-        const maskedContact = maskContact(userContact, contactType);
-        const contactTypeText = contactType === 'email' ? 'email' : 'phone';
-        otpMessage.textContent = `OTP sent to ${contactTypeText}: ${maskedContact}`;
-        
-        // Reset button
+    const origHTML = getOtpBtn.innerHTML;
+    getOtpBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i><span>${t('sending_otp')}</span>`;
+
+    try {
+        const { data } = await apiPost({ action: 'send_otp', contact: userContact });
+
+        if (data.success) {
+            contactType = data.contact_type || contactType;
+            const masked = maskContact(userContact, contactType);
+            otpMessage.textContent = `OTP sent to ${contactType === 'email' ? 'email' : 'phone'}: ${masked}`;
+            showNotification('OTP Sent!', contactType === 'email' ? t('otp_sent_email') : t('otp_sent_phone'), 'success');
+            goToStep(2);
+        } else {
+            showNotification('Error', data.message || 'Failed to send OTP.', 'error');
+        }
+    } catch (err) {
+        showNotification('Error', 'Network error. Please try again.', 'error');
+    } finally {
         getOtpBtn.disabled = false;
-        getOtpBtn.innerHTML = originalText;
-        
-        // Show success notification with correct contact type
-        const notificationMessage = contactType === 'email' 
-            ? 'OTP has been sent to your email address' 
-            : 'OTP has been sent to your phone number via SMS';
-        
-        showNotification(
-            'OTP Sent!',
-            notificationMessage,
-            'success'
-        );
-        
-        // Move to step 2
-        goToStep(2);
-    }, 1500);
+        getOtpBtn.innerHTML = origHTML;
+    }
 }
 
-// ============================================
-// STEP 2: OTP VERIFICATION
-// ============================================
+// ── Step 2: Verify OTP ────────────────────────────────────────────────────────
+function validateOtpInput() {
+    const valid = otpRegex.test(otpInput.value.trim());
+    verifyOtpBtn.disabled = !valid;
+    return valid;
+}
 
-/**
- * Start OTP timer (1 minute)
- */
-function startOtpTimer() {
-    // Clear existing timer
-    if (otpCountdown) {
-        clearInterval(otpCountdown);
+async function handleVerifyOtp(e) {
+    e.preventDefault();
+    if (!validateOtpInput()) { showNotification('Error', 'Please enter a valid 6-digit OTP', 'error'); return; }
+
+    verifyOtpBtn.disabled = true;
+    const origHTML = verifyOtpBtn.innerHTML;
+    verifyOtpBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i><span>${t('verifying')}</span>`;
+
+    try {
+        const { data } = await apiPost({ action: 'verify_otp', contact: userContact, otp: otpInput.value.trim(), contact_type: contactType });
+
+        if (data.success) {
+            showNotification(t('otp_verified'), t('otp_verified_msg'), 'success');
+            goToStep(3);
+        } else {
+            showNotification('Error', data.message || t('invalid_otp'), 'error');
+            otpInput.value = '';
+            validateOtpInput();
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.innerHTML = origHTML;
+        }
+    } catch (err) {
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.innerHTML = origHTML;
     }
-    
-    // Reset timer to 1 minute
+}
+
+async function handleResendOtp() {
+    resendOtpBtn.disabled = true;
+    try {
+        const { data } = await apiPost({ action: 'send_otp', contact: userContact });
+        if (data.success) {
+            showNotification('OTP Resent!', contactType === 'email' ? t('otp_sent_email') : t('otp_sent_phone'), 'success');
+            otpInput.value = '';
+            otpInput.disabled = false;
+            validateOtpInput();
+            startOtpTimer();
+        } else {
+            showNotification('Error', data.message || 'Failed to resend OTP.', 'error');
+            resendOtpBtn.disabled = false;
+        }
+    } catch (err) {
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        resendOtpBtn.disabled = false;
+    }
+}
+
+// ── OTP Timers ────────────────────────────────────────────────────────────────
+function startOtpTimer() {
+    if (otpCountdown) clearInterval(otpCountdown);
     otpTimeLeft = 60;
-    updateTimerDisplay();
-    
-    // Reset OTP input field and enable it
     otpInput.value = '';
     otpInput.disabled = false;
     validateOtpInput();
-    
-    // Reset timer color
     otpTimer.classList.remove('expiring');
-    
-    // Start countdown
+    updateTimerDisplay();
+
     otpCountdown = setInterval(() => {
         otpTimeLeft--;
         updateTimerDisplay();
-        
-        // Change color when 10 seconds remaining
-        if (otpTimeLeft <= 10) {
-            otpTimer.classList.add('expiring');
-        }
-        
+        if (otpTimeLeft <= 10) otpTimer.classList.add('expiring');
         if (otpTimeLeft <= 0) {
             clearInterval(otpCountdown);
-            otpTimer.classList.add('expiring');
-            otpInput.disabled = true;
-            verifyOtpBtn.disabled = true;
         }
     }, 1000);
-    
-    // Start resend timer
     startResendTimer();
 }
 
-/**
- * Stop OTP timer
- */
 function stopOtpTimer() {
-    if (otpCountdown) {
-        clearInterval(otpCountdown);
-    }
-    if (resendCountdown) {
-        clearInterval(resendCountdown);
-    }
+    if (otpCountdown)    clearInterval(otpCountdown);
+    if (resendCountdown) clearInterval(resendCountdown);
 }
 
-/**
- * Update timer display
- */
 function updateTimerDisplay() {
-    const minutes = Math.floor(otpTimeLeft / 60);
-    const seconds = otpTimeLeft % 60;
-    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const m = Math.floor(otpTimeLeft / 60), s = otpTimeLeft % 60;
+    timerDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
-/**
- * Start resend timer (1 minute)
- */
 function startResendTimer() {
-    // Clear existing timer
-    if (resendCountdown) {
-        clearInterval(resendCountdown);
-    }
-    
-    // Reset timer to 1 minute
+    if (resendCountdown) clearInterval(resendCountdown);
     resendTimeLeft = 60;
     updateResendButton();
-    
-    // Start countdown
     resendCountdown = setInterval(() => {
         resendTimeLeft--;
         updateResendButton();
-        
         if (resendTimeLeft <= 0) {
             clearInterval(resendCountdown);
             resendOtpBtn.disabled = false;
-            resendText.textContent = translations[currentLanguage]?.resend_otp_60s || 'Resend OTP';
+            resendText.textContent = t('resend_otp_60s').replace(/\(\d+s\)/, '').trim();
         }
     }, 1000);
 }
 
-/**
- * Update resend button
- */
 function updateResendButton() {
     resendOtpBtn.disabled = true;
-    const resendTextKey = translations[currentLanguage]?.resend_otp_60s || 'Resend OTP (60s)';
-    resendText.textContent = resendTextKey.replace('60s', `${resendTimeLeft}s`);
+    resendText.textContent = `${t('resend_otp_60s').replace(/\(\d+s\)/, '').trim()} (${resendTimeLeft}s)`;
 }
 
-/**
- * Validate OTP input
- */
-function validateOtpInput() {
-    const value = otpInput.value.trim();
-    
-    // Check if input is valid 6-digit OTP
-    const isValid = validationPatterns.otp.test(value);
-    
-    // Enable Verify OTP button
-    verifyOtpBtn.disabled = !isValid;
-    
-    return isValid;
+// ── Step 3: Update Password ───────────────────────────────────────────────────
+function togglePasswordVisibility(field, btn) {
+    field.type = field.type === 'password' ? 'text' : 'password';
+    const icon = btn.querySelector('i');
+    icon.classList.toggle('fa-eye', field.type === 'password');
+    icon.classList.toggle('fa-eye-slash', field.type === 'text');
 }
 
-/**
- * Handle Verify OTP button click
- */
-function handleVerifyOtp(event) {
-    event.preventDefault();
-    
-    const enteredOtp = otpInput.value.trim();
-    
-    if (!validateOtpInput()) {
-        showNotification('Error', 'Please enter a valid 6-digit OTP', 'error');
-        return;
-    }
-    
-    // Disable Verify OTP button and show loading
-    verifyOtpBtn.disabled = true;
-    const originalText = verifyOtpBtn.innerHTML;
-    verifyOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Verifying...</span>';
-    
-    // Simulate API call to verify OTP (using dummy OTP for demo)
-    setTimeout(() => {
-        // Check against dummy OTP (in real app, verify with backend)
-        const isValid = enteredOtp === DUMMY_OTP;
-        
-        if (isValid) {
-            // Show success notification
-            showNotification(
-                'OTP Verified!',
-                'Your identity has been verified successfully.',
-                'success'
-            );
-            
-            // Move to step 3
-            goToStep(3);
-        } else {
-            // Show error notification
-            showNotification('Error', 'Invalid OTP. Please try again.', 'error');
-            
-            // Reset button
-            verifyOtpBtn.disabled = false;
-            verifyOtpBtn.innerHTML = originalText;
-            
-            // Clear OTP input
-            otpInput.value = '';
-            validateOtpInput();
-        }
-    }, 1500);
-}
-
-/**
- * Handle Resend OTP button click
- */
-function handleResendOtp() {
-    // Show notification
-    const notificationMessage = contactType === 'email' 
-        ? 'New OTP has been sent to your email' 
-        : 'New OTP has been sent to your phone';
-    
-    showNotification(
-        'OTP Resent!',
-        notificationMessage,
-        'success'
-    );
-    
-    // Reset OTP input field and enable it
-    otpInput.value = '';
-    otpInput.disabled = false;
-    validateOtpInput();
-    
-    // Restart timers
-    startOtpTimer();
-    startResendTimer();
-}
-
-// ============================================
-// STEP 3: PASSWORD CHANGE
-// ============================================
-
-/**
- * Toggle password visibility
- */
-function togglePasswordVisibility(passwordField, toggleButton) {
-    const isPasswordVisible = passwordField.type === 'text';
-    passwordField.type = isPasswordVisible ? 'password' : 'text';
-    
-    // Update icon
-    const icon = toggleButton.querySelector('i');
-    if (isPasswordVisible) {
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-    } else {
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    }
-}
-
-/**
- * Validate password strength (only checks minimum 8 characters)
- */
 function validatePassword() {
-    const password = newPassword.value;
-    
-    // Check only minimum 8 characters requirement
-    const isLongEnough = password.length >= 8;
-    
-    // Update strength indicator based only on length
+    const pw = newPassword.value;
     passwordStrength.className = 'password-strength';
-    if (password.length === 0) {
-        // Empty - no strength
-    } else if (password.length < 8) {
-        passwordStrength.classList.add('weak');
-    } else if (password.length < 12) {
-        passwordStrength.classList.add('medium');
-    } else if (password.length < 16) {
-        passwordStrength.classList.add('strong');
-    } else {
-        passwordStrength.classList.add('very-strong');
+    if (pw.length > 0) {
+        if (pw.length < 8)       passwordStrength.classList.add('weak');
+        else if (pw.length < 12) passwordStrength.classList.add('medium');
+        else if (pw.length < 16) passwordStrength.classList.add('strong');
+        else                     passwordStrength.classList.add('very-strong');
     }
-    
-    // Check password match
     checkPasswordMatch();
-    
-    return isLongEnough;
+    return pw.length >= 8;
 }
 
-/**
- * Check if passwords match - Update button ONLY when passwords match
- */
 function checkPasswordMatch() {
-    const password = newPassword.value;
-    const confirm = confirmPassword.value;
-    
-    if (password && confirm) {
-        const isMatch = password === confirm;
-        passwordMatch.classList.toggle('visible', isMatch);
-        
-        // Enable Update Password button ONLY when:
-        // 1. Password meets minimum requirement (8 chars)
-        // 2. Passwords match
-        const isValidPassword = password.length >= 8;
-        updatePasswordBtn.disabled = !(isMatch && isValidPassword);
-        
-        return isMatch;
+    const pw = newPassword.value, cp = confirmPassword.value;
+    if (pw && cp) {
+        const match = pw === cp;
+        passwordMatch.classList.toggle('visible', match);
+        updatePasswordBtn.disabled = !(match && pw.length >= 8);
+        return match;
     }
-    
     passwordMatch.classList.remove('visible');
     updatePasswordBtn.disabled = true;
     return false;
 }
 
-/**
- * Handle Update Password button click
- */
-function handleUpdatePassword(event) {
-    event.preventDefault();
-    
-    // Validate password meets minimum requirement
-    if (newPassword.value.length < 8) {
-        showNotification('Error', 'Password must be at least 8 characters long', 'error');
-        return;
-    }
-    
-    // Check password match
-    if (!checkPasswordMatch()) {
-        showNotification('Error', 'Passwords do not match', 'error');
-        return;
-    }
-    
-    // Disable Update Password button and show loading
+async function handleUpdatePassword(e) {
+    e.preventDefault();
+    if (newPassword.value.length < 8) { showNotification('Error', 'Password must be at least 8 characters long', 'error'); return; }
+    if (!checkPasswordMatch()) { showNotification('Error', 'Passwords do not match', 'error'); return; }
+
     updatePasswordBtn.disabled = true;
-    const originalText = updatePasswordBtn.innerHTML;
-    updatePasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Updating Password...</span>';
-    
-    // Simulate API call to update password
-    setTimeout(() => {
-        // Show success notification with auto-redirect
-        showNotification(
-            'Password Updated!',
-            'Your password has been changed successfully.',
-            'success',
-            true // Auto-redirect
-        );
-    }, 1500);
-}
+    const origHTML = updatePasswordBtn.innerHTML;
+    updatePasswordBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i><span>${t('updating')}</span>`;
 
-// ============================================
-// ALTERNATIVE OPTIONS
-// ============================================
+    try {
+        const { data } = await apiPost({ action: 'update_password', contact: userContact, contact_type: contactType, new_password: newPassword.value });
 
-/**
- * Handle alternative link click
- * Redirects to /choose_password_employer/ (Django URL)
- */
-function handleAlternativeLinkClick(event) {
-    showNotification(
-        'Recovery Options',
-        'Redirecting to alternative recovery methods...',
-        'info'
-    );
-    // Redirect to correct Django URL
-    setTimeout(() => {
-        window.location.href = '/choose_password_employer/';
-    }, 800);
-}
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-/**
- * Mask contact information for privacy
- */
-function maskContact(contact, type) {
-    if (type === 'email') {
-        const [username, domain] = contact.split('@');
-        if (username.length <= 2) return '***@' + domain;
-        return username.charAt(0) + '***' + username.charAt(username.length - 1) + '@' + domain;
-    } else {
-        // Phone number masking
-        const digits = contact.replace(/\D/g, '');
-        if (digits.length <= 4) return '***' + digits.slice(-2);
-        return '***' + digits.slice(-4);
+        if (data.success) {
+            showNotification(t('password_updated'), t('password_updated_msg'), 'success', true);
+        } else {
+            showNotification('Error', data.message || 'Failed to update password.', 'error');
+            updatePasswordBtn.disabled = false;
+            updatePasswordBtn.innerHTML = origHTML;
+        }
+    } catch (err) {
+        showNotification('Error', 'Network error. Please try again.', 'error');
+        updatePasswordBtn.disabled = false;
+        updatePasswordBtn.innerHTML = origHTML;
     }
 }
 
-// ============================================
-// NOTIFICATION SYSTEM (GREEN THEME ONLY)
-// ============================================
-
-/**
- * Show notification with green theme only
- */
+// ── Notifications ─────────────────────────────────────────────────────────────
 function showNotification(title, message, type = 'info', autoRedirect = false) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    
-    // Always use green theme
-    notification.style.background = 'linear-gradient(135deg, #01A060 0%, #018850 100%)';
-    
-    notification.innerHTML = `
-        <div class="notification-icon">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-        </div>
-        <div class="notification-content">
-            <h4>${title}</h4>
-            <p>${message}</p>
-        </div>
-        <button class="notification-close" aria-label="Close notification">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    // Add to document
-    document.body.appendChild(notification);
-    
-    // Show notification with animation
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 10);
-    
-    // Close button functionality
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', () => {
-        closeNotification(notification);
-        if (autoRedirect) {
-            redirectToLogin();
-        }
+    const note = document.createElement('div');
+    note.className = 'notification';
+    const bg = type === 'error'
+        ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
+        : 'linear-gradient(135deg, #01A060 0%, #008554 100%)';   // green for employer
+    note.style.background = bg;
+    const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+    note.innerHTML = `
+        <div class="notification-icon"><i class="fas fa-${icon}"></i></div>
+        <div class="notification-content"><h4>${title}</h4><p>${message}</p></div>
+        <button class="notification-close" aria-label="Close"><i class="fas fa-times"></i></button>`;
+    document.body.appendChild(note);
+    setTimeout(() => note.classList.add('show'), 10);
+
+    note.querySelector('.notification-close').addEventListener('click', () => {
+        closeNotification(note);
+        if (autoRedirect) redirectToLogin();
     });
-    
-    // Auto-close after 5 seconds
     setTimeout(() => {
-        if (notification.parentNode) {
-            closeNotification(notification);
-            if (autoRedirect) {
-                redirectToLogin();
-            }
-        }
-    }, 5000);
+        if (note.parentNode) { closeNotification(note); if (autoRedirect) redirectToLogin(); }
+    }, 2000);
 }
 
-/**
- * Close notification
- */
-function closeNotification(notification) {
-    notification.classList.remove('show');
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 400);
+function closeNotification(note) {
+    note.classList.remove('show');
+    setTimeout(() => { if (note.parentNode) note.parentNode.removeChild(note); }, 400);
 }
 
-/**
- * Redirect to login page
- * Uses correct Django URL: /login_employer/
- */
+function maskContact(c, type) {
+    if (type === 'email') {
+        const [u, d] = c.split('@');
+        return (u.length <= 2 ? '***' : u[0] + '***' + u[u.length-1]) + '@' + d;
+    }
+    return '***' + c.replace(/\D/g,'').slice(-4);
+}
+
 function redirectToLogin() {
-    // Show redirecting notification
-    showNotification(
-        'Redirecting...',
-        'Taking you to login page',
-        'info'
-    );
-    
-    // Redirect after 1 second using correct Django URL
-    setTimeout(() => {
-        window.location.href = '/login_employer/';  // ✅ Fixed Django URL
-    }, 1000);
+    showNotification('Redirecting...', 'Taking you to login page', 'info');
+    setTimeout(() => { window.location.href = '/login_employer/'; }, 2000);
 }
 
-// ============================================
-// INITIALIZE APPLICATION
-// ============================================
+// ── Language / Theme ──────────────────────────────────────────────────────────
+function handleLanguageChange(e) {
+    const lang = e.currentTarget.dataset.lang;
+    setLanguage(lang);
+    languageOptions.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('preferredLanguage', lang);
+    applyLanguage(lang);
+}
+function applyLanguage(lang) {
+    const tr = translations[lang] || translations.en;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (tr[key]) el.textContent = tr[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (tr[key]) el.placeholder = tr[key];
+    });
+}
+function handleThemeChange(e) {
+    const theme = e.currentTarget.dataset.theme;
+    setTheme(theme);
+    themeOptions.forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+}
+function setTheme(theme) {
+    currentTheme = theme;
+    localStorage.setItem('preferredTheme', theme);
+    let apply = theme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
+    document.body.className = apply + '-theme';
+}
+function handleSystemThemeChange(e) {
+    if (currentTheme === 'system') document.body.className = (e.matches ? 'dark' : 'light') + '-theme';
+}
 
-/**
- * Initialize application when DOM is loaded
- */
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
-
-// Initialize system theme if set to system
-if (currentTheme === 'system') {
-    handleSystemThemeChange({ matches: window.matchMedia('(prefers-color-scheme: dark)').matches });
-}
+if (currentTheme === 'system') handleSystemThemeChange({ matches: window.matchMedia('(prefers-color-scheme: dark)').matches });
