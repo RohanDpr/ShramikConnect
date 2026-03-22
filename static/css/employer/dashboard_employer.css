@@ -2636,24 +2636,24 @@ body.dark-theme .search-input {
     left: 0;
     right: 0;
     width:100vw;
-margin-left:calc(-50vw + 50%);
+    margin-left:calc(-50vw + 50%);
 }
 
-
 html, body{
-height:100%;
-margin:0;
+    height:100%;
+    margin:0;
 }
 
 body{
-display:flex;
-flex-direction:column;
-min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
 }
 
 main{
-flex:1;
+    flex:1;
 }
+
 .footer-wave {
     position: absolute;
     top: -50px;
@@ -2807,6 +2807,40 @@ flex:1;
     width: 100%;
 }
 
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.social-link {
+    width: 42px;
+    height: 42px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.social-link i {
+    font-size: 16px;
+}
+
 /* Dark theme adjustments */
 body.dark-theme .footer {
     background: linear-gradient(135deg, #007A47 0%, #01A060 100%);
@@ -2825,90 +2859,6 @@ body.dark-theme .column-title,
 body.dark-theme .tagline,
 body.dark-theme .copyright {
     color: #ffffff;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 40px;
-    }
-    
-    .footer-links {
-        justify-content: center;
-        width: 100%;
-        gap: 30px;
-    }
-    
-    .brand-text {
-        font-size: 2.5rem;
-    }
-    
-    .tagline {
-        margin: 0 auto 20px;
-    }
-    
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-        gap: 25px;
-    }
-    
-    .footer-wave {
-        top: -70px;
-    }
-    
-    .footer-wave svg {
-        height: 70px;
-    }
-    
-    .footer .container {
-        padding: 0 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .footer {
-        padding: 50px 0 20px;
-    }
-    
-    .brand-text {
-        font-size: 2.2rem;
-    }
-    
-    .footer-links {
-        flex-direction: column;
-        gap: 30px;
-        align-items: center;
-    }
-    
-    .links-column {
-        align-items: center;
-        text-align: center;
-    }
-    
-    .column-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .footer-link:hover {
-        transform: translateY(-3px);
-        padding-left: 0;
-    }
-    
-    .footer-wave {
-        top: -50px;
-    }
-    
-    .footer-wave svg {
-        height: 50px;
-    }
-    
-    .footer .container {
-        padding: 0 16px;
-    }
 }
 
 /* ============================================
@@ -3160,13 +3110,32 @@ body.dark-theme .detail-value {
     .nav-text {
         display: none;
     }
+
+    /* Hide ShramikConnect text on mobile — show only icon */
+    .logo h1 {
+        display: none;
+    }
     
     .main-content {
         padding: 20px;
     }
     
+    /* FIX: Logo cut issue on mobile */
+    .logo {
+        max-width: calc(100% - 60px);
+        overflow: hidden;
+        gap: 8px !important;
+    }
+    
+    .logo-icon {
+        width: 100px !important;
+        height: 32px !important;
+        flex-shrink: 0;
+    }
+    
+    /* Stats: 2 cards per row, big */
     .statistics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .actions-grid {
@@ -3197,14 +3166,77 @@ body.dark-theme .detail-value {
         height: 500px;
     }
     
+    /* Global nav strip: column layout, one per row */
     .global-nav-strip {
-        overflow-x: auto;
-        white-space: nowrap;
-        justify-content: flex-start;
+        flex-direction: column;
+        white-space: normal;
+        align-items: stretch;
+        overflow-x: visible;
+    }
+
+    .nav-strip-btn {
+        width: 100%;
+        text-align: left;
+        padding: 12px 20px;
     }
     
     .global-nav-strip.active ~ .main-content {
-        margin-top: 150px; /* Adjust for mobile */
+        margin-top: 0;
+    }
+    
+    /* FIX: Footer center align on mobile */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+    
+    .footer-links {
+        justify-content: center;
+        width: 100%;
+        gap: 30px;
+    }
+    
+    .links-column {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .column-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .brand-text {
+        font-size: 2rem;
+    }
+    
+    .tagline {
+        margin: 0 auto 20px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 25px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+    
+    .footer-wave {
+        top: -70px;
+    }
+    
+    .footer-wave svg {
+        height: 70px;
+    }
+    
+    .footer .container {
+        padding: 0 20px;
     }
 }
 
@@ -3212,10 +3244,6 @@ body.dark-theme .detail-value {
     .navbar {
         padding: 0 15px;
         height: 60px;
-    }
-    
-    .logo h1 {
-        font-size: 20px;
     }
     
     .hamburger-btn {
@@ -3246,13 +3274,6 @@ body.dark-theme .detail-value {
     
     .stat-card {
         padding: 20px;
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    
-    .stat-icon {
-        margin: 0 auto;
     }
     
     .post-job-float-btn {
@@ -3260,17 +3281,51 @@ body.dark-theme .detail-value {
     }
     
     .global-nav-strip.active ~ .main-content {
-        margin-top: 130px;
+        margin-top: 0;
+    }
+    
+    /* FIX: Logo smaller on very small screens */
+    .logo-icon {
+        width: 80px !important;
+        height: 28px !important;
+    }
+    
+    /* FIX: Footer smaller padding on mobile */
+    .footer {
+        padding: 40px 0 20px;
+    }
+    
+    .brand-text {
+        font-size: 1.8rem;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+    
+    .footer-wave {
+        top: -50px;
+    }
+    
+    .footer-wave svg {
+        height: 50px;
+    }
+    
+    .footer .container {
+        padding: 0 16px;
     }
 }
 
 @media (max-width: 374px) {
-    .logo h1 {
-        font-size: 18px;
+    .logo-icon {
+        width: 70px !important;
+        height: 24px !important;
     }
     
     .nav-link {
-        padding: 6px 10px;
+        padding: 6px 8px;
     }
     
     .main-content {
@@ -3278,15 +3333,14 @@ body.dark-theme .detail-value {
     }
     
     .welcome-title {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
     }
     
     .section-title {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
     
     .global-nav-strip.active ~ .main-content {
-        margin-top: 140px;
+        margin-top: 0;
     }
 }
-
