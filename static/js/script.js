@@ -439,8 +439,8 @@ function selectLanguage(code, name) {
     if (langName) langName.textContent = found ? found.name : name;
     if (langFlag) langFlag.textContent = found ? found.flag : '🌐';
 
-    // Set cookie + localStorage
-    setGoogTransCookie(code);
+    // Save to localStorage
+    localStorage.setItem('sc_language', code);
 
     // Rebuild list to show checkmark
     buildLangOptions(document.getElementById('langSearchInput')?.value || '');
@@ -448,17 +448,34 @@ function selectLanguage(code, name) {
     // Close dropdown
     closeLangDropdown();
 
-    // Apply translation via Google Translate URL method
-    // Reload with googtrans cookie set — Google Translate will auto-translate
-    if (code !== 'en') {
-        // Small delay then reload so cookie is set
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+    // Use Google Translate's doGTranslate function directly
+    // This is the proper way — no reload needed
+    const tryTranslate = () => {
+        if (typeof doGTranslate === 'function') {
+            if (code === 'en') {
+                doGTranslate('en|en');
+            } else {
+                doGTranslate('en|' + code);
+            }
+        } else {
+            // doGTranslate not ready yet — set cookie and reload as fallback
+            const val = code === 'en' ? '' : '/en/' + code;
+            if (code === 'en') {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+            } else {
+                document.cookie = 'googtrans=' + val + '; path=/';
+                document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
+            }
+            setTimeout(() => window.location.reload(), 300);
+        }
+    };
+
+    // Try immediately, retry after short delay if not ready
+    if (typeof doGTranslate === 'function') {
+        tryTranslate();
     } else {
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
+        setTimeout(tryTranslate, 800);
     }
 }
 
