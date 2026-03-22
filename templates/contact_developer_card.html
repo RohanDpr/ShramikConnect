@@ -1,6 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Meet Our Developers | ShramikConnect {% endblock %}
+
+{% block head %}
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +21,8 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+{% endblock %}
+{% block content %}
 <body class="light">
     <!-- ============================================
          SETTINGS ICON (Right Side)
@@ -330,4 +335,4 @@
 
     <script src="{% static 'js/contact_developer_card.js'%}"></script>
 </body>
-</html>
+{% endblock %}
