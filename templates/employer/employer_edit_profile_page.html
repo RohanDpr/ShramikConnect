@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Edit Profile | Employer · ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -941,7 +944,8 @@ body.dark-theme .location-coordinates { background: #1F2937; border-top-color: #
     .photo-btn { flex: 1; justify-content: center; }
 }
     </style>
-</head>
+{% endblock %}
+{% block content %}
 <body class="light-theme">
     <!-- Notification Container -->
     <div class="notification-wrapper" id="notificationWrapper"></div>
@@ -2094,4 +2098,4 @@ function showNotification(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', init);
    </script>
 </body>
-</html>
+{% endblock %}
