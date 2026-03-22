@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 
 <html lang="en">
 <head>
@@ -189,30 +190,17 @@
     <!-- ============================================
          PRELOAD VIDEO
          ============================================ -->
-    <link rel="preload" as="video" href="static/video/Landing_video.mp4" type="video/mp4">
+    <link rel="preload" as="video" href="{% static 'video/Landing_video.mp4' %}" type="video/mp4">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    <link rel="icon" type="image/png" href="images/logo/Logo only.png">
-
-    <!-- Google Translate — hidden widget, required for translation to work -->
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                autoDisplay: false
-            }, 'gt_widget');
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <link rel="icon" type="image/png" href="{% static 'images/logo/Logo only.png' %}">
 </head>
 <body>
-    <!-- Hidden Google Translate widget container -->
-    <div id="gt_widget" style="display:none;visibility:hidden;position:absolute;"></div>
 
     <!-- ============================================
          WELCOME / WARNING POPUP MODAL
@@ -342,8 +330,8 @@
                    poster="images/fallback-poster.jpg" 
                    aria-label="Background video showing ShramikConnect platform"
                    id="mainVideo">
-                <source src="static/video/Landing_video.mp4" type="video/mp4">
-                <source src="static/video/Landing_video.webm" type="video/webm">
+                <source src="{% static 'video/Landing_video.mp4' %}" type="video/mp4">
+                <source src="{% static 'video/Landing_video.webm' %}" type="video/webm">
                 Your browser does not support the video tag.
             </video>
             
@@ -483,6 +471,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="js/script.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
