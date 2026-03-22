@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Terms & Conditions | ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms & Conditions | ShramikConnect</title>
@@ -11,7 +14,8 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts for clean typography -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
+{% endblock %}
+{% block content %}
 <body>
     <!-- ============================================
          SIDEBAR (Hamburger Menu)
@@ -242,4 +246,4 @@
 </footer>
     <script src="{% static 'js/term_and_condition.js' %}"></script>
 </body>
-</html>
+{% endblock %}
