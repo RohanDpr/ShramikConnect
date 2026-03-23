@@ -439,7 +439,7 @@ function selectLanguage(code, name) {
     if (langName) langName.textContent = found ? found.name : name;
     if (langFlag) langFlag.textContent = found ? found.flag : '🌐';
 
-    // Save to localStorage — this is what base.html reads on every page
+    // Save to localStorage
     localStorage.setItem('sc_language', code);
 
     // Rebuild list to show checkmark
@@ -448,25 +448,33 @@ function selectLanguage(code, name) {
     // Close dropdown
     closeLangDropdown();
 
-    // Apply translation instantly — NO reload needed
-    const applyTranslation = () => {
+    // Step 1: Set googtrans cookie — this is what persists across pages
+    // Google Translate reads this cookie on EVERY page load automatically
+    if (code === 'en') {
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
+    } else {
+        const val = '/en/' + code;
+        document.cookie = 'googtrans=' + val + '; path=/';
+        document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
+        document.cookie = 'googtrans=' + val + '; path=/; domain=.' + location.hostname;
+    }
+
+    // Step 2: Apply on current page via doGTranslate (no reload needed)
+    const apply = () => {
         if (typeof doGTranslate === 'function') {
             doGTranslate('en|' + (code === 'en' ? 'en' : code));
         }
     };
 
-    // Try immediately, then retry once if widget not ready yet
     if (typeof doGTranslate === 'function') {
-        applyTranslation();
+        apply();
     } else {
-        let attempts = 0;
-        const wait = setInterval(() => {
-            attempts++;
-            if (typeof doGTranslate === 'function') {
-                applyTranslation();
-                clearInterval(wait);
-            }
-            if (attempts > 25) clearInterval(wait); // stop after 5s
+        let n = 0;
+        const t = setInterval(() => {
+            if (typeof doGTranslate === 'function') { apply(); clearInterval(t); }
+            if (++n > 20) clearInterval(t);
         }, 200);
     }
 }
