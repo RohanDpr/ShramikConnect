@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ShramikConnect{% endblock %}</title>
 
-    <!-- Google Translate -->
+    <!-- Google Translate — Hidden, loads on every page -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -17,7 +17,7 @@
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- Hide Google top bar -->
+    <!-- Hide Google's default top bar -->
     <style>
         .goog-te-banner-frame,
         .skiptranslate { display: none !important; }
@@ -28,41 +28,33 @@
 </head>
 <body>
 
-    <!-- Hidden Google Translate container -->
+    <!-- Hidden widget container — Google Translate renders here silently -->
     <div id="gt_widget" style="display:none;visibility:hidden;position:absolute;left:-9999px;"></div>
 
-    <!-- ✅ LANGUAGE RESTORE SYSTEM (FIXED + OPTIMIZED) -->
+    <!-- Restore last selected language on every page load + back navigation -->
     <script>
-        function applyLanguage() {
+        function scRestoreLang() {
             const lang = localStorage.getItem('sc_language');
+            if (!lang || lang === 'en') return;
 
-            if (lang && lang !== 'en') {
-                const check = setInterval(function () {
-                    if (typeof doGTranslate === 'function') {
-                        doGTranslate('en|' + lang);
-                        clearInterval(check);
-                    }
-                }, 200);
-
-                setTimeout(function () {
+            // Try immediately, keep retrying until doGTranslate is ready
+            let attempts = 0;
+            const check = setInterval(function () {
+                attempts++;
+                if (typeof doGTranslate === 'function') {
+                    doGTranslate('en|' + lang);
                     clearInterval(check);
-                }, 5000);
-            }
+                }
+                if (attempts > 50) clearInterval(check); // stop after 10s
+            }, 200);
         }
 
         // Normal page load
-        window.addEventListener('load', applyLanguage);
+        window.addEventListener('load', scRestoreLang);
 
-        // Back / Forward navigation fix
-        window.addEventListener('pageshow', function () {
-            applyLanguage();
-        });
-
-        // Tab switch / app resume fix
-        document.addEventListener("visibilitychange", function () {
-            if (document.visibilityState === "visible") {
-                applyLanguage();
-            }
+        // Back/forward navigation (bfcache — page is NOT reloaded)
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) scRestoreLang();
         });
     </script>
 
