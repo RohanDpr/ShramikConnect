@@ -1207,10 +1207,6 @@ body.dark-theme .sidebar-header {
     box-shadow: 0 4px 12px rgba(67, 98, 201, 0.3);
 }
 
-.profile-edit-btn:active {
-    transform: translateY(0);
-}
-
 .sidebar-settings-icon {
     display: flex;
     align-items: center;
@@ -1253,27 +1249,24 @@ body.dark-theme .sidebar-header {
     transition: all 0.3s ease;
     font-weight: 500;
     background: #F3F4F6;
-    border: 1px solid #D1D5E0;
+    border: none;
     cursor: pointer;
     text-align: left;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     position: relative;
     overflow: hidden;
-    border: none;
     width: 100%;
 }
 
 .menu-item-box:hover {
     background: rgba(67, 98, 201, 0.1);
-    border-color: #4362C9;
     transform: translateX(5px);
     color: #4362C9;
 }
 
 .menu-item-box.active {
     background: rgba(67, 98, 201, 0.15);
-    border-color: #4362C9;
     color: #4362C9;
     font-weight: 600;
 }
@@ -1356,10 +1349,6 @@ body.dark-theme .navbar {
     background: #2E4BBF;
     transform: rotate(90deg) scale(1.1);
     box-shadow: 0 6px 20px rgba(67, 98, 201, 0.4);
-}
-
-.hamburger-btn:active {
-    transform: rotate(90deg) scale(1);
 }
 
 .logo {
