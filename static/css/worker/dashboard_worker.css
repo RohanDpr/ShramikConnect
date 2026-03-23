@@ -337,7 +337,7 @@ body.dark-theme .global-nav-strip {
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 12px 20px;
-    margin: 0 40px 30px;
+    margin: 10px 40px 20px;
     display: flex;
     gap: 15px;
     border: 1px solid rgba(67, 98, 201, 0.1);
@@ -516,21 +516,27 @@ body.dark-theme .popup-header h2 {
     background: #F8F8F8;
     border-radius: 12px;
     padding: 20px;
+    border-left: 4px solid #4362C9;
 }
 
 .detail-section h3 {
-    font-size: 18px;
+    font-size: 16px;
     color: #4362C9;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(67, 98, 201, 0.2);
+    border-bottom: 1px solid rgba(67, 98, 201, 0.15);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
+    align-items: flex-start;
+    padding: 10px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    gap: 15px;
 }
 
 .detail-row:last-child {
@@ -539,27 +545,68 @@ body.dark-theme .popup-header h2 {
 
 .detail-label {
     color: #666;
-    font-weight: 500;
-    min-width: 150px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    min-width: 130px;
 }
 
 .detail-value {
     color: #1A1A1A;
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 14px;
     text-align: right;
     flex: 1;
-    padding-left: 20px;
+    word-break: break-word;
 }
 
 /* Work History Modal */
 .work-history-modal {
     max-width: 700px;
+    width: 95%;
 }
 
 .work-history-content {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
+}
+
+/* Mobile modal */
+@media (max-width: 600px) {
+    .work-history-modal {
+        width: 100%;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-label {
+        min-width: unset;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+
+    .popup-container {
+        max-width: 100%;
+        width: calc(100% - 20px);
+        border-radius: 16px;
+        max-height: 85vh;
+    }
+
+    .popup-header {
+        padding: 16px 20px;
+    }
+
+    .popup-content {
+        padding: 16px 20px;
+    }
 }
 
 /* Job Preview in Application Modal */
@@ -1429,6 +1476,7 @@ body.dark-theme .navbar {
 .main-content {
     margin-top: 70px;
     padding: 40px;
+    padding-top: 30px;
     min-height: calc(100vh - 70px);
     background: transparent;
     width: 100%;
@@ -1445,6 +1493,7 @@ body.dark-theme .navbar {
 .content-section {
     display: none;
     animation: fadeIn 0.5s ease;
+    padding-bottom: 40px;
 }
 
 .content-section.active {
@@ -1711,6 +1760,7 @@ body.dark-theme .stat-card {
     align-items: center;
     margin-bottom: 40px;
     padding-bottom: 20px;
+    padding-top: 10px;
     border-bottom: 2px solid rgba(67, 98, 201, 0.1);
 }
 
@@ -2941,25 +2991,25 @@ body.dark-theme .footer-wave .shape-fill {
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 50px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 40px;
     margin-bottom: 30px;
 }
 
 .footer-brand {
-    flex: 1;
-    min-width: 280px;
+    width: 100%;
 }
 
 .brand-text {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 5px;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
     cursor: pointer;
     display: inline-block;
     transition: all 0.3s ease;
+    letter-spacing: -0.5px;
 }
 
 .shramik {
@@ -2967,7 +3017,7 @@ body.dark-theme .footer-wave .shape-fill {
 }
 
 .connect {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .brand-text:hover {
@@ -2975,52 +3025,56 @@ body.dark-theme .footer-wave .shape-fill {
 }
 
 .tagline {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: rgba(255, 255, 255, 0.85);
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     line-height: 1.5;
 }
 
 .copyright {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.65);
-    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
 }
 
 .footer-links {
     display: flex;
     gap: 50px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .links-column {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     min-width: 120px;
 }
 
 .column-title {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 15px;
     color: #ffffff;
     position: relative;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
 }
 
 .column-title::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
     height: 2px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
     transition: width 0.3s ease;
 }
 
 .links-column:hover .column-title::after {
-    width: 40px;
+    width: 50px;
     background: #ffffff;
 }
 
@@ -3034,8 +3088,8 @@ body.dark-theme .footer-wave .shape-fill {
 
 .footer-link:hover {
     color: #ffffff;
-    transform: translateX(4px);
     opacity: 1;
+    text-decoration: underline;
 }
 
 .footer-bottom {
@@ -3054,8 +3108,8 @@ body.dark-theme .footer-wave .shape-fill {
 }
 
 .social-link {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border: 2px solid rgba(255, 255, 255, 0.4);
     border-radius: 50%;
     display: flex;
@@ -3065,7 +3119,6 @@ body.dark-theme .footer-wave .shape-fill {
     text-decoration: none;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.1);
-    font-size: 16px;
 }
 
 .social-link:hover {
@@ -3088,36 +3141,12 @@ body.dark-theme .footer {
    FOOTER RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 30px;
-    }
-
     .footer-links {
-        justify-content: center;
         gap: 30px;
     }
-
-    .links-column {
-        align-items: center;
-        text-align: center;
-    }
-
-    .column-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        gap: 20px;
-    }
-
     .footer .container {
         padding: 0 20px;
     }
-
     .footer-wave {
         top: -30px;
     }
@@ -3127,13 +3156,11 @@ body.dark-theme .footer {
     .footer {
         padding: 40px 0 20px;
     }
-
     .footer-links {
         flex-direction: column;
         align-items: center;
         gap: 25px;
     }
-
     .social-links {
         gap: 12px;
     }
