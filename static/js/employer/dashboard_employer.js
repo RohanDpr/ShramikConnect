@@ -513,6 +513,7 @@ const DOM = {
     ratingStars: document.getElementById('ratingStars'),
     
     // Buttons and actions
+    quickActionDashboard: document.getElementById('quickActionDashboard'),
     postJobBtn: document.getElementById('postJobBtn'),
     addJobBtn: document.getElementById('addJobBtn'),
     viewAcceptedBtn: document.getElementById('viewAcceptedBtn'),
@@ -1688,6 +1689,7 @@ function setupEventListeners() {
     });
     
     // Quick action buttons
+    DOM.quickActionDashboard?.addEventListener('click', () => setActiveSection('dashboard'));
     DOM.viewAcceptedBtn?.addEventListener('click', () => setActiveSection('accepted-workers'));
     DOM.viewHiredBtn?.addEventListener('click', () => setActiveSection('hired-workers'));
     DOM.aiAssistantBtn?.addEventListener('click', () => setActiveSection('ai-assistant'));
