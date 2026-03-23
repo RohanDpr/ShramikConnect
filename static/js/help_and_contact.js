@@ -1384,54 +1384,23 @@ function createFAQ() {
             </div>
             <div class="faq-answer">
                 <p>${translation[item.answerKey] || item.answerKey}</p>
-                ${relatedCard ? `<a href="#" class="faq-link" data-related-card="${item.relatedCard}">
-                    Learn more about "${relatedCardTitle}"
-                </a>` : ''}
             </div>
         `;
         
-       const questionElement = faqElement.querySelector('.faq-question');
+        const questionElement = faqElement.querySelector('.faq-question');
 
-// नया code - Question par click karne par related card par le jaye
-questionElement.addEventListener('click', (e) => {
-    e.preventDefault();
-    
-    const relatedCardId = item.relatedCard;
-    const cardElement = document.querySelector(`[data-card-id="${relatedCardId}"]`);
-    
-    if (cardElement) {
-        cardElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
-        
-        // Highlight card
-        cardElement.style.boxShadow = '0 0 0 4px var(--accent-1)';
-        setTimeout(() => {
-            cardElement.style.boxShadow = '';
-        }, 2000);
-    }
-});
-        const linkElement = faqElement.querySelector('.faq-link');
-        if (linkElement) {
-            linkElement.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const cardElement = document.querySelector(`[data-card-id="${item.relatedCard}"]`);
-                if (cardElement) {
-                    cardElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                    
-                    cardElement.classList.add('highlight');
-                    setTimeout(() => {
-                        cardElement.classList.remove('highlight');
-                    }, 2000);
-                }
+        // Accordion toggle - click karne par answer open/close hoga
+        questionElement.addEventListener('click', () => {
+            const isActive = faqElement.classList.contains('active');
+            // Sabhi open FAQ band karo
+            document.querySelectorAll('.faq-item.active').forEach(openItem => {
+                openItem.classList.remove('active');
             });
-        }
+            // Agar pehle se open nahi tha toh open karo
+            if (!isActive) {
+                faqElement.classList.add('active');
+            }
+        });
         
         faqContainer.appendChild(faqElement);
     });

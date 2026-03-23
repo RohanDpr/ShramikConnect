@@ -14,7 +14,7 @@ def google_verify(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("google765667aa04e8106b.html", google_verify),
-    path('', views.index),
+    path('', views.index, name='home'),  # ← name='home' add kiya
     path('role_selection/', views.role_selection),
     path('help_and_contact/', views.help_and_contact, name='help_and_contact'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
@@ -40,7 +40,7 @@ urlpatterns = [
     path('choose_password_employer/', views.choose_password_employer),
     path('change_password_employer/', views.change_password_employer),
     path('get_password_employer/', views.get_password_employer),
-     path('eligibility-card/', views.eligibility_card, name='eligibility_card'),
+    path('eligibility-card/', views.eligibility_card, name='eligibility_card'),
     path('workers-term/', views.workers_term, name='workers_term'),
     path('employers-term/', views.employers_term, name='employers_term'),
     path('platform-responsibilities/', views.platform_responsibilities, name='platform_responsibilities'),
@@ -130,7 +130,7 @@ urlpatterns = [
     path('api/check-email-exists/', views.check_email_exists, name='check_email_exists'),
     
     # ============================================
-    # MOBILE OTP VERIFICATION APIs (NEW)
+    # MOBILE OTP VERIFICATION APIs
     # ============================================
     path('api/send-mobile-otp/', views.send_mobile_otp, name='send_mobile_otp'),
     path('api/verify-mobile-otp/', views.verify_mobile_otp, name='verify_mobile_otp'),

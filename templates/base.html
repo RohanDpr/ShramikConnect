@@ -6,46 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ShramikConnect{% endblock %}</title>
 
-    <!-- Google Translate — Hidden, loads on every page -->
-    <script type="text/javascript">
+    <!-- Google Translate async -->
+    <script>
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                autoDisplay: false
-            }, 'gt_widget');
+            try {
+                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'gt_widget');
+            } catch(e) {}
         }
+        (function() {
+            var s = document.createElement('script');
+            s.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            s.async = true;
+            s.onerror = function() {};
+            document.head.appendChild(s);
+        })();
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- Hide Google's default top bar -->
     <style>
-        .goog-te-banner-frame,
-        .skiptranslate { display: none !important; }
+        .goog-te-banner-frame, .skiptranslate { display: none !important; }
         body { top: 0 !important; }
     </style>
 
     {% block head %}{% endblock %}
 </head>
-<body>
 
-    <!-- Hidden widget container — Google Translate renders here silently -->
+<body class="light">
+<!--
+    Yeh script body ke sabse pehle run hota hai — synchronously.
+    CSS render hone se PEHLE sahi theme class lag jaati hai.
+    Isliye koi flash ya wrong theme nahi aata.
+-->
+<script>
+    (function() {
+        var saved = localStorage.getItem('selectedTheme');
+        var valid = ['light', 'dark', 'system'];
+        var theme = (valid.indexOf(saved) !== -1) ? saved : 'light';
+        document.body.className = theme;
+    })();
+</script>
+
     <div id="gt_widget" style="display:none;visibility:hidden;position:absolute;left:-9999px;"></div>
-
-    <!-- Restore last selected language on every page load -->
-    <script>
-        window.addEventListener('load', function () {
-            const lang = localStorage.getItem('sc_language');
-            if (lang && lang !== 'en') {
-                const check = setInterval(function () {
-                    if (typeof doGTranslate === 'function') {
-                        doGTranslate('en|' + lang);
-                        clearInterval(check);
-                    }
-                }, 200);
-                setTimeout(function () { clearInterval(check); }, 5000);
-            }
-        });
-    </script>
 
     {% block content %}{% endblock %}
 

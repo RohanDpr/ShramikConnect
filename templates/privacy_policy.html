@@ -1,1760 +1,70 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
-{% block title %} Privacy Policy | ShramikConnect {% endblock %}
+{% block title %}Privacy Policy | ShramikConnect{% endblock %}
 
 {% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy | ShramikConnect</title>
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/privacy_policy.css">
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <style>
-        /* ============================================
-   RESET & BASE STYLES (EXACT COPY FROM TERMS PAGE)
-   ============================================ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    font-size: 16px;
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
-    overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    min-height: 100vh;
-}
-
-/* ============================================
-   THEME VARIABLES - SAME AS TERMS PAGE
-   ============================================ */
-
-/* Light Theme */
-body.light {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #f1f5f9;
-    --bg-tertiary: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #64748b;
-    --border-light: #e2e8f0;
-    --border-medium: #cbd5e1;
-    --border-strong: #94a3b8;
-    --border-black: #0f172a;
-    --border-white: #ffffff;
-    
-    --accent-blue: #2563eb;
-    --accent-green: #16a34a;
-    --accent-1: #2563eb;
-    --accent-2: #16a34a;
-    --accent-yellow: #eab308;
-    
-    --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --hover-bg: #f8fafc;
-    --active-bg: #e2e8f0;
-    
-    --primary-color: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #60a5fa;
-    --success-color: #16a34a;
-    --warning-color: #eab308;
-    --danger-color: #dc2626;
-    --info-color: #0ea5e9;
-    
-    --glow-blue: 0 0 0 2px rgba(37, 99, 235, 0.1);
-    --glow-green: 0 0 0 2px rgba(22, 163, 74, 0.1);
-    --glow-yellow: 0 0 0 2px rgba(234, 179, 8, 0.1);
-    
-    --footer-bg: #1e293b;
-    --footer-text: #f8fafc;
-    
-    --border-radius-sm: 8px;
-    --border-radius-md: 12px;
-    --border-radius-lg: 16px;
-    --border-radius-xl: 20px;
-    --border-radius-circle: 50%;
-}
-
-/* Dark Theme */
-body.dark {
-    --bg-primary: #0a0c0f;
-    --bg-secondary: #14181c;
-    --bg-tertiary: #1e2429;
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-    --border-light: #2d3748;
-    --border-medium: #4a5568;
-    --border-strong: #718096;
-    --border-black: #f1f5f9;
-    --border-white: #0a0c0f;
-    
-    --accent-blue: #fbbf24;
-    --accent-green: #f59e0b;
-    --accent-1: #fbbf24;
-    --accent-2: #f59e0b;
-    --accent-yellow: #fbbf24;
-    
-    --card-bg: #14181c;
-    --card-border: #2d3748;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-    --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-    --hover-bg: #1e2429;
-    --active-bg: #2d3748;
-    
-    --primary-color: #fbbf24;
-    --primary-dark: #f59e0b;
-    --primary-light: #fcd34d;
-    --success-color: #fbbf24;
-    --warning-color: #f59e0b;
-    --danger-color: #f87171;
-    --info-color: #fbbf24;
-    
-    --glow-blue: 0 0 0 2px rgba(251, 191, 36, 0.2);
-    --glow-green: 0 0 0 2px rgba(245, 158, 11, 0.2);
-    --glow-yellow: 0 0 0 2px rgba(251, 191, 36, 0.3);
-    
-    --footer-bg: #0a0c0f;
-    --footer-text: #f1f5f9;
-    
-    --border-radius-sm: 8px;
-    --border-radius-md: 12px;
-    --border-radius-lg: 16px;
-    --border-radius-xl: 20px;
-    --border-radius-circle: 50%;
-}
-
-/* System theme */
-@media (prefers-color-scheme: dark) {
-    body.system {
-        --bg-primary: #0a0c0f;
-        --bg-secondary: #14181c;
-        --bg-tertiary: #1e2429;
-        --text-primary: #f1f5f9;
-        --text-secondary: #cbd5e1;
-        --text-muted: #94a3b8;
-        --border-light: #2d3748;
-        --border-medium: #4a5568;
-        --border-strong: #718096;
-        --border-black: #f1f5f9;
-        --border-white: #0a0c0f;
-        --accent-blue: #fbbf24;
-        --accent-green: #f59e0b;
-        --accent-1: #fbbf24;
-        --accent-2: #f59e0b;
-        --accent-yellow: #fbbf24;
-        --card-bg: #14181c;
-        --card-border: #2d3748;
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-        --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-        --hover-bg: #1e2429;
-        --active-bg: #2d3748;
-        --primary-color: #fbbf24;
-        --primary-dark: #f59e0b;
-        --primary-light: #fcd34d;
-        --success-color: #fbbf24;
-        --warning-color: #f59e0b;
-        --danger-color: #f87171;
-        --info-color: #fbbf24;
-        --glow-blue: 0 0 0 2px rgba(251, 191, 36, 0.2);
-        --glow-green: 0 0 0 2px rgba(245, 158, 11, 0.2);
-        --glow-yellow: 0 0 0 2px rgba(251, 191, 36, 0.3);
-        --footer-bg: #0a0c0f;
-        --footer-text: #f1f5f9;
-        
-        --border-radius-sm: 8px;
-        --border-radius-md: 12px;
-        --border-radius-lg: 16px;
-        --border-radius-xl: 20px;
-        --border-radius-circle: 50%;
-    }
-}
-
-@media (prefers-color-scheme: light) {
-    body.system {
-        --bg-primary: #f8fafc;
-        --bg-secondary: #f1f5f9;
-        --bg-tertiary: #e2e8f0;
-        --text-primary: #0f172a;
-        --text-secondary: #334155;
-        --text-muted: #64748b;
-        --border-light: #e2e8f0;
-        --border-medium: #cbd5e1;
-        --border-strong: #94a3b8;
-        --border-black: #0f172a;
-        --border-white: #ffffff;
-        --accent-blue: #2563eb;
-        --accent-green: #16a34a;
-        --accent-1: #2563eb;
-        --accent-2: #16a34a;
-        --accent-yellow: #eab308;
-        --card-bg: #ffffff;
-        --card-border: #e2e8f0;
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --hover-bg: #f8fafc;
-        --active-bg: #e2e8f0;
-        --primary-color: #2563eb;
-        --primary-dark: #1d4ed8;
-        --primary-light: #60a5fa;
-        --success-color: #16a34a;
-        --warning-color: #eab308;
-        --danger-color: #dc2626;
-        --info-color: #0ea5e9;
-        --glow-blue: 0 0 0 2px rgba(37, 99, 235, 0.1);
-        --glow-green: 0 0 0 2px rgba(22, 163, 74, 0.1);
-        --glow-yellow: 0 0 0 2px rgba(234, 179, 8, 0.1);
-        --footer-bg: #1e293b;
-        --footer-text: #f8fafc;
-        
-        --border-radius-sm: 8px;
-        --border-radius-md: 12px;
-        --border-radius-lg: 16px;
-        --border-radius-xl: 20px;
-        --border-radius-circle: 50%;
-    }
-}
-
-body {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-}
-
-/* ============================================
-   REMOVE FLOATING SETTINGS ICON
-   ============================================ */
-.settings-icon {
-    display: none !important;
-}
-
-/* ============================================
-   SETTINGS DROPDOWN
-   ============================================ */
-.settings-dropdown {
-    position: fixed;
-    top: 90px;
-    right: 30px;
-    background: var(--card-bg);
-    border: 1px solid var(--border-black);
-    border-radius: var(--border-radius-lg);
-    padding: 24px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: var(--card-shadow);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px) scale(0.95);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 280px;
-}
-
-.settings-dropdown.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-}
-
-.settings-section {
-    margin-bottom: 24px;
-}
-
-.settings-heading {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--accent-1);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.language-switcher {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.theme-switcher {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-}
-
-.language-option,
-.theme-option {
-    padding: 8px 12px;
-    border: 1px solid var(--border-medium);
-    border-radius: var(--border-radius-md);
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    text-align: center;
-}
-
-.language-option:hover,
-.theme-option:hover {
-    border-color: var(--accent-2);
-    color: var(--accent-2);
-    transform: translateY(-2px);
-    background: var(--hover-bg);
-}
-
-.language-option.active,
-.theme-option.active {
-    background: var(--accent-2);
-    border-color: var(--accent-2);
-    color: #FFFFFF;
-}
-
-/* ============================================
-   SIDEBAR
-   ============================================ */
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 998;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.sidebar-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 320px;
-    height: 100%;
-    background: var(--card-bg);
-    z-index: 999;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--card-shadow);
-    border-right: 1px solid var(--border-black);
-}
-
-.sidebar.active {
-    transform: translateX(0);
-}
-
-.sidebar-header {
-    padding: 24px;
-    border-bottom: 1px solid var(--border-black);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.sidebar-header h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.sidebar-close {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--border-radius-circle);
-    background: var(--hover-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--text-secondary);
-    border: 1px solid var(--border-light);
-}
-
-.sidebar-close:hover {
-    background: var(--active-bg);
-    color: var(--accent-2);
-    transform: rotate(90deg);
-}
-
-.sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px;
-}
-
-.sidebar-settings-icon {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 16px;
-    border-radius: var(--border-radius-md);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-black);
-    cursor: pointer;
-    margin-bottom: 20px;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-}
-
-.sidebar-settings-icon:hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-2);
-    transform: translateX(5px);
-    color: var(--accent-2);
-}
-
-.sidebar-settings-icon svg {
-    color: var(--accent-1);
-    transition: transform 0.3s ease;
-}
-
-.sidebar-settings-icon:hover svg {
-    color: var(--accent-2);
-    transform: rotate(90deg);
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.menu-item-box {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 16px;
-    border-radius: var(--border-radius-md);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-black);
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-}
-
-.menu-item-box:nth-child(odd):hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-1);
-    transform: translateX(5px);
-    color: var(--accent-1);
-}
-
-.menu-item-box:nth-child(even):hover {
-    background: var(--hover-bg);
-    border-color: var(--accent-2);
-    transform: translateX(5px);
-    color: var(--accent-2);
-}
-
-.menu-item-box.active {
-    background: var(--active-bg);
-    border-color: var(--accent-1);
-    color: var(--accent-1);
-    font-weight: 600;
-}
-
-.menu-item-box i {
-    width: 24px;
-    text-align: center;
-    font-size: 20px;
-}
-
-.menu-item-box:nth-child(odd) i {
-    color: var(--accent-1);
-}
-
-.menu-item-box:nth-child(even) i {
-    color: var(--accent-2);
-}
-
-/* ============================================
-   NAVBAR
-   ============================================ */
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    background: var(--card-bg);
-    border-bottom: 2px solid var(--border-black);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-    z-index: 100;
-    transition: all 0.3s ease;
-}
-
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.hamburger-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--border-radius-md);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-black);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--text-primary);
-}
-
-.hamburger-btn:hover {
-    background: var(--hover-bg);
-    color: var(--accent-2);
-    transform: rotate(90deg);
-    border-color: var(--accent-2);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 5px;
-    border-radius: var(--border-radius-md);
-}
-
-.logo:hover {
-    transform: scale(1.05);
-}
-
-.logo-img {
-    height: 50px;
-    width: auto;
-    border-radius: var(--border-radius-sm);
-}
-
-.logo h1 {
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-}
-
-.logo-shramik {
-    color: var(--accent-1);
-}
-
-.logo-connect {
-    color: var(--accent-2);
-}
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    border-radius: var(--border-radius-md);
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    font-size: 16px;
-    background: transparent;
-    border: 1px solid transparent;
-    position: relative;
-}
-
-.nav-link:nth-child(1):hover {
-    background: var(--hover-bg);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-    transform: translateY(-2px);
-}
-
-.nav-link:nth-child(2):hover {
-    background: var(--hover-bg);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-    transform: translateY(-2px);
-}
-
-.nav-link:nth-child(3):hover {
-    background: var(--hover-bg);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-    transform: translateY(-2px);
-}
-
-.nav-link.active {
-    background: var(--bg-secondary);
-    color: var(--accent-1);
-    border-color: var(--border-black);
-}
-
-.nav-link i {
-    font-size: 18px;
-}
-
-.active-indicator {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    width: 8px;
-    height: 8px;
-    background: var(--accent-2);
-    border-radius: var(--border-radius-circle);
-    border: 2px solid var(--bg-primary);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.2); opacity: 1; }
-}
-
-/* ============================================
-   MAIN CONTENT
-   ============================================ */
-.main-content {
-    margin-top: 80px;
-    min-height: calc(100vh - 80px);
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 40px;
-}
-
-/* ============================================
-   PRIVACY HEADER SECTION
-   ============================================ */
-.privacy-header-section {
-    padding: 40px 0;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-light);
-}
-
-.privacy-header-content {
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.privacy-header-title {
-    font-size: 2.8rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    line-height: 1.2;
-    color: var(--text-primary);
-}
-
-.title-line {
-    display: block;
-}
-
-.title-line.highlight {
-    color: var(--accent-1);
-    font-size: 1.4rem;
-    font-weight: 500;
-    margin-top: 10px;
-    position: relative;
-    display: inline-block;
-    padding: 0 10px;
-}
-
-.title-line.highlight::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    border-radius: var(--border-radius-sm);
-    opacity: 0.5;
-}
-
-.privacy-header-subtitle {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    max-width: 800px;
-    line-height: 1.6;
-    margin: 30px auto 0;
-    padding: 20px;
-    background: var(--bg-primary);
-    border-radius: var(--border-radius-lg);
-    border: 1px solid var(--border-black);
-}
-
-/* ============================================
-   PRIVACY CARDS SECTION - EXACT COPY FROM TERMS PAGE
-   ============================================ */
-.privacy-cards-section {
-    padding: 80px 0;
-    background: var(--bg-primary);
-}
-
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-}
-
-.privacy-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius-lg);
-    padding: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid var(--border-black);
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--card-shadow);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 280px;
-}
-
-/* Alternating border colors */
-.privacy-card[data-card-id="collect"] {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="use"] {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="worker"] {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="employer"] {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="location"] {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="payments"] {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="cookies"] {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="security"] {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="sharing"] {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="rights"] {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="retention"] {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="contact"] {
-    border-color: var(--accent-2);
-}
-
-.privacy-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-}
-
-.privacy-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--hover-shadow);
-}
-
-.privacy-card[data-card-id="collect"]:hover {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="use"]:hover {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="worker"]:hover {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="employer"]:hover {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="location"]:hover {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="payments"]:hover {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="cookies"]:hover {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="security"]:hover {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="sharing"]:hover {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="rights"]:hover {
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="retention"]:hover {
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="contact"]:hover {
-    border-color: var(--accent-2);
-}
-
-.privacy-card:hover::before {
-    transform: scaleX(1);
-}
-
-.privacy-card:active {
-    transform: translateY(-2px) scale(0.98);
-}
-
-.card-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: var(--border-radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    background: var(--bg-secondary);
-    border: 2px solid var(--border-black);
-    transition: all 0.3s ease;
-}
-
-/* Icon colors match card border */
-.privacy-card[data-card-id="collect"] .card-icon {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="use"] .card-icon {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="worker"] .card-icon {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="employer"] .card-icon {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="location"] .card-icon {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="payments"] .card-icon {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="cookies"] .card-icon {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="security"] .card-icon {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="sharing"] .card-icon {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="rights"] .card-icon {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="retention"] .card-icon {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="contact"] .card-icon {
-    color: var(--accent-2);
-}
-
-.privacy-card:hover .card-icon {
-    transform: scale(1.1) rotate(5deg);
-    border-color: currentColor;
-}
-
-.card-content h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-}
-
-.privacy-card[data-card-id="collect"]:hover .card-content h3 {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="use"]:hover .card-content h3 {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="worker"]:hover .card-content h3 {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="employer"]:hover .card-content h3 {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="location"]:hover .card-content h3 {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="payments"]:hover .card-content h3 {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="cookies"]:hover .card-content h3 {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="security"]:hover .card-content h3 {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="sharing"]:hover .card-content h3 {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="rights"]:hover .card-content h3 {
-    color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="retention"]:hover .card-content h3 {
-    color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="contact"]:hover .card-content h3 {
-    color: var(--accent-2);
-}
-
-.card-content p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-    line-height: 1.5;
-    flex: 1;
-}
-
-/* Card Tags - EXACT COPY FROM TERMS PAGE */
-.card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
-.tag {
-    padding: 4px 8px;
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    border: 1px solid var(--border-black);
-    transition: all 0.3s ease;
-}
-
-/* Tag hover effects - match card colors */
-.privacy-card[data-card-id="collect"]:hover .tag {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="use"]:hover .tag {
-    background: rgba(22, 163, 74, 0.1);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="worker"]:hover .tag {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="employer"]:hover .tag {
-    background: rgba(22, 163, 74, 0.1);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="location"]:hover .tag {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="payments"]:hover .tag {
-    background: rgba(22, 163, 74, 0.1);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="cookies"]:hover .tag {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="security"]:hover .tag {
-    background: rgba(22, 163, 74, 0.1);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="sharing"]:hover .tag {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="rights"]:hover .tag {
-    background: rgba(22, 163, 74, 0.1);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-}
-
-.privacy-card[data-card-id="retention"]:hover .tag {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--accent-1);
-    border-color: var(--accent-1);
-}
-
-.privacy-card[data-card-id="contact"]:hover .tag {
-    background: rgba(22, 163, 74, 0.1);
-    color: var(--accent-2);
-    border-color: var(--accent-2);
-}
-
-/* Card Action Button */
-.card-action {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--border-radius-circle);
-    background: var(--bg-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    transition: all 0.3s ease;
-    border: 1px solid var(--border-black);
-}
-
-.privacy-card[data-card-id="collect"]:hover .card-action {
-    background: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="use"]:hover .card-action {
-    background: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="worker"]:hover .card-action {
-    background: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="employer"]:hover .card-action {
-    background: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="location"]:hover .card-action {
-    background: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="payments"]:hover .card-action {
-    background: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="cookies"]:hover .card-action {
-    background: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="security"]:hover .card-action {
-    background: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="sharing"]:hover .card-action {
-    background: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="rights"]:hover .card-action {
-    background: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="retention"]:hover .card-action {
-    background: var(--accent-1);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-.privacy-card[data-card-id="contact"]:hover .card-action {
-    background: var(--accent-2);
-    color: #FFFFFF;
-    transform: translateX(5px);
-}
-
-/* ============================================
-   FOOTER
-   ============================================ */
-
-   .footer {
-    background: var(--footer-bg);
-    color: var(--footer-text);
-    padding: 60px 0 30px;
-    position: relative;
-    overflow: hidden;
-    margin-top: 50px;
-    border-top: 2px solid var(--border-black);
-    transition: all 0.3s ease;
-}
-
-/* Container */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* ============================================
-   FOOTER WAVE ANIMATION
-   ============================================ */
-.footer-wave {
-    position: absolute;
-    top: -50px;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-    transform: rotate(180deg);
-}
-
-.footer-wave svg {
-    position: relative;
-    display: block;
-    width: calc(100% + 1.3px);
-    height: 50px;
-}
-
-.footer-wave .shape-fill {
-    fill: var(--wave-fill);
-}
-
-/* ============================================
-   FOOTER CONTENT LAYOUT
-   ============================================ */
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 50px;
-    margin-bottom: 30px;
-}
-
-/* Brand Section */
-.footer-brand {
-    flex: 1;
-    min-width: 280px;
-}
-
-.brand-text {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    cursor: pointer;
-    display: inline-block;
-    transition: all 0.3s ease;
-}
-
-.shramik {
-    color: var(--accent-1);
-}
-
-.connect {
-    color: var(--accent-2);
-}
-
-.brand-text:hover {
-    transform: scale(1.05) translateY(-2px);
-}
-
-.tagline {
-    font-size: 0.95rem;
-    color: var(--footer-text);
-    opacity: 0.8;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-.copyright {
-    font-size: 0.8rem;
-    opacity: 0.6;
-    margin-top: 15px;
-}
-
-/* Footer Links */
-.footer-links {
-    display: flex;
-    gap: 50px;
-    flex-wrap: wrap;
-}
-
-.links-column {
-    display: flex;
-    flex-direction: column;
-    min-width: 120px;
-}
-
-.column-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: var(--footer-text);
-    position: relative;
-    padding-bottom: 5px;
-}
-
-.column-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 25px;
-    height: 2px;
-    transition: width 0.3s ease;
-}
-
-/* Column Title Underline Colors */
-.links-column:nth-child(1) .column-title::after {
-    background: var(--accent-1);
-}
-
-.links-column:nth-child(2) .column-title::after {
-    background: var(--accent-2);
-}
-
-.links-column:nth-child(3) .column-title::after {
-    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-}
-
-/* Hover Effects on Columns */
-.links-column:nth-child(1):hover .column-title::after {
-    width: 40px;
-    background: var(--accent-2);
-}
-
-.links-column:nth-child(2):hover .column-title::after {
-    width: 40px;
-    background: var(--accent-1);
-}
-
-.links-column:nth-child(3):hover .column-title::after {
-    width: 40px;
-    background: var(--accent-2);
-}
-
-/* Footer Links */
-.footer-link {
-    color: var(--footer-text);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    padding: 4px 0;
-    opacity: 0.8;
-}
-
-.footer-link:nth-child(odd):hover {
-    color: var(--accent-1);
-    transform: translateX(4px);
-    opacity: 1;
-}
-
-.footer-link:nth-child(even):hover {
-    color: var(--accent-2);
-    transform: translateX(4px);
-    opacity: 1;
-}
-
-/* ============================================
-   SOCIAL MEDIA ICONS
-   ============================================ */
-.footer-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-black);
-}
-
-.social-links {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.social-link {
-    width: 42px;
-    height: 42px;
-    border: 2px solid var(--border-black);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--footer-text);
-    text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    background: rgba(255, 255, 255, 0.05);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Shine Effect */
-.social-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.social-link:hover::before {
-    left: 100%;
-}
-
-.social-link i {
-    font-size: 18px;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 2;
-}
-
-/* Individual Icon Hover Effects */
-
-/* Instagram */
-.social-link:nth-child(1):hover {
-    background: radial-gradient(circle at 30% 30%, #fdf497, #fdf497, #fd5949, #d6249f, #285AEB);
-    border-color: transparent;
-    transform: translateY(-8px) scale(1.15);
-    box-shadow: 0 10px 20px rgba(225, 48, 108, 0.4);
-}
-.social-link:nth-child(1):hover i {
-    color: white;
-    transform: scale(1.1);
-}
-
-/* Facebook */
-.social-link:nth-child(2):hover {
-    background: #1877F2;
-    border-color: #1877F2;
-    transform: translateY(-8px) scale(1.15) rotate(360deg);
-    box-shadow: 0 10px 20px rgba(24, 119, 242, 0.4);
-}
-.social-link:nth-child(2):hover i {
-    color: white;
-}
-
-/* YouTube */
-.social-link:nth-child(3):hover {
-    background: #FF0000;
-    border-color: #FF0000;
-    transform: translateY(-8px) scale(1.15) rotateX(10deg);
-    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
-}
-.social-link:nth-child(3):hover i {
-    color: white;
-    animation: youtubePulse 0.8s ease;
-}
-
-/* X (Twitter) */
-.social-link:nth-child(4):hover {
-    background: #000000;
-    border-color: #000000;
-    transform: translateY(-8px) scale(1.15) rotate(10deg);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-}
-.social-link:nth-child(4):hover i {
-    color: white;
-}
-
-/* Email */
-.social-link:nth-child(5):hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: transparent;
-    transform: translateY(-8px) scale(1.15);
-    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-}
-.social-link:nth-child(5):hover i {
-    color: white;
-}
-
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-@keyframes youtubePulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-}
-
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
-@media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .footer-links {
-        justify-content: center;
-    }
-    
-    .column-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .footer-link:hover {
-        transform: translateY(-2px) !important;
-    }
-    
-    .social-links {
-        gap: 12px;
-    }
-    
-    .social-link {
-        width: 38px;
-        height: 38px;
-    }
-    
-    .social-link i {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .social-links {
-        gap: 8px;
-    }
-    
-    .social-link {
-        width: 35px;
-        height: 35px;
-    }
-}
-
-/* ============================================
-   ACCESSIBILITY
-   ============================================ */
-.footer-link:focus-visible,
-.social-link:focus-visible {
-    outline: 2px solid var(--accent-1);
-    outline-offset: 2px;
-}
-
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .social-link:hover {
-        transform: translateY(-2px) scale(1.05) !important;
-    }
-}
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
-@media (max-width: 1200px) {
-    .cards-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 992px) {
-    .cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .privacy-header-title {
-        font-size: 2.2rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 0 20px;
-    }
-    
-    .navbar {
-        padding: 0 15px;
-        height: 70px;
-    }
-    
-    .main-content {
-        margin-top: 70px;
-    }
-    
-    .logo h1 {
-        display: none;
-    }
-    
-    .nav-right {
-        gap: 5px;
-    }
-    
-    .nav-link {
-        padding: 8px;
-        min-width: 40px;
-        height: 40px;
-        justify-content: center;
-    }
-    
-    .nav-text {
-        display: none;
-    }
-    
-    .cards-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .footer-links {
-        justify-content: center;
-    }
-    
-    .column-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .settings-dropdown {
-        top: 75px;
-        right: 15px;
-        padding: 15px;
-        min-width: 250px;
-    }
-}
-
-/* ============================================
-   UTILITY CLASSES
-   ============================================ */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Ensure all interactive elements have rounded corners */
-.hamburger-btn,
-.nav-link,
-.menu-item-box,
-.sidebar-settings-icon,
-.sidebar-close,
-.language-option,
-.theme-option,
-.settings-dropdown,
-.social-link,
-.footer-link,
-.privacy-card,
-.card-icon,
-.card-action,
-.tag {
-    border-radius: var(--border-radius-md) !important;
-}
-
-.settings-dropdown,
-.privacy-card {
-    border-radius: var(--border-radius-lg) !important;
-}
-
-.logo-img {
-    border-radius: var(--border-radius-sm) !important;
-}
-
-/* Reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .hamburger-btn:hover,
-    .privacy-card:hover,
-    .brand-text:hover {
-        transform: none !important;
-    }
-}
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/privacy_policy.css' %}">
 {% endblock %}
+
 {% block content %}
-<body>
-    <!-- ============================================
-         SIDEBAR (EXACT COPY FROM ABOUT PAGE)
-    ============================================ -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar inline functions — JS file pe depend nahi -->
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        function toggleSettings(e) {
+            e.stopPropagation();
+            document.getElementById('settingsDropdown').classList.toggle('active');
+        }
+    </script>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-close" id="sidebarClose">
+            <div class="sidebar-close" onclick="closeSidebar()" style="cursor:pointer;">
                 <i class="fas fa-times"></i>
             </div>
             <h2 data-i18n="menu">Menu</h2>
         </div>
-        
         <div class="sidebar-content">
-            <div class="sidebar-settings-icon" id="sidebarSettingsIcon">
+            <div class="sidebar-settings-icon" id="sidebarSettingsIcon" onclick="toggleSettings(event)" style="cursor:pointer;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" />
-                    <path
-                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
-                        stroke="currentColor" stroke-width="2" />
+                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/>
                 </svg>
                 <span data-i18n="settings">Settings</span>
             </div>
-            
             <div class="sidebar-menu">
-                <a href="/help_and_contact/" class="menu-item-box">
+                <a href="{% url 'help_and_contact' %}" class="menu-item-box">
                     <i class="fas fa-question-circle"></i>
                     <span data-i18n="help_contact">Help & Contact</span>
                 </a>
-                <a href="/" class="menu-item-box" id="homeLink">
+                <a href="{% url 'home' %}" class="menu-item-box" id="homeLink">
                     <i class="fas fa-home"></i>
                     <span data-i18n="home">Home</span>
                 </a>
-                <a href="/about/" class="menu-item-box">
+                <a href="{% url 'about' %}" class="menu-item-box">
                     <i class="fas fa-info-circle"></i>
                     <span data-i18n="about">About</span>
                 </a>
-                <a href="/term_and_condition/" class="menu-item-box">
+                <a href="{% url 'term_and_condition' %}" class="menu-item-box">
                     <i class="fas fa-file-contract"></i>
                     <span data-i18n="terms_conditions">Terms & Conditions</span>
                 </a>
-                <a href="/privacy_policy/" class="menu-item-box active">
+                <a href="{% url 'privacy_policy' %}" class="menu-item-box active">
                     <i class="fas fa-shield-alt"></i>
                     <span data-i18n="privacy_policy">Privacy Policy</span>
                 </a>
@@ -1762,9 +72,7 @@ body {
         </div>
     </div>
 
-    <!-- ============================================
-         SETTINGS DROPDOWN (EXACT COPY FROM ABOUT PAGE)
-    ============================================ -->
+    <!-- SETTINGS DROPDOWN -->
     <div class="settings-dropdown" id="settingsDropdown" aria-hidden="true">
         <div class="settings-section">
             <h3 class="settings-heading" data-i18n="language">Language</h3>
@@ -1784,44 +92,40 @@ body {
         </div>
     </div>
 
-    <!-- ============================================
-         NAVBAR (EXACT COPY FROM ABOUT PAGE)
-    ============================================ -->
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-left">
-            <button class="hamburger-btn" id="hamburgerBtn">
+            <!-- onclick seedha lagaya — JS file ka wait nahi -->
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="openSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="logo" id="logoContainer">
-                <img src="assets/ShramikConnect_logo.jpg" alt="ShramikConnect" class="logo-img" onerror="this.style.display='none'">
+                <img src="{% static 'assets/ShramikConnect_logo.jpg' %}" alt="ShramikConnect" class="logo-img" onerror="this.style.display='none'">
                 <h1>
                     <span class="logo-shramik">Shramik</span><span class="logo-connect">Connect</span>
                 </h1>
             </div>
         </div>
-        
         <div class="nav-right">
-            <a href="#" class="nav-link" id="navHome" data-i18n="home">
+            <a href="{% url 'home' %}" class="nav-link" id="navHome">
                 <i class="fas fa-home"></i>
                 <span class="nav-text" data-i18n="home">Home</span>
             </a>
-            <a href="/help_and_contact/" class="nav-link" data-i18n="help">
+            <a href="{% url 'help_and_contact' %}" class="nav-link">
                 <i class="fas fa-question-circle"></i>
                 <span class="nav-text" data-i18n="help">Help</span>
             </a>
-            <a href="/about/" class="nav-link" data-i18n="about">
+            <a href="{% url 'about' %}" class="nav-link">
                 <i class="fas fa-info-circle"></i>
                 <span class="nav-text" data-i18n="about">About</span>
             </a>
         </div>
     </nav>
 
-    <!-- ============================================
-         MAIN CONTENT
-    ============================================ -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- 1️⃣ PRIVACY HEADER SECTION -->
+        <!-- PRIVACY HEADER -->
         <section class="privacy-header-section">
             <div class="container">
                 <div class="privacy-header-content">
@@ -1830,531 +134,212 @@ body {
                         <span class="title-line highlight">Your privacy matters</span>
                     </h1>
                     <p class="privacy-header-subtitle" data-i18n="privacy_subtitle">
-                        At ShramikConnect, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information when you use our platform. We are committed to ensuring that your privacy is protected and maintained.
+                        At ShramikConnect, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information when you use our platform.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- 2️⃣ PRIVACY CARDS SECTION (EXACT DESIGN AS TERMS PAGE) -->
+        <!-- PRIVACY CARDS -->
         <section class="privacy-cards-section">
             <div class="container">
                 <div class="cards-grid" id="cardsContainer">
-                    <!-- Cards generated by JavaScript -->
+
+                    <div class="privacy-card" data-card-id="collect" onclick="window.location.href='{% url 'collect_card' %}'">
+                        <div class="card-icon"><i class="fas fa-database"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_collect_title">Information We Collect</h3>
+                            <p data-i18n="privacy_collect_desc">Personal information, account details, and usage data we collect</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_personal">personal</span>
+                                <span class="tag" data-i18n="tag_account">account</span>
+                                <span class="tag" data-i18n="tag_profile">profile</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="use" onclick="window.location.href='{% url 'use_data_card' %}'">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_use_title">How We Use Data</h3>
+                            <p data-i18n="privacy_use_desc">How we use your information to provide and improve services</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_purpose">purpose</span>
+                                <span class="tag" data-i18n="tag_service">service</span>
+                                <span class="tag" data-i18n="tag_improvement">improvement</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="worker" onclick="window.location.href='{% url 'worker_data_card' %}'">
+                        <div class="card-icon"><i class="fas fa-hard-hat"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_worker_title">Worker Data</h3>
+                            <p data-i18n="privacy_worker_desc">Data collected specifically from workers on our platform</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_worker">worker</span>
+                                <span class="tag" data-i18n="tag_skills">skills</span>
+                                <span class="tag" data-i18n="tag_verification">verification</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="employer" onclick="window.location.href='{% url 'employer_data_card' %}'">
+                        <div class="card-icon"><i class="fas fa-building"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_employer_title">Employer Data</h3>
+                            <p data-i18n="privacy_employer_desc">Information we collect from employers and businesses</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_employer">employer</span>
+                                <span class="tag" data-i18n="tag_business">business</span>
+                                <span class="tag" data-i18n="tag_hiring">hiring</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="location" onclick="window.location.href='{% url 'location_data_card' %}'">
+                        <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_location_title">Location Data</h3>
+                            <p data-i18n="privacy_location_desc">How we handle location data and GPS information</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_location">location</span>
+                                <span class="tag" data-i18n="tag_gps">gps</span>
+                                <span class="tag" data-i18n="tag_tracking">tracking</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="security" onclick="window.location.href='{% url 'data_security' %}'">
+                        <div class="card-icon"><i class="fas fa-shield-halved"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_security_title">Data Security</h3>
+                            <p data-i18n="privacy_security_desc">Measures we take to protect your data</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_security">security</span>
+                                <span class="tag" data-i18n="tag_encryption">encryption</span>
+                                <span class="tag" data-i18n="tag_protection">protection</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="sharing" onclick="window.location.href='{% url 'data_sharing' %}'">
+                        <div class="card-icon"><i class="fas fa-share-alt"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_sharing_title">Third-Party Sharing</h3>
+                            <p data-i18n="privacy_sharing_desc">When and how we share data with third parties</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_sharing">sharing</span>
+                                <span class="tag">third-party</span>
+                                <span class="tag" data-i18n="tag_partners">partners</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="rights" onclick="window.location.href='{% url 'user_rights' %}'">
+                        <div class="card-icon"><i class="fas fa-scale-balanced"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_rights_title">User Rights</h3>
+                            <p data-i18n="privacy_rights_desc">Your rights regarding your personal data</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_rights">rights</span>
+                                <span class="tag" data-i18n="tag_access">access</span>
+                                <span class="tag" data-i18n="tag_control">control</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="retention" onclick="window.location.href='{% url 'data_retention' %}'">
+                        <div class="card-icon"><i class="fas fa-clock"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_retention_title">Data Retention</h3>
+                            <p data-i18n="privacy_retention_desc">How long we keep your information</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_retention">retention</span>
+                                <span class="tag" data-i18n="tag_storage">storage</span>
+                                <span class="tag" data-i18n="tag_deletion">deletion</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="privacy-card" data-card-id="contact" onclick="window.location.href='{% url 'help_and_contact' %}'">
+                        <div class="card-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="card-content">
+                            <h3 data-i18n="privacy_contact_title">Contact</h3>
+                            <p data-i18n="privacy_contact_desc">How to contact us about privacy concerns</p>
+                            <div class="card-tags">
+                                <span class="tag" data-i18n="tag_contact">contact</span>
+                                <span class="tag" data-i18n="tag_questions">questions</span>
+                                <span class="tag" data-i18n="tag_dpo">dpo</span>
+                            </div>
+                        </div>
+                        <div class="card-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- ============================================
-         FOOTER (EXACT COPY FROM ABOUT PAGE)
-    ============================================ -->
+    <!-- FOOTER -->
     <footer class="footer">
-    <!-- Wave Animation -->
-    <div class="footer-wave">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
-            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
-            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
-        </svg>
-    </div>
-    
-    <div class="container">
-        <div class="footer-content">
-            <!-- Brand Section -->
-            <div class="footer-brand">
-                <div class="brand-text" id="brandText">
-                    <span class="shramik">Shramik</span><span class="connect">Connect</span>
+        <div class="footer-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-text" id="brandText">
+                        <span class="shramik">Shramik</span><span class="connect">Connect</span>
+                    </div>
+                    <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
+                    <p class="copyright" data-i18n="copyright">© 2025 ShramikConnect. All rights reserved.</p>
                 </div>
-                <p class="tagline" data-i18n="tagline">Connecting hands to work</p>
-                <p class="copyright" data-i18n="copyright">© 2025 ShramikConnect. All rights reserved.</p>
+                <div class="footer-links">
+                    <div class="links-column">
+                        <h3 class="column-title">Platform</h3>
+                        <a href="{% url 'login_worker' %}" class="footer-link">For Workers</a>
+                        <a href="{% url 'login_employer' %}" class="footer-link">For Employers</a>
+                    </div>
+                    <div class="links-column">
+                        <h3 class="column-title">Company</h3>
+                        <a href="{% url 'about' %}" class="footer-link" data-i18n="about">About</a>
+                        <a href="{% url 'how_platform_works' %}" class="footer-link">How It Works</a>
+                    </div>
+                    <div class="links-column">
+                        <h3 class="column-title">Support</h3>
+                        <a href="{% url 'help_and_contact' %}" class="footer-link" data-i18n="help_contact">Help & Contact</a>
+                        <a href="{% url 'privacy_policy' %}" class="footer-link active" data-i18n="privacy">Privacy Policy</a>
+                        <a href="{% url 'term_and_condition' %}" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Footer Links -->
-            <div class="footer-links">
-                <div class="links-column">
-                    <h3 class="column-title" data-i18n="platform">Platform</h3>
-                    <a href="/login_worker/" class="footer-link" data-i18n="for_workers">For Workers</a>
-                    <a href="/login_employer/" class="footer-link" data-i18n="for_employers">For Employers</a>
-                </div>
-                
-                <div class="links-column">
-                    <h3 class="column-title" data-i18n="company">Company</h3>
-                    <a href="/about/" class="footer-link" data-i18n="about">About</a>
-                    <a href="/how-platform-works/" class="footer-link" data-i18n="how_it_works">How It Works</a>
-                </div>
-                
-                <div class="links-column">
-                    <h3 class="column-title" data-i18n="support">Support</h3>
-                    <a href="/help_and_contact/" class="footer-link" data-i18n="help_contact">Help & Contact</a>
-                    <a href="/privacy_policy/" class="footer-link" data-i18n="privacy">Privacy Policy</a>
-                    <a href="/term_and_condition/" class="footer-link" data-i18n="terms">Terms & Conditions</a>
+            <div class="footer-bottom">
+                <div class="social-links">
+                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.youtube.com/@ShramikConnect" class="social-link" aria-label="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://x.com/shramikconnect" class="social-link" aria-label="X (Twitter)" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                    <a href="mailto:team.shramikconnect@gmail.com" class="social-link" aria-label="Email" target="_blank"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
-        
-        <!-- SOCIAL MEDIA LINKS - with YouTube and X -->
-        <div class="footer-bottom">
-            <div class="social-links">
-                <!-- Instagram -->
-                <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                
-                <!-- Facebook -->
-                <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                
-                <!-- YouTube -->
-                <a href="https://www.youtube.com/@ShramikConnect" class="social-link" aria-label="YouTube" target="_blank">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                
-                <!-- X (Twitter) -->
-                <a href="https://x.com/shramikconnect" class="social-link" aria-label="X (Twitter)" target="_blank">
-                    <i class="fab fa-x-twitter"></i>
-                </a>
-                
-                <!-- Email -->
-                <a href="mailto:team.shramikconnect@gmail.com" class="social-link" aria-label="Email" target="_blank">
-                    <i class="fas fa-envelope"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-    <script src="/static/js/privacy_policy.js"></script>
-    <script>
-  /**
- * PRIVACY POLICY PAGE
- * With 3-theme system (light, dark, system) and i18n
- */
+    <script src="{% static 'js/privacy_policy.js' %}"></script>
 
-// ============================================
-// DOM ELEMENTS
-// ============================================
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const sidebar = document.getElementById('sidebar');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-const sidebarClose = document.getElementById('sidebarClose');
-const sidebarSettingsIcon = document.getElementById('sidebarSettingsIcon');
-const settingsDropdown = document.getElementById('settingsDropdown');
-const homeLink = document.getElementById('homeLink');
-const navHome = document.getElementById('navHome');
-const logoContainer = document.getElementById('logoContainer');
-const languageOptions = document.querySelectorAll('.language-option');
-const themeOptions = document.querySelectorAll('.theme-option');
-const cardsContainer = document.getElementById('cardsContainer');
-
-// ============================================
-// STATE
-// ============================================
-let currentLanguage = 'en';
-let currentTheme = 'light';
-let previousPage = 'index.html';
-const ALL_THEMES = ["light", "dark", "system"];
-
-// ============================================
-// PRIVACY CARDS DATA - 12 CARDS
-// ============================================
-const privacyCards = [
-    {
-        id: 'collect',
-        icon: 'fa-database',
-        titleKey: 'privacy_collect_title',
-        descKey: 'privacy_collect_desc',
-        tags: ['personal', 'account', 'profile'],
-        special: true
-    },
-    {
-        id: 'use',
-        icon: 'fa-chart-line',
-        titleKey: 'privacy_use_title',
-        descKey: 'privacy_use_desc',
-        tags: ['purpose', 'service', 'improvement'],
-        special: true
-    },
-    {
-        id: 'worker',
-        icon: 'fa-hard-hat',
-        titleKey: 'privacy_worker_title',
-        descKey: 'privacy_worker_desc',
-        tags: ['worker', 'skills', 'verification']
-    },
-    {
-        id: 'employer',
-        icon: 'fa-building',
-        titleKey: 'privacy_employer_title',
-        descKey: 'privacy_employer_desc',
-        tags: ['employer', 'business', 'hiring']
-    },
-    {
-        id: 'location',
-        icon: 'fa-map-marker-alt',
-        titleKey: 'privacy_location_title',
-        descKey: 'privacy_location_desc',
-        tags: ['location', 'gps', 'tracking']
-    },
-    
-    {
-        id: 'security',
-        icon: 'fa-shield-halved',
-        titleKey: 'privacy_security_title',
-        descKey: 'privacy_security_desc',
-        tags: ['security', 'encryption', 'protection']
-    },
-    {
-        id: 'sharing',
-        icon: 'fa-share-alt',
-        titleKey: 'privacy_sharing_title',
-        descKey: 'privacy_sharing_desc',
-        tags: ['sharing', 'third-party', 'partners']
-    },
-    {
-        id: 'rights',
-        icon: 'fa-scale-balanced',
-        titleKey: 'privacy_rights_title',
-        descKey: 'privacy_rights_desc',
-        tags: ['rights', 'access', 'control']
-    },
-    {
-        id: 'retention',
-        icon: 'fa-clock',
-        titleKey: 'privacy_retention_title',
-        descKey: 'privacy_retention_desc',
-        tags: ['retention', 'storage', 'deletion']
-    },
-    {
-        id: 'contact',
-        icon: 'fa-envelope',
-        titleKey: 'privacy_contact_title',
-        descKey: 'privacy_contact_desc',
-        tags: ['contact', 'questions', 'dpo']
-    }
-];
-
-// ============================================
-// TRANSLATIONS (short version - aap poori rakh sakte ho)
-// ============================================
-const translations = {
-    en: {
-        'home': 'Home', 'help': 'Help', 'about': 'About', 'menu': 'Menu',
-        'settings': 'Settings', 'help_contact': 'Help & Contact',
-        'terms_conditions': 'Terms & Conditions', 'privacy_policy': 'Privacy Policy',
-        'language': 'Language', 'theme': 'Theme', 'light': 'Light', 'dark': 'Dark', 'system': 'System',
-        
-        'privacy_subtitle': 'At ShramikConnect, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information when you use our platform.',
-        
-        'privacy_collect_title': 'Information We Collect',
-        'privacy_use_title': 'How We Use Data',
-        'privacy_worker_title': 'Worker Data',
-        'privacy_employer_title': 'Employer Data',
-        'privacy_location_title': 'Location Data',
-        'privacy_payments_title': 'Payments',
-        'privacy_cookies_title': 'Cookies',
-        'privacy_security_title': 'Data Security',
-        'privacy_sharing_title': 'Third-Party Sharing',
-        'privacy_rights_title': 'User Rights',
-        'privacy_retention_title': 'Data Retention',
-        'privacy_contact_title': 'Contact',
-        
-        'privacy_collect_desc': 'Personal information, account details, and usage data we collect',
-        'privacy_use_desc': 'How we use your information to provide and improve services',
-        'privacy_worker_desc': 'Data collected specifically from workers on our platform',
-        'privacy_employer_desc': 'Information we collect from employers and businesses',
-        'privacy_location_desc': 'How we handle location data and GPS information',
-        'privacy_payments_desc': 'Payment information and financial data protection',
-        'privacy_cookies_desc': 'How we use cookies and similar tracking technologies',
-        'privacy_security_desc': 'Measures we take to protect your data',
-        'privacy_sharing_desc': 'When and how we share data with third parties',
-        'privacy_rights_desc': 'Your rights regarding your personal data',
-        'privacy_retention_desc': 'How long we keep your information',
-        'privacy_contact_desc': 'How to contact us about privacy concerns',
-        
-        // Tags
-        'tag_personal': 'personal', 'tag_account': 'account', 'tag_profile': 'profile',
-        'tag_purpose': 'purpose', 'tag_service': 'service', 'tag_improvement': 'improvement',
-        'tag_worker': 'worker', 'tag_skills': 'skills', 'tag_verification': 'verification',
-        'tag_employer': 'employer', 'tag_business': 'business', 'tag_hiring': 'hiring',
-        'tag_location': 'location', 'tag_gps': 'gps', 'tag_tracking': 'tracking',
-        'tag_payment': 'payment', 'tag_transaction': 'transaction', 'tag_financial': 'financial',
-        'tag_cookies': 'cookies', 'tag_preferences': 'preferences',
-        'tag_security': 'security', 'tag_encryption': 'encryption', 'tag_protection': 'protection',
-        'tag_sharing': 'sharing', 'tag_third-party': 'third-party', 'tag_partners': 'partners',
-        'tag_rights': 'rights', 'tag_access': 'access', 'tag_control': 'control',
-        'tag_retention': 'retention', 'tag_storage': 'storage', 'tag_deletion': 'deletion',
-        'tag_contact': 'contact', 'tag_questions': 'questions', 'tag_dpo': 'dpo',
-        
-        'tagline': 'Connecting hands to work',
-        'copyright': '© 2025 ShramikConnect. All rights reserved.',
-        'privacy': 'Privacy Policy',
-        'terms': 'Terms & Conditions'
-    },
-    // Hindi and Marathi translations bhi same rakh sakte ho
-};
-
-// ============================================
-// LANGUAGE FUNCTIONS
-// ============================================
-function applyLanguage(lang) {
-    currentLanguage = lang;
-    const t = translations[lang] || translations.en;
-    
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) el.textContent = t[key];
-    });
-    
-    refreshCards();
-}
-
-function handleLanguageChange(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('privacyLanguage', lang);
-    languageOptions.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-    applyLanguage(lang);
-    closeSettingsDropdown();
-}
-
-function refreshCards() {
-    if (cardsContainer) {
-        cardsContainer.innerHTML = '';
-        createPrivacyCards();
-    }
-}
-
-// ============================================
-// THEME FUNCTIONS
-// ============================================
-function applyTheme(theme) {
-    document.body.classList.remove(...ALL_THEMES);
-    document.body.classList.add(theme);
-    localStorage.setItem("selectedTheme", theme);
-    currentTheme = theme;
-    themeOptions.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === theme));
-}
-
-function getSystemDefaultTheme() {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-function initTheme() {
-    const saved = localStorage.getItem("selectedTheme");
-    if (saved && ALL_THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme(getSystemDefaultTheme());
-}
-
-function handleThemeChange(theme) {
-    if (ALL_THEMES.includes(theme)) applyTheme(theme);
-    closeSettingsDropdown();
-}
-
-// ============================================
-// SETTINGS DROPDOWN
-// ============================================
-function toggleSettingsDropdown(e) {
-    e.stopPropagation();
-    settingsDropdown.classList.toggle('active');
-}
-function closeSettingsDropdown() { settingsDropdown.classList.remove('active'); }
-function closeSettingsOnClickOutside(e) {
-    if (!sidebarSettingsIcon.contains(e.target) && !settingsDropdown.contains(e.target)) closeSettingsDropdown();
-}
-
-// ============================================
-// SIDEBAR & NAVIGATION
-// ============================================
-function toggleSidebar() {
-    sidebar.classList.toggle('active');
-    sidebarOverlay.classList.toggle('active');
-    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-}
-function closeSidebar() {
-    sidebar.classList.remove('active');
-    sidebarOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-    closeSettingsDropdown();
-}
-
-function setupNavigation() {
-    // Get the previous page from localStorage
-    let previousPage = localStorage.getItem('previousPage');
-    
-    // If no previous page exists, go to homepage
-    if (!previousPage) {
-        previousPage = '/';
-    }
-    
-    const homeElements = [homeLink, navHome, logoContainer];
-    
-    homeElements.forEach(el => {
-        if (el) {
-            el.addEventListener('click', (e) => {
-                e.preventDefault();
-                window.location.href = previousPage;
-            });
-        }
-    });
-}
-
-// ============================================
-// MAIN FUNCTION - YAHAN URLs DAALNE HAIN
-// ============================================
-function handleCardClick(cardId) {
-    // =====================================
-    // 12 CARDS KE LIYE URL - YAHAN APNE URLs DAALO
-    // =====================================
-    switch(cardId) {
-        
-        case 'collect':
-            window.location.href = '/collect-card/';  // ← APNA URL
-            break;
-        
-        case 'use':
-            window.location.href = '/use_data_card/';  // ← APNA URL
-            break;
-        
-        case 'worker':
-            window.location.href = '/worker_data_card/';  // ← APNA URL
-            break;
-        
-        case 'employer':
-            window.location.href = '/employer_data_card/';  // ← APNA URL
-            break;
-        
-        case 'location':
-            window.location.href = '/location-data-card/';  // ← APNA URL
-            break;
-    
-        
-        case 'security':
-            window.location.href = '/data_security/';  // ← APNA URL
-            break;
-        
-        case 'sharing':
-            window.location.href = '/data_sharing/';  // ← APNA URL
-            break;
-        
-        case 'rights':
-            window.location.href = '/user_rights/';  // ← APNA URL
-            break;
-        
-        case 'retention':
-            window.location.href = '/data_retention/';  // ← APNA URL
-            break;
-        
-        case 'contact':
-            window.location.href = '/help_and_contact/';  // ← APNA URL
-            break;
-        
-        default:
-            alert('This page is under construction');
-    }
-}
-
-// ============================================
-// CARDS CREATION
-// ============================================
-function createPrivacyCards() {
-    if (!cardsContainer) return;
-    
-    const t = translations[currentLanguage];
-    
-    privacyCards.forEach((card, index) => {
-        const cardElement = document.createElement('div');
-        cardElement.className = `privacy-card ${card.id}`;
-        cardElement.dataset.cardId = card.id;
-        
-        if (index < 2) {
-            cardElement.classList.add('special');
-        }
-        
-        const tagsHTML = card.tags.map(tag => 
-            `<span class="tag">${t[`tag_${tag}`] || tag}</span>`
-        ).join('');
-        
-        cardElement.innerHTML = `
-            <div class="card-icon">
-                <i class="fas ${card.icon}"></i>
-            </div>
-            <div class="card-content">
-                <h3>${t[card.titleKey] || card.titleKey}</h3>
-                <p>${t[card.descKey] || card.descKey}</p>
-                <div class="card-tags">
-                    ${tagsHTML}
-                </div>
-            </div>
-            <div class="card-action">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-        `;
-        
-        // IMPORTANT - card.id pass karo, URL nahi
-        cardElement.addEventListener('click', () => {
-            handleCardClick(card.id);
-        });
-        
-        cardsContainer.appendChild(cardElement);
-    });
-}
-
-// ============================================
-// EVENT LISTENERS
-// ============================================
-function setupEventListeners() {
-    hamburgerBtn.addEventListener('click', toggleSidebar);
-    sidebarOverlay.addEventListener('click', closeSidebar);
-    sidebarClose.addEventListener('click', closeSidebar);
-    sidebarSettingsIcon.addEventListener('click', toggleSettingsDropdown);
-    document.addEventListener('click', closeSettingsOnClickOutside);
-
-    languageOptions.forEach(btn => btn.addEventListener('click', () => handleLanguageChange(btn.dataset.lang)));
-    themeOptions.forEach(btn => btn.addEventListener('click', () => handleThemeChange(btn.dataset.theme)));
-
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSidebar(); closeSettingsDropdown(); } });
-    
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
-            closeSidebar();
-        }
-    });
-}
-
-// ============================================
-// INITIALIZATION
-// ============================================
-function init() {
-    console.log('Privacy Policy Page Initialized');
-    
-    // Save the previous page from referrer
-    const referrer = document.referrer;
-    const currentPage = window.location.href;
-    
-    // Only save if coming from another page on the same site
-    if (referrer && referrer !== currentPage && referrer.includes(window.location.hostname)) {
-        localStorage.setItem('previousPage', referrer);
-    } else if (!localStorage.getItem('previousPage')) {
-        // If no previous page, set default
-        localStorage.setItem('previousPage', '/');
-    }
-    
-    const savedLang = localStorage.getItem('privacyLanguage') || 'en';
-    handleLanguageChange(savedLang);
-    
-    initTheme();
-    setupNavigation();
-    createPrivacyCards();
-    setupEventListeners();
-}
-
-// Start everything when page loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
-    </script>
-</body>
 {% endblock %}
