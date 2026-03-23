@@ -32,6 +32,7 @@ urlpatterns = [
     path('logout_worker/', views.logout_worker, name='logout_worker'),
     path('signup_worker/', views.signup_worker, name='signup_worker'),
     path('dashboard_worker/', views.dashboard_worker, name='dashboard_worker'),
+    path('worker_edit_profile_page/', views.worker_edit_profile_page, name='worker_edit_profile_page'),
     
     # Password management
     path('choose_password_worker/', views.choose_password_worker),

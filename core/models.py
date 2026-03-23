@@ -31,9 +31,6 @@ class Employer(models.Model):
     )
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, verbose_name="Gender")
     
-    # Company Information
-    company_name = models.CharField(max_length=200, blank=True, null=True, verbose_name="Company Name")
-    
     # Profile Photo
     profile_photo = models.ImageField(
         upload_to='employer_profiles/',
@@ -249,13 +246,19 @@ class Worker(models.Model):
         ]
     
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.profession}"
+        return f"{self.first_name} {self.last_name} - {self.get_display_profession()}"
     
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
     
     def get_full_address(self):
         return f"{self.street}, {self.city}, {self.state} - {self.pincode}"
+    
+    def get_display_profession(self):
+        """Get the display profession - handles 'other' case"""
+        if self.profession == 'other' and self.other_profession:
+            return self.other_profession
+        return self.profession
     
     def update_rating(self, new_rating):
         """Update average rating when new rating is added"""

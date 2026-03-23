@@ -646,11 +646,27 @@ async function loadDashboardData() {
             AppState.activeJobs = data.data.active_jobs || [];
             AppState.workHistory = data.data.work_history || [];
             
-            // Update worker info from session
-            if (window.workerData) {
+            // Update worker info from API response or session
+            if (data.data.worker) {
+                // Update with fresh data from API
+                window.workerData = {
+                    ...window.workerData,
+                    ...data.data.worker,
+                    id: data.data.worker.id,
+                    full_name: data.data.worker.full_name,
+                    profession: data.data.worker.profession,
+                    profile_photo: data.data.worker.profile_photo,
+                    email: data.data.worker.email,
+                    mobile: data.data.worker.mobile
+                };
+                AppState.worker = window.workerData;
+            } else if (window.workerData) {
                 AppState.worker = window.workerData;
                 AppState.workerId = window.workerData.id;
             }
+            
+            // Update UI with fresh worker data
+            updateWorkerInfo();
             
             console.log('Dashboard data loaded:', {
                 jobs: AppState.jobs.length,
@@ -763,6 +779,9 @@ async function pollForUpdates() {
             AppState.activeJobs  = newActive;
             AppState.workHistory = newHistory;
 
+            // Refresh worker data to get latest profile info
+            await refreshWorkerData();
+
             // Update stats silently
             updateStats();
 
@@ -815,6 +834,11 @@ function updateWorkerInfo() {
         }
         if (DOM.profileName) {
             DOM.profileName.textContent = window.workerData.full_name || 'Worker';
+        }
+        // Update profession display
+        const professionDisplay = document.getElementById('professionDisplay');
+        if (professionDisplay && window.workerData.profession) {
+            professionDisplay.textContent = window.workerData.profession;
         }
     }
 }
@@ -977,7 +1001,7 @@ function setupEventListeners() {
     
     // Profile Edit
     document.getElementById('profileEditBtn')?.addEventListener('click', () => {
-        showNotification('Profile editing feature coming soon!', 'info');
+        window.location.href = '/worker_edit_profile_page/';
     });
     
     // Keyboard shortcuts
@@ -3960,6 +3984,47 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+
+// ============================================
+// REFRESH WORKER DATA FUNCTION
+// ============================================
+
+async function refreshWorkerData() {
+    try {
+        const response = await fetch('/api/worker/dashboard-data/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await response.json();
+        
+        if (data.success && data.data.worker) {
+            // Update window.workerData
+            window.workerData = {
+                ...window.workerData,
+                ...data.data.worker,
+                full_name: data.data.worker.full_name,
+                first_name: data.data.worker.first_name,
+                last_name: data.data.worker.last_name,
+                profession: data.data.worker.profession,
+                profile_photo: data.data.worker.profile_photo,
+                email: data.data.worker.email,
+                mobile: data.data.worker.mobile
+            };
+            
+            // Update AppState
+            AppState.worker = window.workerData;
+            
+            // Update UI elements
+            updateWorkerInfo();
+            
+            console.log('Worker data refreshed successfully');
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('Error refreshing worker data:', error);
+        return false;
+    }
+}
 
 // ============================================
 // Initialize the application

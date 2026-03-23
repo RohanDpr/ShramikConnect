@@ -40,7 +40,6 @@ const i18n = {
             home: "Home",
             help: "Help",
             about: "About",
-            construction_company: "Construction Company",
             edit_profile: "Edit Profile",
             
             // Settings
@@ -213,7 +212,6 @@ const i18n = {
             home: "होम",
             help: "सहायता",
             about: "हमारे बारे में",
-            construction_company: "निर्माण कंपनी",
             edit_profile: "प्रोफाइल संपादित करें",
             language: "भाषा",
             theme: "थीम",
@@ -330,7 +328,6 @@ const i18n = {
             home: "होम",
             help: "मदत",
             about: "आमच्याबद्दल",
-            construction_company: "बांधकाम कंपनी",
             edit_profile: "प्रोफाइल संपादित करा",
             language: "भाषा",
             theme: "थीम",

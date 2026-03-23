@@ -1,21 +1,43 @@
 /**
- * Worker Edit Profile Page - Complete
- * Fixed: Language switching, full width, preview removed, back button outside
+ * Worker Edit Profile Page - Complete Working Version
  */
+
+// ============================================
+// CSRF TOKEN HELPER
+// ============================================
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function getCSRFToken() {
+    // Try to get from hidden input first
+    const tokenInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    if (tokenInput && tokenInput.value) {
+        return tokenInput.value;
+    }
+    // Fall back to cookie
+    return getCookie('csrftoken');
+}
 
 // ============================================
 // DOM ELEMENTS
 // ============================================
-// Settings
 const settingsIcon = document.getElementById('settingsIcon');
 const settingsDropdown = document.getElementById('settingsDropdown');
 const languageOptions = document.querySelectorAll('.language-option');
 const themeOptions = document.querySelectorAll('.theme-option');
-
-// Notification
 const notifWrapper = document.getElementById('notificationWrapper');
-
-// Delete Popup
 const deletePopup = document.getElementById('deletePopup');
 const closePopupBtn = document.getElementById('closePopupBtn');
 const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -26,6 +48,7 @@ const deleteAccountBtn = document.getElementById('deleteAccountBtn');
 const profilePreview = document.getElementById('profilePreview');
 const changePhotoBtn = document.getElementById('changePhotoBtn');
 const removePhotoBtn = document.getElementById('removePhotoBtn');
+const profilePhotoInput = document.getElementById('profilePhotoInput');
 
 // Personal Info
 const firstName = document.getElementById('firstName');
@@ -68,6 +91,7 @@ const passwordMatch = document.getElementById('passwordMatch');
 
 // Professional
 const profession = document.getElementById('profession');
+const otherProfession = document.getElementById('otherProfession');
 const workArea = document.getElementById('workArea');
 const street = document.getElementById('street');
 const city = document.getElementById('city');
@@ -76,6 +100,7 @@ const pincode = document.getElementById('pincode');
 const docType = document.getElementById('docType');
 const uploadDocBtn = document.getElementById('uploadDocBtn');
 const docFileName = document.getElementById('docFileName');
+const documentFileInput = document.getElementById('documentFileInput');
 
 // Action Buttons
 const clearBtn = document.getElementById('clearBtn');
@@ -87,24 +112,12 @@ const backToDashboard = document.getElementById('backToDashboard');
 // ============================================
 let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
 let currentTheme = localStorage.getItem('preferredTheme') || 'light';
-
-let emailVerified = true;
-let mobileVerified = true;
 let emailResendCountdown = null, mobileResendCountdown = null;
 let emailResendTimeLeft = 60, mobileResendTimeLeft = 60;
-
-const DUMMY_EMAIL_OTP = '123456';
-const DUMMY_MOBILE_OTP = '654321';
-
-const validationPatterns = {
-    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    phone: /^[6-9]\d{9}$/,
-    otp: /^\d{6}$/,
-    pincode: /^\d{6}$/
-};
+let removeProfilePhotoRequested = false;
 
 // ============================================
-// COMPLETE TRANSLATIONS (EN, HI, MR)
+// TRANSLATIONS
 // ============================================
 const translations = {
     en: {
@@ -118,27 +131,25 @@ const translations = {
         'verify_otp': 'Verify', 'otp_placeholder': 'XXXXXX', 'resend_otp_60s': 'Resend OTP (60s)',
         'email_verified': 'Email Verified', 'mobile_verification': 'Mobile Verification',
         'enter_mobile': 'Enter mobile number', 'mobile_verified': 'Mobile Verified',
-        'change_password': 'Change Password', 'old_password': 'Old Password', 'old_password_placeholder': '········',
-        'new_password': 'New Password', 'new_password_placeholder': 'Minimum 8 characters',
-        'confirm_password': 'Confirm Password', 'confirm_password_placeholder': 'Re-enter password',
+        'change_password': 'Change Password', 'old_password': 'Old Password',
+        'new_password': 'New Password', 'confirm_password': 'Confirm Password',
         'password_strength': 'Password Strength', 'passwords_match': 'Passwords match',
-        'profession': 'Profession *', 'profession_hint': 'Hold Ctrl/Cmd to select multiple',
-        'preferred_work_area': 'Preferred Work Area *', 'work_area_placeholder': 'e.g. Mumbai, Andheri, Bandra',
+        'profession': 'Profession *', 'preferred_work_area': 'Preferred Work Area *',
         'street': 'Street', 'city': 'City', 'state': 'State', 'pincode': 'Pincode',
         'document_type': 'Document Type', 'upload_new': 'Upload New', 'uploaded': 'Uploaded',
         'clear': 'Clear', 'save_changes': 'Save Changes', 'delete_account': 'Delete Account',
-        'delete_account_title': 'Delete Account', 'delete_confirmation': 'Are you sure you want to permanently delete your worker account?',
-        'yes_delete': 'Yes, Delete', 'cancel': 'Cancel',
         'back_to_dashboard': 'Back to Dashboard', 'go_to_dashboard': 'Go to Dashboard →',
         'profile_updated': 'Profile updated successfully!',
         'fields_cleared': 'All fields have been cleared',
         'age_restriction': 'You must be 18 years or older',
         'photo_removed': 'Profile photo removed',
-        'photo_changed': 'Photo change clicked (demo)',
-        'document_uploaded': 'Document upload clicked (demo)',
+        'photo_changed': 'Photo changed successfully',
+        'document_uploaded': 'Document uploaded successfully',
         'otp_sent': 'OTP sent successfully!',
         'otp_verified': 'OTP verified successfully!',
-        'invalid_otp': 'Invalid OTP. Please try again.'
+        'invalid_otp': 'Invalid OTP. Please try again.',
+        'saving': 'Saving...',
+        'error_saving': 'Error saving profile'
     },
     hi: {
         'language': 'भाषा', 'theme': 'थीम', 'light': 'लाइट', 'dark': 'डार्क', 'system': 'सिस्टम',
@@ -151,27 +162,25 @@ const translations = {
         'verify_otp': 'सत्यापित करें', 'otp_placeholder': 'XXXXXX', 'resend_otp_60s': 'ओटीपी पुनः भेजें (60s)',
         'email_verified': 'ईमेल सत्यापित', 'mobile_verification': 'मोबाइल सत्यापन',
         'enter_mobile': 'मोबाइल नंबर दर्ज करें', 'mobile_verified': 'मोबाइल सत्यापित',
-        'change_password': 'पासवर्ड बदलें', 'old_password': 'पुराना पासवर्ड', 'old_password_placeholder': '········',
-        'new_password': 'नया पासवर्ड', 'new_password_placeholder': 'न्यूनतम 8 अक्षर',
-        'confirm_password': 'पासवर्ड की पुष्टि करें', 'confirm_password_placeholder': 'पासवर्ड फिर से दर्ज करें',
+        'change_password': 'पासवर्ड बदलें', 'old_password': 'पुराना पासवर्ड',
+        'new_password': 'नया पासवर्ड', 'confirm_password': 'पासवर्ड की पुष्टि करें',
         'password_strength': 'पासवर्ड की मजबूती', 'passwords_match': 'पासवर्ड मेल खाते हैं',
-        'profession': 'व्यवसाय *', 'profession_hint': 'एकाधिक चुनने के लिए Ctrl/Cmd दबाए रखें',
-        'preferred_work_area': 'पसंदीदा कार्य क्षेत्र *', 'work_area_placeholder': 'जैसे मुंबई, अंधेरी, बांद्रा',
+        'profession': 'व्यवसाय *', 'preferred_work_area': 'पसंदीदा कार्य क्षेत्र *',
         'street': 'गली', 'city': 'शहर', 'state': 'राज्य', 'pincode': 'पिन कोड',
         'document_type': 'दस्तावेज़ प्रकार', 'upload_new': 'नया अपलोड करें', 'uploaded': 'अपलोड किया गया',
         'clear': 'साफ़ करें', 'save_changes': 'बदलाव सहेजें', 'delete_account': 'खाता हटाएं',
-        'delete_account_title': 'खाता हटाएं', 'delete_confirmation': 'क्या आप वाकई अपना खाता स्थायी रूप से हटाना चाहते हैं?',
-        'yes_delete': 'हाँ, हटाएं', 'cancel': 'रद्द करें',
         'back_to_dashboard': 'डैशबोर्ड पर वापस जाएं', 'go_to_dashboard': 'डैशबोर्ड पर जाएं →',
         'profile_updated': 'प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई!',
         'fields_cleared': 'सभी फ़ील्ड साफ़ कर दिए गए हैं',
         'age_restriction': 'आपकी आयु 18 वर्ष या उससे अधिक होनी चाहिए',
         'photo_removed': 'प्रोफ़ाइल फोटो हटा दी गई',
-        'photo_changed': 'फोटो बदलें (डेमो)',
-        'document_uploaded': 'दस्तावेज़ अपलोड (डेमो)',
+        'photo_changed': 'फोटो बदल दिया गया है',
+        'document_uploaded': 'दस्तावेज़ अपलोड कर दिया गया है',
         'otp_sent': 'ओटीपी सफलतापूर्वक भेजा गया!',
         'otp_verified': 'ओटीपी सफलतापूर्वक सत्यापित हुआ!',
-        'invalid_otp': 'अमान्य ओटीपी। कृपया पुनः प्रयास करें।'
+        'invalid_otp': 'अमान्य ओटीपी। कृपया पुनः प्रयास करें।',
+        'saving': 'सहेजा जा रहा है...',
+        'error_saving': 'प्रोफ़ाइल सहेजने में त्रुटि'
     },
     mr: {
         'language': 'भाषा', 'theme': 'थीम', 'light': 'लाइट', 'dark': 'डार्क', 'system': 'सिस्टम',
@@ -184,41 +193,99 @@ const translations = {
         'verify_otp': 'सत्यापित करा', 'otp_placeholder': 'XXXXXX', 'resend_otp_60s': 'ओटीपी पुन्हा पाठवा (60s)',
         'email_verified': 'ईमेल सत्यापित', 'mobile_verification': 'मोबाइल सत्यापन',
         'enter_mobile': 'मोबाइल नंबर प्रविष्ट करा', 'mobile_verified': 'मोबाइल सत्यापित',
-        'change_password': 'पासवर्ड बदला', 'old_password': 'जुना पासवर्ड', 'old_password_placeholder': '········',
-        'new_password': 'नवीन पासवर्ड', 'new_password_placeholder': 'किमान ८ वर्ण',
-        'confirm_password': 'पासवर्डची पुष्टी करा', 'confirm_password_placeholder': 'पासवर्ड पुन्हा प्रविष्ट करा',
+        'change_password': 'पासवर्ड बदला', 'old_password': 'जुना पासवर्ड',
+        'new_password': 'नवीन पासवर्ड', 'confirm_password': 'पासवर्डची पुष्टी करा',
         'password_strength': 'पासवर्ड सामर्थ्य', 'passwords_match': 'पासवर्ड जुळतात',
-        'profession': 'व्यवसाय *', 'profession_hint': 'एकाधिक निवडण्यासाठी Ctrl/Cmd दाबा',
-        'preferred_work_area': 'प्राधान्य कार्यक्षेत्र *', 'work_area_placeholder': 'उदा. मुंबई, अंधेरी, बांद्रा',
+        'profession': 'व्यवसाय *', 'preferred_work_area': 'प्राधान्य कार्यक्षेत्र *',
         'street': 'रस्ता', 'city': 'शहर', 'state': 'राज्य', 'pincode': 'पिन कोड',
         'document_type': 'दस्तऐवज प्रकार', 'upload_new': 'नवीन अपलोड करा', 'uploaded': 'अपलोड केले',
         'clear': 'साफ करा', 'save_changes': 'बदल जतन करा', 'delete_account': 'खाते हटवा',
-        'delete_account_title': 'खाते हटवा', 'delete_confirmation': 'तुम्हाला तुमचे खाते कायमचे हटवायचे आहे का?',
-        'yes_delete': 'होय, हटवा', 'cancel': 'रद्द करा',
         'back_to_dashboard': 'डॅशबोर्डवर परत जा', 'go_to_dashboard': 'डॅशबोर्डवर जा →',
         'profile_updated': 'प्रोफाइल यशस्वीरित्या अद्यतनित केले!',
         'fields_cleared': 'सर्व फील्ड साफ केली गेली आहेत',
         'age_restriction': 'तुमचे वय १८ वर्षे किंवा त्यापेक्षा जास्त असणे आवश्यक आहे',
         'photo_removed': 'प्रोफाइल फोटो काढला',
-        'photo_changed': 'फोटो बदला (डेमो)',
-        'document_uploaded': 'दस्तऐवज अपलोड (डेमो)',
+        'photo_changed': 'फोटो बदलला आहे',
+        'document_uploaded': 'दस्तऐवज अपलोड केला आहे',
         'otp_sent': 'ओटीपी यशस्वीरित्या पाठविला!',
         'otp_verified': 'ओटीपी यशस्वीरित्या सत्यापित!',
-        'invalid_otp': 'अवैध ओटीपी. कृपया पुन्हा प्रयत्न करा.'
+        'invalid_otp': 'अवैध ओटीपी. कृपया पुन्हा प्रयत्न करा.',
+        'saving': 'जतन करत आहे...',
+        'error_saving': 'प्रोफाइल जतन करण्यात त्रुटी'
     }
 };
 
 // ============================================
-// INIT
+// INITIALIZATION
 // ============================================
 function init() {
+    console.log('Edit Profile Page Initialized');
     loadPreferences();
     applyLanguage(currentLanguage);
     applyTheme(currentTheme);
     setupEventListeners();
     calculateAge();
     updatePasswordStrength();
-    setupOtpSimulation();
+    setupOtpHandling();
+    initializeProfessionField();
+    loadWorkerData();
+}
+
+function loadWorkerData() {
+    console.log('Loading worker data:', window.workerData);
+    
+    if (window.workerData) {
+        if (firstName) firstName.value = window.workerData.first_name || '';
+        if (lastName) lastName.value = window.workerData.last_name || '';
+        if (dob && window.workerData.date_of_birth) dob.value = window.workerData.date_of_birth;
+        if (workArea) workArea.value = window.workerData.preferred_work_area || '';
+        if (street) street.value = window.workerData.street || '';
+        if (city) city.value = window.workerData.city || '';
+        if (state) state.value = window.workerData.state || '';
+        if (pincode) pincode.value = window.workerData.pincode || '';
+        if (emailInput) emailInput.value = window.workerData.email || '';
+        if (mobileInput) mobileInput.value = window.workerData.mobile || '';
+        
+        // Set gender
+        if (window.workerData.gender) {
+            genderRadios.forEach(radio => {
+                if (radio.value === window.workerData.gender) radio.checked = true;
+            });
+        }
+        
+        // Set profession
+        if (profession && window.workerData.profession) {
+            profession.value = window.workerData.profession;
+            if (window.workerData.profession === 'other' && window.workerData.other_profession) {
+                if (otherProfession) otherProfession.value = window.workerData.other_profession;
+            }
+        }
+        
+        // Set profile photo
+        if (window.workerData.profile_photo && profilePreview) {
+            profilePreview.innerHTML = `<img src="${window.workerData.profile_photo}" alt="Profile">`;
+        }
+        
+        // Set document name
+        if (window.workerData.document_file && docFileName) {
+            const fileName = window.workerData.document_file.split('/').pop();
+            docFileName.textContent = fileName;
+        }
+        
+        // Set email verification status
+        if (emailStatus && window.workerData.email_verified) {
+            emailStatus.innerHTML = '<i class="fas fa-check-circle"></i> Email Verified';
+            emailStatus.classList.add('verified');
+        }
+        
+        // Set mobile verification status
+        if (mobileStatus && window.workerData.mobile_verified) {
+            mobileStatus.innerHTML = '<i class="fas fa-check-circle"></i> Mobile Verified';
+            mobileStatus.classList.add('verified');
+        }
+        
+        calculateAge();
+    }
 }
 
 function loadPreferences() {
@@ -226,8 +293,17 @@ function loadPreferences() {
     if (savedLang) currentLanguage = savedLang;
     const savedTheme = localStorage.getItem('preferredTheme');
     if (savedTheme) currentTheme = savedTheme;
-    
     updateActiveButtons();
+}
+
+function initializeProfessionField() {
+    if (profession && otherProfession) {
+        if (profession.value === 'other') {
+            otherProfession.style.display = 'block';
+        } else {
+            otherProfession.style.display = 'none';
+        }
+    }
 }
 
 function updateActiveButtons() {
@@ -242,7 +318,6 @@ function updateActiveButtons() {
 function applyLanguage(lang) {
     const t = translations[lang] || translations.en;
     
-    // Update all elements with data-i18n
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (t[key]) {
@@ -258,15 +333,10 @@ function applyLanguage(lang) {
         }
     });
     
-    // Update placeholders
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (t[key]) el.placeholder = t[key];
     });
-    
-    // Update resend texts if countdown active
-    if (emailResendCountdown) updateEmailResendText();
-    if (mobileResendCountdown) updateMobileResendText();
 }
 
 function applyTheme(theme) {
@@ -288,13 +358,15 @@ function applyTheme(theme) {
 // ============================================
 function setupEventListeners() {
     // Settings toggle
-    settingsIcon.addEventListener('click', (e) => {
-        e.stopPropagation();
-        settingsDropdown.classList.toggle('active');
-    });
+    if (settingsIcon) {
+        settingsIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('active');
+        });
+    }
     
     document.addEventListener('click', (e) => {
-        if (!settingsIcon.contains(e.target) && !settingsDropdown.contains(e.target)) {
+        if (settingsIcon && settingsDropdown && !settingsIcon.contains(e.target) && !settingsDropdown.contains(e.target)) {
             settingsDropdown.classList.remove('active');
         }
     });
@@ -317,101 +389,261 @@ function setupEventListeners() {
         });
     });
 
-    // System theme change
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-        if (currentTheme === 'system') applyTheme('system');
-    });
-
     // Profile photo
-    changePhotoBtn.addEventListener('click', () => {
-        showNotification(translations[currentLanguage].photo_changed || 'Photo change (demo)', 'info');
-    });
+    if (changePhotoBtn && profilePhotoInput) {
+        changePhotoBtn.addEventListener('click', () => profilePhotoInput.click());
+        
+        profilePhotoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    if (profilePreview) {
+                        profilePreview.innerHTML = `<img src="${event.target.result}" alt="Profile">`;
+                    }
+                    removeProfilePhotoRequested = false;
+                    showNotification('Photo selected', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
     
-    removePhotoBtn.addEventListener('click', () => {
-        profilePreview.innerHTML = '<i class="fas fa-user"></i>';
-        showNotification(translations[currentLanguage].photo_removed || 'Photo removed', 'info');
-    });
+    if (removePhotoBtn) {
+        removePhotoBtn.addEventListener('click', () => {
+            if (profilePreview) {
+                profilePreview.innerHTML = '<i class="fas fa-user" style="color: white; font-size: 48px;"></i>';
+            }
+            if (profilePhotoInput) profilePhotoInput.value = '';
+            removeProfilePhotoRequested = true;
+            showNotification('Photo removed', 'info');
+        });
+    }
 
-    // DOB age calculation & validation
-    dob.addEventListener('change', () => {
-        calculateAge();
-        validateAgeRestriction();
-    });
+    // DOB
+    if (dob) {
+        dob.addEventListener('change', () => {
+            calculateAge();
+            validateAgeRestriction();
+        });
+    }
 
-    // Password strength & match
-    newPassword.addEventListener('input', updatePasswordStrength);
-    confirmPassword.addEventListener('input', updatePasswordStrength);
+    // Profession
+    if (profession && otherProfession) {
+        profession.addEventListener('change', () => {
+            if (profession.value === 'other') {
+                otherProfession.style.display = 'block';
+            } else {
+                otherProfession.style.display = 'none';
+            }
+        });
+    }
 
-    // Toggle password visibility
+    // Password
+    if (newPassword) newPassword.addEventListener('input', updatePasswordStrength);
+    if (confirmPassword) confirmPassword.addEventListener('input', updatePasswordStrength);
+
     togglePasswordBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const targetId = this.getAttribute('data-target');
             const targetInput = document.getElementById(targetId);
-            const type = targetInput.type === 'password' ? 'text' : 'password';
-            targetInput.type = type;
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
+            if (targetInput) {
+                const type = targetInput.type === 'password' ? 'text' : 'password';
+                targetInput.type = type;
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            }
         });
     });
 
-    // Action buttons
-    clearBtn.addEventListener('click', clearAllFields);
+    // Clear button
+    if (clearBtn) clearBtn.addEventListener('click', clearAllFields);
     
-    saveBtn.addEventListener('click', () => {
-        if (!validateAgeRestriction()) {
-            showNotification(translations[currentLanguage].age_restriction || 'Age restriction', 'error');
-            return;
-        }
-        showNotification(translations[currentLanguage].profile_updated || 'Profile updated!', 'success');
-    });
+    // Save button - MAIN FIX
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveProfile);
+    }
 
-    // Delete account popup
-    deleteAccountBtn.addEventListener('click', () => {
-        deletePopup.classList.add('active');
-    });
-    
-    closePopupBtn.addEventListener('click', () => deletePopup.classList.remove('active'));
-    cancelDeleteBtn.addEventListener('click', () => deletePopup.classList.remove('active'));
-    
-    confirmDeleteBtn.addEventListener('click', () => {
-        showNotification('Account deleted (demo)', 'error');
-        deletePopup.classList.remove('active');
-    });
+    // Delete account
+    if (deleteAccountBtn && deletePopup) {
+        deleteAccountBtn.addEventListener('click', () => deletePopup.classList.add('active'));
+        if (closePopupBtn) closePopupBtn.addEventListener('click', () => deletePopup.classList.remove('active'));
+        if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', () => deletePopup.classList.remove('active'));
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', () => {
+                showNotification('Account deletion is not available in demo mode', 'error');
+                deletePopup.classList.remove('active');
+            });
+        }
+    }
 
     // Back to dashboard
-    backToDashboard.addEventListener('click', () => {
-        window.location.href = 'dashboard.html';
-    });
+    if (backToDashboard) {
+        backToDashboard.addEventListener('click', () => {
+            window.location.href = '/dashboard_worker/';
+        });
+    }
 
-    // Document upload (demo)
-    uploadDocBtn.addEventListener('click', () => {
-        showNotification(translations[currentLanguage].document_uploaded || 'Document upload (demo)', 'info');
-    });
+    // Document upload
+    if (uploadDocBtn && documentFileInput) {
+        uploadDocBtn.addEventListener('click', () => documentFileInput.click());
+        documentFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && docFileName) {
+                docFileName.textContent = file.name;
+                showNotification('Document selected', 'success');
+            }
+        });
+    }
+}
+
+// ============================================
+// SAVE PROFILE FUNCTION - MAIN FIX
+// ============================================
+async function saveProfile() {
+    if (!validateAgeRestriction()) {
+        showNotification(translations[currentLanguage].age_restriction || 'You must be 18 years or older', 'error');
+        return;
+    }
+
+    // Disable save button and show loading state
+    saveBtn.disabled = true;
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (translations[currentLanguage].saving || 'Saving...');
+
+    try {
+        // Create FormData object
+        const formData = new FormData();
+        formData.append('action', 'update_profile');
+        
+        // Personal Info
+        formData.append('first_name', firstName ? firstName.value.trim() : '');
+        formData.append('last_name', lastName ? lastName.value.trim() : '');
+        formData.append('dob', dob ? dob.value : '');
+        
+        // Gender
+        let selectedGender = '';
+        genderRadios.forEach(radio => {
+            if (radio.checked) selectedGender = radio.value;
+        });
+        formData.append('gender', selectedGender);
+        
+        // Professional Info
+        formData.append('profession', profession ? profession.value : '');
+        if (profession && profession.value === 'other' && otherProfession) {
+            formData.append('other_profession', otherProfession.value.trim());
+        }
+        
+        // Address
+        formData.append('street', street ? street.value.trim() : '');
+        formData.append('city', city ? city.value.trim() : '');
+        formData.append('state', state ? state.value.trim() : '');
+        formData.append('pincode', pincode ? pincode.value.trim() : '');
+        formData.append('preferred_work_area', workArea ? workArea.value.trim() : '');
+
+        // Password change (processed on same Save Changes action)
+        formData.append('old_password', oldPassword ? oldPassword.value.trim() : '');
+        formData.append('new_password', newPassword ? newPassword.value.trim() : '');
+        formData.append('confirm_password', confirmPassword ? confirmPassword.value.trim() : '');
+        
+        // Profile photo
+        formData.append('remove_profile_photo', removeProfilePhotoRequested ? 'true' : 'false');
+        if (profilePhotoInput && profilePhotoInput.files[0]) {
+            formData.append('profile_photo', profilePhotoInput.files[0]);
+        }
+        
+        // Document
+        if (documentFileInput && documentFileInput.files[0]) {
+            formData.append('document_file', documentFileInput.files[0]);
+            formData.append('document_type', docType ? docType.value : 'aadhar');
+        }
+        
+        // Add CSRF token
+        const csrfToken = getCSRFToken();
+        if (csrfToken) {
+            formData.append('csrfmiddlewaretoken', csrfToken);
+        }
+        
+        console.log('Saving profile with data:');
+        console.log('First Name:', formData.get('first_name'));
+        console.log('Last Name:', formData.get('last_name'));
+        console.log('Profession:', formData.get('profession'));
+        console.log('City:', formData.get('city'));
+        
+        // Make the POST request
+        const response = await fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        });
+        
+        console.log('Response status:', response.status);
+        
+        const result = await response.json();
+        console.log('Response data:', result);
+        
+        if (result.success) {
+            showNotification(result.message, 'success');
+            
+            // Update window.workerData with new values
+            if (window.workerData) {
+                window.workerData.first_name = formData.get('first_name');
+                window.workerData.last_name = formData.get('last_name');
+                window.workerData.full_name = `${formData.get('first_name')} ${formData.get('last_name')}`;
+                window.workerData.profession = profession.value === 'other' ? (otherProfession ? otherProfession.value : 'other') : profession.value;
+                window.workerData.city = formData.get('city');
+                window.workerData.state = formData.get('state');
+                window.workerData.street = formData.get('street');
+                window.workerData.pincode = formData.get('pincode');
+                window.workerData.preferred_work_area = formData.get('preferred_work_area');
+            }
+            
+            // Also update parent window data if this is opened from dashboard
+            if (window.opener) {
+                window.opener.workerData = window.workerData;
+            }
+            
+            // Refresh page after 1.5 seconds
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            console.error('Save failed:', result.message);
+            showNotification(result.message || 'Failed to update profile', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving profile:', error);
+        showNotification(translations[currentLanguage].error_saving + ': ' + error.message, 'error');
+    } finally {
+        // Re-enable save button
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+    }
 }
 
 // ============================================
 // AGE FUNCTIONS
 // ============================================
 function calculateAge() {
-    if (!dob.value) return;
+    if (!dob || !dob.value) return;
     const birth = new Date(dob.value);
     const today = new Date();
     let age = today.getFullYear() - birth.getFullYear();
     const m = today.getMonth() - birth.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-    ageText.textContent = age + ' years old';
+    if (ageText) ageText.textContent = age + ' years old';
     return age;
 }
 
 function validateAgeRestriction() {
-    if (!dob.value) return true;
+    if (!dob || !dob.value) return true;
     const age = calculateAge();
     if (age < 18) {
-        ageDisplay.classList.add('error');
-        ageText.innerHTML = `${age} years old <span style="color:#DC2626;">(Must be 18+)</span>`;
+        if (ageDisplay) ageDisplay.classList.add('error');
+        if (ageText) ageText.innerHTML = `${age} years old <span style="color:#DC2626;">(Must be 18+)</span>`;
         return false;
     } else {
-        ageDisplay.classList.remove('error');
+        if (ageDisplay) ageDisplay.classList.remove('error');
         return true;
     }
 }
@@ -420,6 +652,7 @@ function validateAgeRestriction() {
 // PASSWORD STRENGTH
 // ============================================
 function updatePasswordStrength() {
+    if (!newPassword) return;
     const val = newPassword.value;
     let strength = 0;
     if (val.length >= 8) strength++;
@@ -428,169 +661,242 @@ function updatePasswordStrength() {
     if (/\d/.test(val)) strength++;
     if (/[^A-Za-z0-9]/.test(val)) strength++;
 
-    passwordStrength.className = 'password-strength';
+    if (passwordStrength) passwordStrength.className = 'password-strength';
     
     if (val.length === 0) {
-        strengthText.textContent = translations[currentLanguage].password_strength || 'Password Strength';
+        if (strengthText) strengthText.textContent = translations[currentLanguage].password_strength || 'Password Strength';
     } else if (strength <= 2) {
-        passwordStrength.classList.add('weak');
-        strengthText.textContent = 'Weak';
+        if (passwordStrength) passwordStrength.classList.add('weak');
+        if (strengthText) strengthText.textContent = 'Weak';
     } else if (strength === 3) {
-        passwordStrength.classList.add('medium');
-        strengthText.textContent = 'Medium';
+        if (passwordStrength) passwordStrength.classList.add('medium');
+        if (strengthText) strengthText.textContent = 'Medium';
     } else if (strength === 4) {
-        passwordStrength.classList.add('strong');
-        strengthText.textContent = 'Strong';
+        if (passwordStrength) passwordStrength.classList.add('strong');
+        if (strengthText) strengthText.textContent = 'Strong';
     } else {
-        passwordStrength.classList.add('very-strong');
-        strengthText.textContent = 'Very Strong';
+        if (passwordStrength) passwordStrength.classList.add('very-strong');
+        if (strengthText) strengthText.textContent = 'Very Strong';
     }
 
-    // Password match
-    if (confirmPassword.value.length > 0) {
-        passwordMatch.classList.toggle('visible', val === confirmPassword.value);
+    if (confirmPassword && confirmPassword.value.length > 0) {
+        if (passwordMatch) passwordMatch.classList.toggle('visible', val === confirmPassword.value);
     } else {
-        passwordMatch.classList.remove('visible');
+        if (passwordMatch) passwordMatch.classList.remove('visible');
     }
 }
 
 // ============================================
-// OTP SIMULATION
+// OTP HANDLING
 // ============================================
-function setupOtpSimulation() {
+function setupOtpHandling() {
     // Email OTP
-    getEmailOtpBtn.addEventListener('click', () => {
-        if (!validationPatterns.email.test(emailInput.value)) {
-            showNotification('Invalid email', 'error');
-            return;
-        }
-        emailDisplay.textContent = `OTP sent to ${emailInput.value}`;
-        emailDisplay.classList.add('show');
-        emailOtpSection.classList.add('active');
-        getEmailOtpBtn.disabled = true;
-        startEmailResendCountdown();
-        showNotification(translations[currentLanguage].otp_sent || 'OTP sent!', 'success');
-    });
+    if (getEmailOtpBtn) {
+        getEmailOtpBtn.addEventListener('click', async () => {
+            const email = emailInput ? emailInput.value.trim() : '';
+            if (!email) { showNotification('Email is required', 'error'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showNotification('Invalid email format', 'error'); return; }
 
-    verifyEmailOtpBtn.addEventListener('click', () => {
-        if (emailOtpInput.value === DUMMY_EMAIL_OTP) {
-            emailVerified = true;
-            emailStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span data-i18n="email_verified">Email Verified</span>';
-            emailOtpSection.classList.remove('active');
-            emailDisplay.classList.remove('show');
-            if (emailResendCountdown) clearInterval(emailResendCountdown);
-            showNotification(translations[currentLanguage].otp_verified || 'OTP verified!', 'success');
-        } else {
-            showNotification(translations[currentLanguage].invalid_otp || 'Invalid OTP', 'error');
-        }
-    });
+            try {
+                const formData = new FormData();
+                formData.append('action', 'send_email_otp');
+                formData.append('email', email);
+                const csrfToken = getCSRFToken();
+                if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
 
-    emailOtpInput.addEventListener('input', () => {
-        verifyEmailOtpBtn.disabled = emailOtpInput.value.length !== 6;
-    });
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                if (result.success) {
+                    if (emailDisplay) emailDisplay.classList.add('show');
+                    if (emailOtpSection) emailOtpSection.classList.add('active');
+                    if (getEmailOtpBtn) getEmailOtpBtn.disabled = true;
+                    startEmailResendCountdown();
+                    showNotification(result.message, 'success');
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error sending OTP', 'error');
+            }
+        });
+    }
 
-    // Mobile OTP
-    getMobileOtpBtn.addEventListener('click', () => {
-        if (!validationPatterns.phone.test(mobileInput.value)) {
-            showNotification('Invalid mobile number', 'error');
-            return;
-        }
-        mobileDisplay.textContent = `OTP sent to ${mobileInput.value}`;
-        mobileDisplay.classList.add('show');
-        mobileOtpSection.classList.add('active');
-        getMobileOtpBtn.disabled = true;
-        startMobileResendCountdown();
-        showNotification(translations[currentLanguage].otp_sent || 'OTP sent!', 'success');
-    });
+    if (verifyEmailOtpBtn) {
+        verifyEmailOtpBtn.addEventListener('click', async () => {
+            const email = emailInput ? emailInput.value.trim() : '';
+            const otp = emailOtpInput ? emailOtpInput.value.trim() : '';
 
-    verifyMobileOtpBtn.addEventListener('click', () => {
-        if (mobileOtpInput.value === DUMMY_MOBILE_OTP) {
-            mobileVerified = true;
-            mobileStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span data-i18n="mobile_verified">Mobile Verified</span>';
-            mobileOtpSection.classList.remove('active');
-            mobileDisplay.classList.remove('show');
-            if (mobileResendCountdown) clearInterval(mobileResendCountdown);
-            showNotification(translations[currentLanguage].otp_verified || 'OTP verified!', 'success');
-        } else {
-            showNotification(translations[currentLanguage].invalid_otp || 'Invalid OTP', 'error');
-        }
-    });
+            try {
+                const formData = new FormData();
+                formData.append('action', 'verify_email_otp');
+                formData.append('email', email);
+                formData.append('otp', otp);
+                const csrfToken = getCSRFToken();
+                if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
 
-    mobileOtpInput.addEventListener('input', () => {
-        verifyMobileOtpBtn.disabled = mobileOtpInput.value.length !== 6;
-    });
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                if (result.success) {
+                    if (emailStatus) emailStatus.innerHTML = '<i class="fas fa-check-circle"></i> Email Verified';
+                    if (emailOtpSection) emailOtpSection.classList.remove('active');
+                    if (emailDisplay) emailDisplay.classList.remove('show');
+                    if (emailResendCountdown) clearInterval(emailResendCountdown);
+                    showNotification(result.message, 'success');
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error verifying OTP', 'error');
+            }
+        });
+    }
+
+    if (emailOtpInput) {
+        emailOtpInput.addEventListener('input', () => {
+            if (verifyEmailOtpBtn) verifyEmailOtpBtn.disabled = emailOtpInput.value.length !== 6;
+        });
+    }
+
+    // Mobile OTP (similar)
+    if (getMobileOtpBtn) {
+        getMobileOtpBtn.addEventListener('click', async () => {
+            const mobile = mobileInput ? mobileInput.value.trim() : '';
+            if (!mobile) { showNotification('Mobile number is required', 'error'); return; }
+            if (!/^[6-9]\d{9}$/.test(mobile)) { showNotification('Invalid mobile number', 'error'); return; }
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'send_mobile_otp');
+                formData.append('mobile', mobile);
+                const csrfToken = getCSRFToken();
+                if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                if (result.success) {
+                    if (mobileDisplay) mobileDisplay.classList.add('show');
+                    if (mobileOtpSection) mobileOtpSection.classList.add('active');
+                    if (getMobileOtpBtn) getMobileOtpBtn.disabled = true;
+                    startMobileResendCountdown();
+                    showNotification(result.message, 'success');
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error sending OTP', 'error');
+            }
+        });
+    }
+
+    if (verifyMobileOtpBtn) {
+        verifyMobileOtpBtn.addEventListener('click', async () => {
+            const mobile = mobileInput ? mobileInput.value.trim() : '';
+            const otp = mobileOtpInput ? mobileOtpInput.value.trim() : '';
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'verify_mobile_otp');
+                formData.append('mobile', mobile);
+                formData.append('otp', otp);
+                const csrfToken = getCSRFToken();
+                if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+                const result = await response.json();
+                if (result.success) {
+                    if (mobileStatus) mobileStatus.innerHTML = '<i class="fas fa-check-circle"></i> Mobile Verified';
+                    if (mobileOtpSection) mobileOtpSection.classList.remove('active');
+                    if (mobileDisplay) mobileDisplay.classList.remove('show');
+                    if (mobileResendCountdown) clearInterval(mobileResendCountdown);
+                    showNotification(result.message, 'success');
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error verifying OTP', 'error');
+            }
+        });
+    }
+
+    if (mobileOtpInput) {
+        mobileOtpInput.addEventListener('input', () => {
+            if (verifyMobileOtpBtn) verifyMobileOtpBtn.disabled = mobileOtpInput.value.length !== 6;
+        });
+    }
 }
 
 function startEmailResendCountdown() {
     if (emailResendCountdown) clearInterval(emailResendCountdown);
     emailResendTimeLeft = 60;
-    resendEmailOtpBtn.disabled = true;
+    if (resendEmailOtpBtn) resendEmailOtpBtn.disabled = true;
     
     emailResendCountdown = setInterval(() => {
         emailResendTimeLeft--;
-        updateEmailResendText();
+        const base = translations[currentLanguage].resend_otp_60s || 'Resend OTP (60s)';
+        if (emailResendText) emailResendText.textContent = base.replace('60s', `${emailResendTimeLeft}s`);
         if (emailResendTimeLeft <= 0) {
             clearInterval(emailResendCountdown);
-            resendEmailOtpBtn.disabled = false;
-            emailResendText.textContent = translations[currentLanguage].resend_otp_60s?.replace('60s', '') || 'Resend OTP';
+            if (resendEmailOtpBtn) resendEmailOtpBtn.disabled = false;
+            if (emailResendText) emailResendText.textContent = translations[currentLanguage].resend_otp_60s?.replace('60s', '') || 'Resend OTP';
         }
     }, 1000);
-}
-
-function updateEmailResendText() {
-    const base = translations[currentLanguage].resend_otp_60s || 'Resend OTP (60s)';
-    emailResendText.textContent = base.replace('60s', `${emailResendTimeLeft}s`);
 }
 
 function startMobileResendCountdown() {
     if (mobileResendCountdown) clearInterval(mobileResendCountdown);
     mobileResendTimeLeft = 60;
-    resendMobileOtpBtn.disabled = true;
+    if (resendMobileOtpBtn) resendMobileOtpBtn.disabled = true;
     
     mobileResendCountdown = setInterval(() => {
         mobileResendTimeLeft--;
-        updateMobileResendText();
+        const base = translations[currentLanguage].resend_otp_60s || 'Resend OTP (60s)';
+        if (mobileResendText) mobileResendText.textContent = base.replace('60s', `${mobileResendTimeLeft}s`);
         if (mobileResendTimeLeft <= 0) {
             clearInterval(mobileResendCountdown);
-            resendMobileOtpBtn.disabled = false;
-            mobileResendText.textContent = translations[currentLanguage].resend_otp_60s?.replace('60s', '') || 'Resend OTP';
+            if (resendMobileOtpBtn) resendMobileOtpBtn.disabled = false;
+            if (mobileResendText) mobileResendText.textContent = translations[currentLanguage].resend_otp_60s?.replace('60s', '') || 'Resend OTP';
         }
     }, 1000);
-}
-
-function updateMobileResendText() {
-    const base = translations[currentLanguage].resend_otp_60s || 'Resend OTP (60s)';
-    mobileResendText.textContent = base.replace('60s', `${mobileResendTimeLeft}s`);
 }
 
 // ============================================
 // CLEAR ALL FIELDS
 // ============================================
 function clearAllFields() {
-    firstName.value = '';
-    lastName.value = '';
-    dob.value = '';
-    ageText.textContent = 'Select date';
-    
+    if (firstName) firstName.value = '';
+    if (lastName) lastName.value = '';
+    if (dob) dob.value = '';
+    if (ageText) ageText.textContent = 'Select date';
     genderRadios.forEach(r => r.checked = false);
-    
-    emailInput.value = '';
-    mobileInput.value = '';
-    oldPassword.value = '';
-    newPassword.value = '';
-    confirmPassword.value = '';
-    
-    workArea.value = '';
-    street.value = '';
-    city.value = '';
-    state.value = '';
-    pincode.value = '';
-    
-    // Reset password indicators
-    passwordStrength.className = 'password-strength';
-    strengthText.textContent = translations[currentLanguage].password_strength || 'Password Strength';
-    passwordMatch.classList.remove('visible');
-    
+    if (emailInput) emailInput.value = '';
+    if (mobileInput) mobileInput.value = '';
+    if (oldPassword) oldPassword.value = '';
+    if (newPassword) newPassword.value = '';
+    if (confirmPassword) confirmPassword.value = '';
+    if (workArea) workArea.value = '';
+    if (street) street.value = '';
+    if (city) city.value = '';
+    if (state) state.value = '';
+    if (pincode) pincode.value = '';
+    if (passwordStrength) passwordStrength.className = 'password-strength';
+    if (strengthText) strengthText.textContent = translations[currentLanguage].password_strength || 'Password Strength';
+    if (passwordMatch) passwordMatch.classList.remove('visible');
     showNotification(translations[currentLanguage].fields_cleared || 'All fields cleared', 'info');
 }
 
@@ -598,6 +904,8 @@ function clearAllFields() {
 // NOTIFICATION
 // ============================================
 function showNotification(message, type = 'info') {
+    if (!notifWrapper) return;
+    
     const notif = document.createElement('div');
     notif.className = `notification ${type}`;
     
@@ -612,13 +920,8 @@ function showNotification(message, type = 'info') {
     `;
     
     notifWrapper.appendChild(notif);
-    
     setTimeout(() => notif.classList.add('show'), 10);
-    
-    notif.querySelector('.notification-close').addEventListener('click', () => {
-        notif.remove();
-    });
-    
+    notif.querySelector('.notification-close').addEventListener('click', () => notif.remove());
     setTimeout(() => notif.remove(), 4000);
 }
 

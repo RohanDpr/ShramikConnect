@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 from django.conf import settings
@@ -13,7 +13,7 @@ import json
 import re
 import os
 import math
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from core.models import Employer, Worker, EmailOTP, MobileOTP, Job, JobApplication, WorkHistory, ChatMessage
 import logging
 import sendgrid
@@ -33,6 +33,13 @@ def calculate_distance(lat1, lon1, lat2, lon2):
     a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
     c = 2 * math.asin(math.sqrt(a))
     return R * c
+
+
+def password_matches(raw_password, stored_password):
+    """Plain-text comparison as requested."""
+    if not stored_password:
+        return False
+    return stored_password == raw_password
 
 
 # ============================================
@@ -105,11 +112,558 @@ def data_retention(request):
 def conduct_card(request):
     return render(request, 'conduct_card.html')
 
+@ensure_csrf_cookie
 def employer_edit_profile_page(request):
-    return render(request, 'employer/employer_edit_profile_page.html')
+    """
+    GET  -> render employer edit profile with current data
+    POST -> handle profile update / OTP verification / password change
+    """
+    if 'employer_id' not in request.session:
+        return redirect('/login_employer/')
 
+    employer_id = request.session['employer_id']
+    try:
+        employer = Employer.objects.get(id=employer_id, is_active=True)
+    except Employer.DoesNotExist:
+        for key in ['employer_id', 'employer_email', 'employer_name']:
+            if key in request.session:
+                del request.session[key]
+        return redirect('/login_employer/')
+
+    if request.method == 'POST':
+        try:
+            if not (request.content_type and 'multipart' in request.content_type):
+                return JsonResponse({'success': False, 'message': 'Invalid request format'}, status=400)
+
+            data = request.POST
+            action = data.get('action', '').strip()
+
+            if action == 'update_profile':
+                # Personal info
+                first_name = data.get('first_name', '').strip()
+                last_name = data.get('last_name', '').strip()
+                dob_str = data.get('dob', '').strip()
+                gender = data.get('gender', '').strip()
+
+                # Contact
+                email = data.get('email', '').strip().lower()
+                mobile = data.get('mobile', '').strip()
+
+                # Address + location
+                street = data.get('street', '').strip()
+                city = data.get('city', '').strip()
+                state = data.get('state', '').strip()
+                pincode = data.get('pincode', '').strip()
+                work_location_address = data.get('work_location_address', '').strip()
+                latitude = data.get('latitude', '').strip()
+                longitude = data.get('longitude', '').strip()
+                remove_profile_photo = data.get('remove_profile_photo', '').strip().lower() in ['true', '1', 'yes', 'on']
+                old_pass = data.get('old_password', '').strip()
+                new_pass = data.get('new_password', '').strip()
+                confirm_pass = data.get('confirm_password', '').strip()
+
+                errors = []
+                if not first_name:
+                    errors.append('First name is required.')
+                if not last_name:
+                    errors.append('Last name is required.')
+                if not dob_str:
+                    errors.append('Date of birth is required.')
+                else:
+                    try:
+                        dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+                        today = date.today()
+                        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+                        if age < 18 or age > 100:
+                            errors.append('Age must be between 18 and 100.')
+                    except ValueError:
+                        errors.append('Invalid date of birth.')
+
+                if gender not in ['male', 'female', 'other']:
+                    errors.append('Invalid gender.')
+                if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+                    errors.append('Invalid email format.')
+                if not re.match(r'^[6-9]\d{9}$', mobile):
+                    errors.append('Invalid mobile number.')
+                if not street or not city or not state or not pincode:
+                    errors.append('Complete address is required.')
+                if not re.match(r'^\d{6}$', pincode):
+                    errors.append('Invalid pincode.')
+
+                if Employer.objects.filter(email=email).exclude(id=employer.id).exists():
+                    errors.append('Email already registered.')
+                if Employer.objects.filter(mobile=mobile).exclude(id=employer.id).exists():
+                    errors.append('Mobile number already registered.')
+
+                # Optional password update on Save Changes
+                wants_password_change = bool(old_pass or new_pass or confirm_pass)
+                if wants_password_change:
+                    if not old_pass or not new_pass or not confirm_pass:
+                        errors.append('All password fields are required to change password.')
+                    elif not password_matches(old_pass, employer.password):
+                        errors.append('Old password is incorrect.')
+                    elif len(new_pass) < 8:
+                        errors.append('New password must be at least 8 characters.')
+                    elif new_pass != confirm_pass:
+                        errors.append('Passwords do not match.')
+
+                if errors:
+                    return JsonResponse({'success': False, 'message': ' '.join(errors)}, status=400)
+
+                employer.first_name = first_name
+                employer.last_name = last_name
+                employer.date_of_birth = dob
+                employer.age = age
+                employer.gender = gender
+                employer.email = email
+                employer.mobile = mobile
+                employer.street = street
+                employer.city = city
+                employer.state = state
+                employer.pincode = pincode
+                employer.work_location_address = work_location_address
+
+                if latitude:
+                    employer.work_latitude = latitude
+                if longitude:
+                    employer.work_longitude = longitude
+
+                if remove_profile_photo and employer.profile_photo:
+                    try:
+                        if os.path.exists(employer.profile_photo.path):
+                            os.remove(employer.profile_photo.path)
+                    except Exception:
+                        pass
+                    employer.profile_photo = None
+
+                if 'profile_photo' in request.FILES:
+                    if employer.profile_photo:
+                        try:
+                            if os.path.exists(employer.profile_photo.path):
+                                os.remove(employer.profile_photo.path)
+                        except Exception:
+                            pass
+                    employer.profile_photo = request.FILES['profile_photo']
+
+                if 'document_file' in request.FILES:
+                    doc_type = data.get('document_type', '').strip()
+                    if doc_type in ['aadhar', 'pan']:
+                        if employer.document_file:
+                            try:
+                                if os.path.exists(employer.document_file.path):
+                                    os.remove(employer.document_file.path)
+                            except Exception:
+                                pass
+                        employer.document_type = doc_type
+                        employer.document_file = request.FILES['document_file']
+
+                if wants_password_change:
+                    employer.password = new_pass
+
+                employer.save()
+                request.session['employer_name'] = employer.get_full_name()
+                request.session['employer_email'] = employer.email
+                request.session.modified = True
+
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Profile updated successfully!',
+                    'employer': {
+                        'id': employer.id,
+                        'full_name': employer.get_full_name(),
+                        'first_name': employer.first_name,
+                        'last_name': employer.last_name,
+                        'email': employer.email,
+                        'mobile': employer.mobile,
+                        'city': employer.city,
+                        'state': employer.state,
+                        'street': employer.street,
+                        'pincode': employer.pincode,
+                        'work_location_address': employer.work_location_address,
+                        'work_latitude': float(employer.work_latitude) if employer.work_latitude else None,
+                        'work_longitude': float(employer.work_longitude) if employer.work_longitude else None,
+                        'profile_photo': employer.profile_photo.url if employer.profile_photo else None,
+                    }
+                })
+
+            elif action == 'send_email_otp':
+                new_email = data.get('email', '').strip().lower()
+                if not new_email:
+                    return JsonResponse({'success': False, 'message': 'Email is required.'}, status=400)
+                if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', new_email):
+                    return JsonResponse({'success': False, 'message': 'Invalid email format.'}, status=400)
+                if Employer.objects.filter(email=new_email).exclude(id=employer.id).exists():
+                    return JsonResponse({'success': False, 'message': 'Email already registered.'}, status=400)
+
+                otp = EmailOTP.generate_otp()
+                EmailOTP.objects.create(email=new_email, otp=otp)
+                return JsonResponse({'success': True, 'message': 'OTP sent to your email.'})
+
+            elif action == 'verify_email_otp':
+                new_email = data.get('email', '').strip().lower()
+                otp = data.get('otp', '').strip()
+
+                latest = EmailOTP.objects.filter(email=new_email).order_by('-created_at').first()
+                if not latest or not latest.is_valid() or latest.otp != otp:
+                    return JsonResponse({'success': False, 'message': 'Invalid or expired OTP.'}, status=400)
+
+                employer.email = new_email
+                employer.email_verified = True
+                employer.save()
+                latest.is_verified = True
+                latest.save()
+                request.session['employer_email'] = employer.email
+                request.session.modified = True
+                return JsonResponse({'success': True, 'message': 'Email verified successfully!'})
+
+            elif action == 'send_mobile_otp':
+                new_mobile = data.get('mobile', '').strip()
+                if not new_mobile:
+                    return JsonResponse({'success': False, 'message': 'Mobile number is required.'}, status=400)
+                if not re.match(r'^[6-9]\d{9}$', new_mobile):
+                    return JsonResponse({'success': False, 'message': 'Invalid mobile number.'}, status=400)
+                if Employer.objects.filter(mobile=new_mobile).exclude(id=employer.id).exists():
+                    return JsonResponse({'success': False, 'message': 'Mobile number already registered.'}, status=400)
+
+                otp = MobileOTP.generate_otp()
+                MobileOTP.objects.create(mobile=new_mobile, otp=otp)
+                return JsonResponse({'success': True, 'message': 'OTP sent to your mobile.'})
+
+            elif action == 'verify_mobile_otp':
+                new_mobile = data.get('mobile', '').strip()
+                otp = data.get('otp', '').strip()
+
+                latest = MobileOTP.objects.filter(mobile=new_mobile).order_by('-created_at').first()
+                if not latest or not latest.is_valid() or latest.otp != otp:
+                    return JsonResponse({'success': False, 'message': 'Invalid or expired OTP.'}, status=400)
+
+                employer.mobile = new_mobile
+                employer.mobile_verified = True
+                employer.save()
+                latest.is_verified = True
+                latest.save()
+                return JsonResponse({'success': True, 'message': 'Mobile verified successfully!'})
+
+            elif action == 'change_password':
+                old_pass = data.get('old_password', '').strip()
+                new_pass = data.get('new_password', '').strip()
+                confirm_pass = data.get('confirm_password', '').strip()
+
+                if not old_pass or not new_pass or not confirm_pass:
+                    return JsonResponse({'success': False, 'message': 'All password fields are required.'}, status=400)
+                if not password_matches(old_pass, employer.password):
+                    return JsonResponse({'success': False, 'message': 'Old password is incorrect.'}, status=400)
+                if len(new_pass) < 8:
+                    return JsonResponse({'success': False, 'message': 'New password must be at least 8 characters.'}, status=400)
+                if new_pass != confirm_pass:
+                    return JsonResponse({'success': False, 'message': 'Passwords do not match.'}, status=400)
+
+                employer.password = new_pass
+                employer.save()
+                return JsonResponse({'success': True, 'message': 'Password changed successfully!'})
+
+            return JsonResponse({'success': False, 'message': 'Invalid action.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
+
+    return render(request, 'employer/employer_edit_profile_page.html', {'employer': employer})
+
+@ensure_csrf_cookie
 def worker_edit_profile_page(request):
-    return render(request, 'worker/worker_edit_profile_page.html')
+    """
+    GET  → render the edit profile form with current worker data
+    POST (action=update_profile) → update worker profile
+    """
+    if 'worker_id' not in request.session:
+        return redirect('/login_worker/')
+
+    worker_id = request.session['worker_id']
+    try:
+        worker = Worker.objects.get(id=worker_id, is_active=True)
+    except Worker.DoesNotExist:
+        del request.session['worker_id']
+        del request.session['worker_email']
+        del request.session['worker_name']
+        return redirect('/login_worker/')
+
+    if request.method == 'POST':
+        try:
+            print(f"\n{'='*60}")
+            print(f"WORKER EDIT PROFILE - POST REQUEST")
+            print(f"{'='*60}")
+            print(f"Content-Type: {request.headers.get('Content-Type')}")
+            print(f"Request POST data: {dict(request.POST)}")
+            print(f"Request FILES keys: {list(request.FILES.keys())}")
+            
+            # Check if it's a form submission (multipart/form-data)
+            if request.content_type and 'multipart' in request.content_type:
+                # This is a form submission with files
+                data = request.POST
+                
+                # Check if this is update_profile action
+                action = data.get('action', '')
+                print(f"Action: {action}")
+                
+                if action == 'update_profile':
+                    # Personal Info
+                    first_name = data.get('first_name', '').strip()
+                    last_name = data.get('last_name', '').strip()
+                    dob_str = data.get('dob', '').strip()
+                    gender = data.get('gender', '').strip()
+
+                    # Professional Info
+                    profession = data.get('profession', '').strip()
+                    other_profession = data.get('other_profession', '').strip()
+                    
+                    # Address
+                    street = data.get('street', '').strip()
+                    city = data.get('city', '').strip()
+                    state = data.get('state', '').strip()
+                    pincode = data.get('pincode', '').strip()
+                    preferred_work_area = data.get('preferred_work_area', '').strip()
+                    remove_profile_photo = data.get('remove_profile_photo', '').strip().lower() in ['true', '1', 'yes', 'on']
+                    old_pass = data.get('old_password', '').strip()
+                    new_pass = data.get('new_password', '').strip()
+                    confirm_pass = data.get('confirm_password', '').strip()
+
+                    # Validation
+                    errors = []
+                    if not first_name:
+                        errors.append('First name is required.')
+                    if not last_name:
+                        errors.append('Last name is required.')
+                    if not dob_str:
+                        errors.append('Date of birth is required.')
+                    else:
+                        try:
+                            dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+                            today = date.today()
+                            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+                            if age < 18 or age > 100:
+                                errors.append('Age must be between 18 and 100.')
+                        except ValueError:
+                            errors.append('Invalid date of birth.')
+                    if gender not in ['male', 'female', 'other']:
+                        errors.append('Invalid gender.')
+                    if not profession:
+                        errors.append('Profession is required.')
+                    if not street or not city or not state or not pincode:
+                        errors.append('Complete address is required.')
+                    if not re.match(r'^\d{6}$', pincode):
+                        errors.append('Invalid pincode.')
+                    if not preferred_work_area:
+                        errors.append('Preferred work area is required.')
+
+                    # Optional password update on Save Changes
+                    wants_password_change = bool(old_pass or new_pass or confirm_pass)
+                    if wants_password_change:
+                        if not old_pass or not new_pass or not confirm_pass:
+                            errors.append('All password fields are required to change password.')
+                        elif not password_matches(old_pass, worker.password):
+                            errors.append('Old password is incorrect.')
+                        elif len(new_pass) < 8:
+                            errors.append('New password must be at least 8 characters.')
+                        elif new_pass != confirm_pass:
+                            errors.append('Passwords do not match.')
+
+                    if errors:
+                        return JsonResponse({'success': False, 'message': ' '.join(errors)}, status=400)
+
+                    # Update worker - DIRECT ASSIGNMENT
+                    worker.first_name = first_name
+                    worker.last_name = last_name
+                    worker.date_of_birth = dob
+                    worker.age = age
+                    worker.gender = gender
+                    worker.profession = profession
+                    if profession == 'other':
+                        worker.other_profession = other_profession
+                    else:
+                        worker.other_profession = ''
+                    worker.street = street
+                    worker.city = city
+                    worker.state = state
+                    worker.pincode = pincode
+                    worker.preferred_work_area = preferred_work_area
+
+                    # Handle profile photo
+                    if remove_profile_photo and worker.profile_photo:
+                        try:
+                            if os.path.exists(worker.profile_photo.path):
+                                os.remove(worker.profile_photo.path)
+                        except:
+                            pass
+                        worker.profile_photo = None
+
+                    if 'profile_photo' in request.FILES:
+                        if worker.profile_photo:
+                            try:
+                                if os.path.exists(worker.profile_photo.path):
+                                    os.remove(worker.profile_photo.path)
+                            except:
+                                pass
+                        worker.profile_photo = request.FILES['profile_photo']
+
+                    # Handle document
+                    if 'document_file' in request.FILES:
+                        doc_type = data.get('document_type', '').strip()
+                        if doc_type in ['aadhar', 'pan']:
+                            if worker.document_file:
+                                try:
+                                    if os.path.exists(worker.document_file.path):
+                                        os.remove(worker.document_file.path)
+                                except:
+                                    pass
+                            worker.document_type = doc_type
+                            worker.document_file = request.FILES['document_file']
+
+                    if wants_password_change:
+                        worker.password = new_pass
+                    
+                    # Save worker
+                    worker.save()
+                    
+                    # Update session data
+                    request.session['worker_name'] = worker.get_full_name()
+                    request.session.modified = True
+                    
+                    print(f"✅ Worker saved successfully!")
+                    print(f"  Worker ID: {worker.id}")
+                    print(f"  Full Name: {worker.get_full_name()}")
+                    print(f"  Profession: {worker.get_display_profession()}")
+                    print(f"  City: {worker.city}")
+                    print(f"  State: {worker.state}")
+                    print(f"{'='*60}\n")
+                    
+                    return JsonResponse({
+                        'success': True, 
+                        'message': 'Profile updated successfully!',
+                        'worker': {
+                            'id': worker.id,
+                            'full_name': worker.get_full_name(),
+                            'first_name': worker.first_name,
+                            'last_name': worker.last_name,
+                            'email': worker.email,
+                            'mobile': worker.mobile,
+                            'profession': worker.get_display_profession(),
+                            'profile_photo': worker.profile_photo.url if worker.profile_photo else None,
+                            'city': worker.city,
+                            'state': worker.state,
+                            'street': worker.street,
+                            'pincode': worker.pincode,
+                            'preferred_work_area': worker.preferred_work_area
+                        }
+                    })
+                
+                # Handle other actions (send_email_otp, verify_email_otp, etc.)
+                elif action == 'send_email_otp':
+                    new_email = data.get('email', '').strip().lower()
+                    if not new_email:
+                        return JsonResponse({'success': False, 'message': 'Email is required.'}, status=400)
+                    if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', new_email):
+                        return JsonResponse({'success': False, 'message': 'Invalid email format.'}, status=400)
+                    
+                    if Worker.objects.filter(email=new_email).exclude(id=worker.id).exists():
+                        return JsonResponse({'success': False, 'message': 'Email already registered.'}, status=400)
+
+                    otp = EmailOTP.generate_otp()
+                    EmailOTP.objects.create(email=new_email, otp=otp)
+
+                    # Send email (you can implement this)
+                    
+                    return JsonResponse({'success': True, 'message': 'OTP sent to your email.'})
+                
+                elif action == 'verify_email_otp':
+                    new_email = data.get('email', '').strip().lower()
+                    otp = data.get('otp', '').strip()
+                    
+                    latest = EmailOTP.objects.filter(email=new_email).order_by('-created_at').first()
+                    if not latest or not latest.is_valid() or latest.otp != otp:
+                        return JsonResponse({'success': False, 'message': 'Invalid or expired OTP.'}, status=400)
+
+                    worker.email = new_email
+                    worker.email_verified = True
+                    worker.save()
+                    latest.is_verified = True
+                    latest.save()
+                    
+                    request.session['worker_email'] = worker.email
+                    request.session.modified = True
+                    
+                    return JsonResponse({'success': True, 'message': 'Email verified successfully!'})
+                
+                elif action == 'send_mobile_otp':
+                    new_mobile = data.get('mobile', '').strip()
+                    if not new_mobile:
+                        return JsonResponse({'success': False, 'message': 'Mobile number is required.'}, status=400)
+                    if not re.match(r'^[6-9]\d{9}$', new_mobile):
+                        return JsonResponse({'success': False, 'message': 'Invalid mobile number.'}, status=400)
+                    
+                    if Worker.objects.filter(mobile=new_mobile).exclude(id=worker.id).exists():
+                        return JsonResponse({'success': False, 'message': 'Mobile number already registered.'}, status=400)
+
+                    otp = MobileOTP.generate_otp()
+                    MobileOTP.objects.create(mobile=new_mobile, otp=otp)
+                    
+                    return JsonResponse({'success': True, 'message': 'OTP sent to your mobile.'})
+                
+                elif action == 'verify_mobile_otp':
+                    new_mobile = data.get('mobile', '').strip()
+                    otp = data.get('otp', '').strip()
+                    
+                    latest = MobileOTP.objects.filter(mobile=new_mobile).order_by('-created_at').first()
+                    if not latest or not latest.is_valid() or latest.otp != otp:
+                        return JsonResponse({'success': False, 'message': 'Invalid or expired OTP.'}, status=400)
+
+                    worker.mobile = new_mobile
+                    worker.mobile_verified = True
+                    worker.save()
+                    latest.is_verified = True
+                    latest.save()
+                    
+                    return JsonResponse({'success': True, 'message': 'Mobile verified successfully!'})
+                
+                elif action == 'change_password':
+                    old_pass = data.get('old_password', '').strip()
+                    new_pass = data.get('new_password', '').strip()
+                    confirm_pass = data.get('confirm_password', '').strip()
+
+                    if not old_pass or not new_pass or not confirm_pass:
+                        return JsonResponse({'success': False, 'message': 'All password fields are required.'}, status=400)
+                    if not password_matches(old_pass, worker.password):
+                        return JsonResponse({'success': False, 'message': 'Old password is incorrect.'}, status=400)
+                    if len(new_pass) < 8:
+                        return JsonResponse({'success': False, 'message': 'New password must be at least 8 characters.'}, status=400)
+                    if new_pass != confirm_pass:
+                        return JsonResponse({'success': False, 'message': 'Passwords do not match.'}, status=400)
+
+                    worker.password = new_pass
+                    worker.save()
+                    
+                    return JsonResponse({'success': True, 'message': 'Password changed successfully!'})
+                
+                else:
+                    return JsonResponse({'success': False, 'message': 'Invalid action.'}, status=400)
+                    
+            else:
+                # Handle JSON request (for backward compatibility)
+                data = json.loads(request.body)
+                action = data.get('action', '')
+                
+                # Handle actions similarly...
+                # (You can keep the existing JSON handling code here)
+                return JsonResponse({'success': False, 'message': 'Invalid request format'}, status=400)
+                
+        except Exception as e:
+            print(f"\n{'='*60}")
+            print(f"ERROR in worker_edit_profile_page: {str(e)}")
+            import traceback
+            print(f"Traceback:\n{traceback.format_exc()}")
+            print(f"{'='*60}\n")
+            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
+
+    # GET request - render the form
+    return render(request, 'worker/worker_edit_profile_page.html', {'worker': worker})
 
 def know_more_about_developers(request):
     return render(request, 'know_more_about_developers.html')
@@ -136,7 +690,7 @@ def login_worker(request):
                 worker = Worker.objects.get(email=email, is_active=True)
                 print(f"Worker found: {worker.first_name} {worker.last_name}")
                 
-                if worker.password == password:
+                if password_matches(password, worker.password):
                     print("✅ Password matched!")
                     
                     request.session['worker_id'] = worker.id
@@ -678,7 +1232,7 @@ def login_employer(request):
                 print(f"Stored password: {employer.password}")
                 print(f"Entered password: {password}")
                 
-                if employer.password == password:
+                if password_matches(password, employer.password):
                     print("✅ Password matched!")
                     
                     request.session['employer_id'] = employer.id
@@ -1151,7 +1705,6 @@ def dashboard_employer(request):
             'mobile': employer.mobile,
             'is_approved': employer.is_approved,
             'profile_photo_url': employer.profile_photo.url if employer.profile_photo else None,
-            'company_name': getattr(employer, 'company_name', 'Construction Company'),
             'total_jobs': total_jobs,
             'total_hired': total_hired,
             'avg_rating': avg_rating,
@@ -1210,7 +1763,7 @@ def dashboard_worker(request):
             'last_name': worker.last_name,
             'email': worker.email,
             'mobile': worker.mobile,
-            'profession': worker.profession,
+            'profession': worker.get_display_profession(),
             'profile_photo_url': worker.profile_photo.url if worker.profile_photo else None,
             'total_applied': total_applied,
             'total_active': total_active,
@@ -1696,7 +2249,6 @@ def get_job_details(request, job_id):
                 'name': employer.get_full_name() if employer else "Unknown",
                 'email': employer.email if employer else "",
                 'mobile': employer.mobile if employer else "",
-                'company_name': employer.company_name if employer else "",
                 'profile_photo': employer.profile_photo.url if employer and employer.profile_photo else None,
             }
         }
@@ -1898,6 +2450,18 @@ def get_worker_dashboard_data(request):
         return JsonResponse({
             'success': True,
             'data': {
+                'worker': {
+                    'id': worker.id,
+                    'full_name': worker.get_full_name(),
+                    'first_name': worker.first_name,
+                    'last_name': worker.last_name,
+                    'email': worker.email,
+                    'mobile': worker.mobile,
+                    'profession': worker.get_display_profession(),
+                    'profile_photo': worker.profile_photo.url if worker.profile_photo else None,
+                    'rating': worker.rating,
+                    'total_ratings': worker.total_ratings,
+                },
                 'jobs': job_list,
                 'applied_jobs': applied_jobs,
                 'active_jobs': active_jobs,

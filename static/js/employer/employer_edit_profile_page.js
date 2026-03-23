@@ -1,8 +1,28 @@
 /**
  * Employer Edit Profile Page
- * Based on employee_signup.js pattern
- * FIXED: Settings icon and theme switching now working properly
+ * Real backend-integrated implementation
  */
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function getCSRFToken() {
+    const tokenInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    if (tokenInput && tokenInput.value) return tokenInput.value;
+    return getCookie('csrftoken');
+}
 
 // ============================================
 // DOM ELEMENTS
@@ -27,10 +47,10 @@ const deleteAccountBtn = document.getElementById('deleteAccountBtn');
 const profilePreview = document.getElementById('profilePreview');
 const changePhotoBtn = document.getElementById('changePhotoBtn');
 const removePhotoBtn = document.getElementById('removePhotoBtn');
+const profilePhotoInput = document.getElementById('profilePhotoInput');
 
 // Personal Info
 const employerName = document.getElementById('employerName');
-const companyName = document.getElementById('companyName');
 const dob = document.getElementById('dob');
 const ageText = document.getElementById('ageText');
 const ageDisplay = document.getElementById('ageDisplay');
@@ -85,6 +105,7 @@ const longitudeInput = document.getElementById('longitude');
 const docType = document.getElementById('docType');
 const uploadDocBtn = document.getElementById('uploadDocBtn');
 const docFileName = document.getElementById('docFileName');
+const documentFileInput = document.getElementById('documentFileInput');
 
 // Action Buttons
 const clearBtn = document.getElementById('clearBtn');
@@ -105,6 +126,7 @@ let emailResendTimeLeft = 60, mobileResendTimeLeft = 60;
 let map = null;
 let marker = null;
 let isMarkingMode = false;
+let removeProfilePhotoRequested = false;
 
 const DUMMY_EMAIL_OTP = '123456';
 const DUMMY_MOBILE_OTP = '654321';
@@ -125,8 +147,8 @@ const translations = {
         'edit_profile': 'Edit Profile', 'edit_profile_sub': 'Update your personal and professional details',
         'personal_info': 'Personal Information', 'contact_verification': 'Contact & Verification',
         'address_location': 'Address & Work Location', 'identity_documents': 'Identity & Documents',
-        'employer_name': 'Employer Name *', 'company_name': 'Company Name *',
-        'enter_employer_name': 'Enter your name', 'enter_company_name': 'Enter company name',
+        'employer_name': 'Employer Name *',
+        'enter_employer_name': 'Enter your name',
         'date_of_birth': 'Date of Birth *', 'gender': 'Gender *', 'male': 'Male', 'female': 'Female', 'other': 'Other',
         'email_verification': 'Email Verification', 'enter_email': 'Enter your email',
         'get_otp': 'Get OTP', 'verify_otp': 'Verify', 'otp_placeholder': 'XXXXXX',
@@ -167,9 +189,7 @@ const translations = {
         'address_location': 'पता और कार्य स्थान',
         'identity_documents': 'पहचान और दस्तावेज़',
         'employer_name': 'नियोक्ता का नाम *',
-        'company_name': 'कंपनी का नाम *',
         'enter_employer_name': 'अपना नाम दर्ज करें',
-        'enter_company_name': 'कंपनी का नाम दर्ज करें',
         'date_of_birth': 'जन्म तिथि *',
         'gender': 'लिंग *',
         'male': 'पुरुष',
@@ -238,9 +258,7 @@ const translations = {
         'address_location': 'पत्ता आणि कार्यस्थळ',
         'identity_documents': 'ओळख आणि दस्तऐवज',
         'employer_name': 'नियोक्त्याचे नाव *',
-        'company_name': 'कंपनीचे नाव *',
         'enter_employer_name': 'तुमचे नाव प्रविष्ट करा',
-        'enter_company_name': 'कंपनीचे नाव प्रविष्ट करा',
         'date_of_birth': 'जन्मतारीख *',
         'gender': 'लिंग *',
         'male': 'पुरुष',
@@ -312,8 +330,22 @@ function init() {
     setupEventListeners();
     calculateAge();
     updatePasswordStrength();
-    setupOtpSimulation();
+    setupOtpHandling();
     initMap();
+    loadEmployerData();
+}
+
+function loadEmployerData() {
+    if (!window.employerData) return;
+    const fullName = `${window.employerData.first_name || ''} ${window.employerData.last_name || ''}`.trim();
+    if (employerName && fullName) employerName.value = fullName;
+    if (dob) dob.value = window.employerData.date_of_birth || dob.value || '';
+    if (emailInput) emailInput.value = window.employerData.email || emailInput.value || '';
+    if (mobileInput) mobileInput.value = window.employerData.mobile || mobileInput.value || '';
+    if (street) street.value = window.employerData.street || street.value || '';
+    if (city) city.value = window.employerData.city || city.value || '';
+    if (state) state.value = window.employerData.state || state.value || '';
+    if (pincode) pincode.value = window.employerData.pincode || pincode.value || '';
 }
 
 function loadPreferences() {
@@ -427,15 +459,33 @@ function setupEventListeners() {
         }
     });
 
-    // Profile photo
-    changePhotoBtn.addEventListener('click', () => {
-        showNotification(translations[currentLanguage].photo_changed || 'Photo change (demo)', 'info');
-    });
-    
-    removePhotoBtn.addEventListener('click', () => {
-        profilePreview.innerHTML = '<i class="fas fa-user"></i>';
-        showNotification(translations[currentLanguage].photo_removed || 'Photo removed', 'info');
-    });
+    if (changePhotoBtn && profilePhotoInput) {
+        changePhotoBtn.addEventListener('click', () => profilePhotoInput.click());
+        profilePhotoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                if (profilePreview) {
+                    profilePreview.innerHTML = `<img src="${evt.target.result}" alt="Profile">`;
+                }
+                removeProfilePhotoRequested = false;
+            };
+            reader.readAsDataURL(file);
+            showNotification('Photo selected', 'success');
+        });
+    }
+
+    if (removePhotoBtn) {
+        removePhotoBtn.addEventListener('click', () => {
+            if (profilePreview) {
+                profilePreview.innerHTML = '<i class="fas fa-user" style="color: white; font-size: 48px;"></i>';
+            }
+            if (profilePhotoInput) profilePhotoInput.value = '';
+            removeProfilePhotoRequested = true;
+            showNotification(translations[currentLanguage].photo_removed || 'Photo removed', 'info');
+        });
+    }
 
     // DOB age calculation & validation
     dob.addEventListener('change', () => {
@@ -462,13 +512,7 @@ function setupEventListeners() {
     // Action buttons
     clearBtn.addEventListener('click', clearAllFields);
     
-    saveBtn.addEventListener('click', () => {
-        if (!validateAgeRestriction()) {
-            showNotification(translations[currentLanguage].age_restriction || 'Age restriction', 'error');
-            return;
-        }
-        showNotification(translations[currentLanguage].profile_updated || 'Profile updated!', 'success');
-    });
+    saveBtn.addEventListener('click', saveProfile);
 
     // Delete account popup
     deleteAccountBtn.addEventListener('click', () => {
@@ -485,13 +529,20 @@ function setupEventListeners() {
 
     // Back to dashboard
     backToDashboard.addEventListener('click', () => {
-        window.location.href = 'g_e.html';
+        window.location.href = '/dashboard_employer/';
     });
 
     // Document upload (demo)
-    uploadDocBtn.addEventListener('click', () => {
-        showNotification(translations[currentLanguage].document_uploaded || 'Document upload (demo)', 'info');
-    });
+    if (uploadDocBtn && documentFileInput) {
+        uploadDocBtn.addEventListener('click', () => documentFileInput.click());
+        documentFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && docFileName) {
+                docFileName.textContent = file.name;
+                showNotification('Document selected', 'success');
+            }
+        });
+    }
 
     // Map buttons
     if (locateMeBtn) {
@@ -683,31 +734,57 @@ function updatePasswordStrength() {
 // ============================================
 // OTP SIMULATION (like employee_signup)
 // ============================================
-function setupOtpSimulation() {
+function setupOtpHandling() {
     // Email OTP
-    getEmailOtpBtn.addEventListener('click', () => {
+    getEmailOtpBtn.addEventListener('click', async () => {
         if (!validationPatterns.email.test(emailInput.value)) {
             showNotification('Invalid email', 'error');
             return;
         }
-        emailDisplay.textContent = `OTP sent to ${emailInput.value}`;
-        emailDisplay.classList.add('show');
-        emailOtpSection.classList.add('active');
-        getEmailOtpBtn.disabled = true;
-        startEmailResendCountdown();
-        showNotification(translations[currentLanguage].otp_sent || 'OTP sent!', 'success');
+        try {
+            const formData = new FormData();
+            formData.append('action', 'send_email_otp');
+            formData.append('email', emailInput.value.trim());
+            const csrfToken = getCSRFToken();
+            if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+            const response = await fetch(window.location.href, { method: 'POST', body: formData, credentials: 'same-origin' });
+            const result = await response.json();
+            if (!result.success) {
+                showNotification(result.message || 'Failed to send OTP', 'error');
+                return;
+            }
+            emailDisplay.textContent = `OTP sent to ${emailInput.value}`;
+            emailDisplay.classList.add('show');
+            emailOtpSection.classList.add('active');
+            getEmailOtpBtn.disabled = true;
+            startEmailResendCountdown();
+            showNotification(result.message || (translations[currentLanguage].otp_sent || 'OTP sent!'), 'success');
+        } catch (error) {
+            showNotification('Error sending OTP', 'error');
+        }
     });
 
-    verifyEmailOtpBtn.addEventListener('click', () => {
-        if (emailOtpInput.value === DUMMY_EMAIL_OTP) {
-            emailVerified = true;
+    verifyEmailOtpBtn.addEventListener('click', async () => {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'verify_email_otp');
+            formData.append('email', emailInput.value.trim());
+            formData.append('otp', emailOtpInput.value.trim());
+            const csrfToken = getCSRFToken();
+            if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+            const response = await fetch(window.location.href, { method: 'POST', body: formData, credentials: 'same-origin' });
+            const result = await response.json();
+            if (!result.success) {
+                showNotification(result.message || 'OTP verification failed', 'error');
+                return;
+            }
             emailStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span data-i18n="email_verified">Email Verified</span>';
             emailOtpSection.classList.remove('active');
             emailDisplay.classList.remove('show');
             if (emailResendCountdown) clearInterval(emailResendCountdown);
-            showNotification(translations[currentLanguage].otp_verified || 'OTP verified!', 'success');
-        } else {
-            showNotification(translations[currentLanguage].invalid_otp || 'Invalid OTP', 'error');
+            showNotification(result.message || (translations[currentLanguage].otp_verified || 'OTP verified!'), 'success');
+        } catch (error) {
+            showNotification('Error verifying OTP', 'error');
         }
     });
 
@@ -716,29 +793,55 @@ function setupOtpSimulation() {
     });
 
     // Mobile OTP
-    getMobileOtpBtn.addEventListener('click', () => {
+    getMobileOtpBtn.addEventListener('click', async () => {
         if (!validationPatterns.phone.test(mobileInput.value)) {
             showNotification('Invalid mobile number', 'error');
             return;
         }
-        mobileDisplay.textContent = `OTP sent to ${mobileInput.value}`;
-        mobileDisplay.classList.add('show');
-        mobileOtpSection.classList.add('active');
-        getMobileOtpBtn.disabled = true;
-        startMobileResendCountdown();
-        showNotification(translations[currentLanguage].otp_sent || 'OTP sent!', 'success');
+        try {
+            const formData = new FormData();
+            formData.append('action', 'send_mobile_otp');
+            formData.append('mobile', mobileInput.value.trim());
+            const csrfToken = getCSRFToken();
+            if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+            const response = await fetch(window.location.href, { method: 'POST', body: formData, credentials: 'same-origin' });
+            const result = await response.json();
+            if (!result.success) {
+                showNotification(result.message || 'Failed to send OTP', 'error');
+                return;
+            }
+            mobileDisplay.textContent = `OTP sent to ${mobileInput.value}`;
+            mobileDisplay.classList.add('show');
+            mobileOtpSection.classList.add('active');
+            getMobileOtpBtn.disabled = true;
+            startMobileResendCountdown();
+            showNotification(result.message || (translations[currentLanguage].otp_sent || 'OTP sent!'), 'success');
+        } catch (error) {
+            showNotification('Error sending OTP', 'error');
+        }
     });
 
-    verifyMobileOtpBtn.addEventListener('click', () => {
-        if (mobileOtpInput.value === DUMMY_MOBILE_OTP) {
-            mobileVerified = true;
+    verifyMobileOtpBtn.addEventListener('click', async () => {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'verify_mobile_otp');
+            formData.append('mobile', mobileInput.value.trim());
+            formData.append('otp', mobileOtpInput.value.trim());
+            const csrfToken = getCSRFToken();
+            if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+            const response = await fetch(window.location.href, { method: 'POST', body: formData, credentials: 'same-origin' });
+            const result = await response.json();
+            if (!result.success) {
+                showNotification(result.message || 'OTP verification failed', 'error');
+                return;
+            }
             mobileStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span data-i18n="mobile_verified">Mobile Verified</span>';
             mobileOtpSection.classList.remove('active');
             mobileDisplay.classList.remove('show');
             if (mobileResendCountdown) clearInterval(mobileResendCountdown);
-            showNotification(translations[currentLanguage].otp_verified || 'OTP verified!', 'success');
-        } else {
-            showNotification(translations[currentLanguage].invalid_otp || 'Invalid OTP', 'error');
+            showNotification(result.message || (translations[currentLanguage].otp_verified || 'OTP verified!'), 'success');
+        } catch (error) {
+            showNotification('Error verifying OTP', 'error');
         }
     });
 
@@ -794,7 +897,6 @@ function updateMobileResendText() {
 // ============================================
 function clearAllFields() {
     employerName.value = '';
-    companyName.value = '';
     dob.value = '';
     ageText.textContent = 'Select date';
     
@@ -817,6 +919,72 @@ function clearAllFields() {
     passwordMatch.classList.remove('visible');
     
     showNotification(translations[currentLanguage].fields_cleared || 'All fields cleared', 'info');
+}
+
+async function saveProfile() {
+    if (!validateAgeRestriction()) {
+        showNotification(translations[currentLanguage].age_restriction || 'Age restriction', 'error');
+        return;
+    }
+
+    const nameParts = (employerName.value || '').trim().split(/\s+/).filter(Boolean);
+    const firstNameValue = nameParts[0] || '';
+    const lastNameValue = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+    saveBtn.disabled = true;
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    try {
+        const formData = new FormData();
+        formData.append('action', 'update_profile');
+        formData.append('first_name', firstNameValue);
+        formData.append('last_name', lastNameValue);
+        formData.append('dob', dob.value || '');
+        formData.append('email', emailInput.value.trim());
+        formData.append('mobile', mobileInput.value.trim());
+        formData.append('street', street.value.trim());
+        formData.append('city', city.value.trim());
+        formData.append('state', state.value.trim());
+        formData.append('pincode', pincode.value.trim());
+        formData.append('old_password', oldPassword.value.trim());
+        formData.append('new_password', newPassword.value.trim());
+        formData.append('confirm_password', confirmPassword.value.trim());
+        formData.append('latitude', latitudeInput.value || '');
+        formData.append('longitude', longitudeInput.value || '');
+        formData.append('work_location_address', selectedLocationText ? selectedLocationText.textContent.trim() : '');
+        formData.append('document_type', docType ? docType.value : 'aadhar');
+        formData.append('remove_profile_photo', removeProfilePhotoRequested ? 'true' : 'false');
+
+        let selectedGender = '';
+        genderRadios.forEach((radio) => {
+            if (radio.checked) selectedGender = radio.value;
+        });
+        formData.append('gender', selectedGender);
+
+        if (profilePhotoInput && profilePhotoInput.files[0]) {
+            formData.append('profile_photo', profilePhotoInput.files[0]);
+        }
+        if (documentFileInput && documentFileInput.files[0]) {
+            formData.append('document_file', documentFileInput.files[0]);
+        }
+        const csrfToken = getCSRFToken();
+        if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
+
+        const response = await fetch(window.location.href, { method: 'POST', body: formData, credentials: 'same-origin' });
+        const result = await response.json();
+        if (!result.success) {
+            showNotification(result.message || 'Failed to update profile', 'error');
+            return;
+        }
+        showNotification(result.message || 'Profile updated successfully!', 'success');
+        setTimeout(() => window.location.reload(), 1200);
+    } catch (error) {
+        showNotification('Error saving profile', 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+    }
 }
 
 // ============================================
