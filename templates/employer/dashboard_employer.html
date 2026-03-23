@@ -16,6 +16,7 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 {% endblock %}
+
 {% block content %}
 <body class="light-theme">
     <!-- ============================================
@@ -743,6 +744,10 @@
             <div class="quick-actions">
                 <h3 data-i18n="quick_actions">Quick Actions</h3>
                 <div class="actions-grid">
+                    <button class="action-btn" id="quickActionDashboard">
+                        <i class="fas fa-home"></i>
+                        <span data-i18n="dashboard">Dashboard</span>
+                    </button>
                     <button class="action-btn" id="postJobBtn">
                         <i class="fas fa-plus-circle"></i>
                         <span data-i18n="post_new_job">Post New Job</span>
@@ -1246,10 +1251,25 @@
                 </div>
             </div>
             
-            <!-- Social Media Section - COMPLETELY HATAYA -->
-            <!-- Sirf copyright ke liye footer-bottom hai -->
+            <!-- Social Media Section -->
             <div class="footer-bottom">
-                <!-- Yahan kuch nahi, bas border ke liye -->
+                <div class="social-links">
+                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://youtube.com/@shramikconnect?si=4p-FRw0gFxA-kkvk" class="social-link" aria-label="YouTube" target="_blank">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://x.com/ShramikConnect" class="social-link" aria-label="X (Twitter)" target="_blank">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    <a href="/cdn-cgi/l/email-protection#d2a6b7b3bffca1baa0b3bfbbb9b1bdbcbcb7b1a692b5bfb3bbbefcb1bdbf" class="social-link" aria-label="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>

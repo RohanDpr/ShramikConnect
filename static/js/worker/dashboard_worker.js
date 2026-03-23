@@ -404,6 +404,7 @@ const DOM = {
     statCardCompleted: document.getElementById('statCardCompleted'),
     
     // Quick Actions - Dashboard
+    quickActionDashboard: document.getElementById('quickActionDashboard'),
     quickActionFindJobs: document.getElementById('quickActionFindJobs'),
     quickActionAppliedJobs: document.getElementById('quickActionAppliedJobs'),
     quickActionActiveJobs: document.getElementById('quickActionActiveJobs'),
@@ -897,6 +898,7 @@ function setupEventListeners() {
     DOM.statCardCompleted?.addEventListener('click', () => setActiveSection('work-history'));
     
     // Quick Actions
+    DOM.quickActionDashboard?.addEventListener('click', () => setActiveSection('dashboard'));
     DOM.quickActionFindJobs?.addEventListener('click', () => setActiveSection('find-jobs'));
     DOM.quickActionAppliedJobs?.addEventListener('click', () => setActiveSection('applied-jobs'));
     DOM.quickActionActiveJobs?.addEventListener('click', () => setActiveSection('active-jobs'));

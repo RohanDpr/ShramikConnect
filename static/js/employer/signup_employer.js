@@ -1133,76 +1133,50 @@ function handleGetEmailOtp() {
 }
 
 /**
- * Handle Get Mobile OTP button click - REAL OTP
+ * Handle Get Mobile OTP - Fast2SMS Version
  */
 function handleGetMobileOtp() {
     const mobile = mobileInput.value.trim();
-    
+
     if (!validateMobileInput()) {
         showNotification('Error', 'Please enter a valid 10-digit mobile number', 'error');
         return;
     }
-    
-    // First check if mobile already exists
-    fetch(`/api/check-mobile-exists/?mobile=${encodeURIComponent(mobile)}`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.exists) {
-            showNotification('Error', 'This mobile number is already registered', 'error');
-            return;
-        }
-        
-        // Mobile doesn't exist, proceed with OTP
-        userData.mobile = mobile;
-        
-        getMobileOtpBtn.disabled = true;
-        const originalText = getMobileOtpBtn.innerHTML;
-        getMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
-        
-        fetch('/api/send-mobile-otp/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({ mobile: mobile })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log(`OTP sent to mobile: ${mobile}`);
-                
-                mobileOtpSection.classList.add('active');
-                mobileOtpInput.value = '';
-                mobileDisplay.textContent = `OTP sent to ${mobile}`;
-                mobileDisplay.classList.add('show');
-                
-                getMobileOtpBtn.classList.add('hidden');
-                
-                startMobileResendCountdown();
-                
-                showNotification('OTP Sent!', data.message, 'success');
-                
-                // For development only
-                if (data.otp) {
-                    console.log(`📱 OTP for ${mobile}: ${data.otp}`);
-                }
-            } else {
-                showNotification('Error', data.message, 'error');
-                getMobileOtpBtn.disabled = false;
-                getMobileOtpBtn.innerHTML = originalText;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error', 'Network error. Please try again.', 'error');
-            getMobileOtpBtn.disabled = false;
-            getMobileOtpBtn.innerHTML = originalText;
-        });
+
+    userData.mobile = mobile;
+
+    getMobileOtpBtn.disabled = true;
+    const originalHTML = getMobileOtpBtn.innerHTML;
+    getMobileOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending OTP...</span>';
+
+    fetch('/api/send-mobile-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ mobile: mobile })
     })
-    .catch(error => {
-        console.error('Error checking mobile:', error);
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            mobileOtpSection.classList.add('active');
+            mobileOtpInput.value = '';
+            mobileDisplay.textContent = `OTP sent to ${mobile}`;
+            mobileDisplay.classList.add('show');
+            getMobileOtpBtn.classList.add('hidden');
+            startMobileResendCountdown();
+            showNotification('OTP Sent!', data.message, 'success');
+        } else {
+            showNotification('Error', data.message, 'error');
+            getMobileOtpBtn.disabled = false;
+            getMobileOtpBtn.innerHTML = originalHTML;
+        }
+    })
+    .catch(() => {
         showNotification('Error', 'Network error. Please try again.', 'error');
+        getMobileOtpBtn.disabled = false;
+        getMobileOtpBtn.innerHTML = originalHTML;
     });
 }
 
@@ -1477,11 +1451,6 @@ function handleResendMobileOtp() {
             startMobileResendCountdown();
             
             showNotification('OTP Sent!', data.message, 'success');
-            
-            // For development only
-            if (data.otp) {
-                console.log(`📱 New OTP: ${data.otp}`);
-            }
         } else {
             showNotification('Error', data.message, 'error');
             resendMobileOtpBtn.disabled = false;

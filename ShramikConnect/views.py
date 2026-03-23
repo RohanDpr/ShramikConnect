@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
 import json
+import re
 import os
 import math
 from datetime import datetime
@@ -329,10 +330,303 @@ def choose_password_worker(request):
 
 
 def change_password_worker(request):
+    """
+    GET  → render the form
+    POST (action=send_otp)    → check contact in Worker DB → send OTP via email/SMS
+    POST (action=verify_otp)  → verify OTP
+    POST (action=update_password) → update password in DB
+    """
+    if request.method == 'POST':
+        try:
+            if request.headers.get('Content-Type') == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST.dict()
+
+            action = data.get('action', '')
+
+            # ── ACTION 1: Send OTP ────────────────────────────────────────
+            if action == 'send_otp':
+                contact = data.get('contact', '').strip()
+                if not contact:
+                    return JsonResponse({'success': False, 'message': 'Contact is required.'}, status=400)
+
+                email_regex = re.compile(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                phone_regex  = re.compile(r'^[6-9]\d{9}$')
+
+                is_email = bool(email_regex.match(contact))
+                is_phone = bool(phone_regex.match(contact.replace(' ', '').replace('-', '')))
+
+                if not is_email and not is_phone:
+                    return JsonResponse({'success': False, 'message': 'Enter a valid email or 10-digit phone number.'}, status=400)
+
+                # Check worker exists
+                if is_email:
+                    try:
+                        worker = Worker.objects.get(email=contact, is_active=True)
+                    except Worker.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'No worker account found with this email.'}, status=404)
+                else:
+                    phone_clean = contact.replace(' ', '').replace('-', '')
+                    try:
+                        worker = Worker.objects.get(mobile=phone_clean, is_active=True)
+                    except Worker.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'No worker account found with this phone number.'}, status=404)
+
+                # Generate OTP
+                otp = EmailOTP.generate_otp()
+
+                if is_email:
+                    # Save OTP
+                    EmailOTP.objects.create(email=contact, otp=otp)
+
+                    # Send via SendGrid
+                    subject = 'OTP for Password Change - ShramikConnect'
+                    plain_msg = f"Dear {worker.get_full_name()},\n\nYour OTP for password change is: {otp}\n\nValid for 5 minutes. Do not share this OTP.\n\nShramikConnect Team"
+                    html_msg = f"""<!DOCTYPE html><html><head><style>
+                        body{{font-family:Arial,sans-serif;color:#333}}
+                        .container{{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:8px}}
+                        .header{{background:#4362C9;color:white;padding:16px;text-align:center;border-radius:8px 8px 0 0}}
+                        .otp-box{{background:#f0f4ff;padding:16px;text-align:center;font-size:28px;font-weight:bold;letter-spacing:6px;border-radius:6px;margin:20px 0;border:2px dashed #4362C9}}
+                        .footer{{text-align:center;margin-top:20px;font-size:12px;color:#777}}
+                    </style></head><body>
+                    <div class="container">
+                        <div class="header"><h2>ShramikConnect</h2></div>
+                        <div style="padding:24px">
+                            <h3>Password Change OTP</h3>
+                            <p>Dear <strong>{worker.get_full_name()}</strong>,</p>
+                            <p>Your OTP for password change is:</p>
+                            <div class="otp-box">{otp}</div>
+                            <p>Valid for <strong>5 minutes</strong>. Do not share this OTP with anyone.</p>
+                            <p>Regards,<br><strong>ShramikConnect Team</strong></p>
+                        </div>
+                        <div class="footer"><p>&copy; 2024 ShramikConnect. All rights reserved.</p></div>
+                    </div></body></html>"""
+
+                    sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+                    mail_data = {
+                        "personalizations": [{"to": [{"email": contact}]}],
+                        "from": {"email": settings.DEFAULT_FROM_EMAIL},
+                        "subject": subject,
+                        "content": [
+                            {"type": "text/plain", "value": plain_msg},
+                            {"type": "text/html",  "value": html_msg},
+                        ]
+                    }
+                    sg.client.mail.send.post(request_body=mail_data)
+                    logger.info(f"Change password OTP sent to worker email: {contact}")
+
+                    return JsonResponse({'success': True, 'message': 'OTP sent to your email address.', 'contact_type': 'email'})
+
+                else:
+                    # Send via Fast2SMS
+                    MobileOTP.objects.create(mobile=phone_clean, otp=otp)
+
+                    import requests as http_requests
+                    url = "https://www.fast2sms.com/dev/bulkV2"
+                    payload = {
+                        "message": f"Your ShramikConnect OTP for password change is {otp}. Valid for 5 minutes. Do not share.",
+                        "language": "english",
+                        "route": "q",
+                        "numbers": phone_clean,
+                    }
+                    headers = {"authorization": settings.FAST2SMS_API_KEY, "Content-Type": "application/json"}
+                    response = http_requests.post(url, json=payload, headers=headers, timeout=10)
+                    result = response.json()
+
+                    if result.get('return') is True:
+                        logger.info(f"Change password OTP sent to worker phone: {phone_clean}")
+                        return JsonResponse({'success': True, 'message': 'OTP sent to your phone number.', 'contact_type': 'phone'})
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Failed to send SMS OTP. Try email instead.'}, status=500)
+
+            # ── ACTION 2: Verify OTP ──────────────────────────────────────
+            elif action == 'verify_otp':
+                contact = data.get('contact', '').strip()
+                otp     = data.get('otp', '').strip()
+                contact_type = data.get('contact_type', 'email')
+
+                if not contact or not otp:
+                    return JsonResponse({'success': False, 'message': 'Contact and OTP are required.'}, status=400)
+
+                if contact_type == 'email':
+                    latest = EmailOTP.objects.filter(email=contact).order_by('-created_at').first()
+                else:
+                    phone_clean = contact.replace(' ', '').replace('-', '')
+                    latest = MobileOTP.objects.filter(mobile=phone_clean).order_by('-created_at').first()
+
+                if not latest:
+                    return JsonResponse({'success': False, 'message': 'No OTP found. Please request a new OTP.'}, status=400)
+
+                if not latest.is_valid():
+                    return JsonResponse({'success': False, 'message': 'OTP has expired. Please request a new OTP.'}, status=400)
+
+                if latest.otp != otp:
+                    return JsonResponse({'success': False, 'message': 'Invalid OTP. Please try again.'}, status=400)
+
+                # Mark verified
+                latest.is_verified = True
+                latest.save()
+
+                return JsonResponse({'success': True, 'message': 'OTP verified successfully!'})
+
+            # ── ACTION 3: Update Password ─────────────────────────────────
+            elif action == 'update_password':
+                contact      = data.get('contact', '').strip()
+                contact_type = data.get('contact_type', 'email')
+                new_pass     = data.get('new_password', '').strip()
+
+                if not contact or not new_pass:
+                    return JsonResponse({'success': False, 'message': 'Contact and new password are required.'}, status=400)
+
+                if len(new_pass) < 8:
+                    return JsonResponse({'success': False, 'message': 'Password must be at least 8 characters.'}, status=400)
+
+                # Verify OTP was verified for this contact
+                if contact_type == 'email':
+                    verified = EmailOTP.objects.filter(email=contact, is_verified=True).order_by('-created_at').first()
+                    if not verified:
+                        return JsonResponse({'success': False, 'message': 'OTP not verified. Please verify OTP first.'}, status=400)
+                    try:
+                        worker = Worker.objects.get(email=contact, is_active=True)
+                    except Worker.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'Worker not found.'}, status=404)
+                else:
+                    phone_clean = contact.replace(' ', '').replace('-', '')
+                    verified = MobileOTP.objects.filter(mobile=phone_clean, is_verified=True).order_by('-created_at').first()
+                    if not verified:
+                        return JsonResponse({'success': False, 'message': 'OTP not verified. Please verify OTP first.'}, status=400)
+                    try:
+                        worker = Worker.objects.get(mobile=phone_clean, is_active=True)
+                    except Worker.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'Worker not found.'}, status=404)
+
+                # Update password
+                worker.password = new_pass
+                worker.save()
+                logger.info(f"Password updated for worker: {worker.email}")
+
+                return JsonResponse({'success': True, 'message': 'Password updated successfully!'})
+
+            else:
+                return JsonResponse({'success': False, 'message': 'Invalid action.'}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid request data.'}, status=400)
+        except Exception as e:
+            logger.error(f"change_password_worker error: {str(e)}")
+            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
+
     return render(request, 'worker/change_password_worker.html')
 
 
 def get_password_worker(request):
+    """
+    GET  → render the form
+    POST → check email in Worker DB, if found send password via SendGrid
+    """
+    if request.method == 'POST':
+        try:
+            if request.headers.get('Content-Type') == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST
+
+            email = data.get('email', '').strip().lower()
+
+            if not email:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Email address is required.'
+                }, status=400)
+
+            # Worker DB mein dhundo
+            try:
+                worker = Worker.objects.get(email=email, is_active=True)
+            except Worker.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No worker account found with this email address.'
+                }, status=404)
+
+            # Password email karo via SendGrid
+            worker_name = worker.get_full_name()
+            password    = worker.password
+
+            subject = 'Your ShramikConnect Password'
+
+            plain_message = f"""Dear {worker_name},
+
+You requested your password for ShramikConnect (Worker Account).
+
+Your password is: {password}
+
+Please keep this safe and do not share it with anyone.
+
+If you did not request this, please contact support immediately.
+
+Regards,
+ShramikConnect Team"""
+
+            html_message = f"""<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }}
+    .header {{ background-color: #4362C9; color: white; padding: 16px; text-align: center; border-radius: 8px 8px 0 0; }}
+    .content {{ padding: 24px; }}
+    .password-box {{ background-color: #f0f4ff; padding: 16px; text-align: center; font-size: 22px; font-weight: bold; letter-spacing: 4px; border-radius: 6px; margin: 20px 0; border: 2px dashed #4362C9; }}
+    .warning {{ background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 4px; margin-top: 16px; font-size: 13px; }}
+    .footer {{ text-align: center; margin-top: 20px; font-size: 12px; color: #777; }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h2>ShramikConnect</h2></div>
+    <div class="content">
+      <h3>Password Recovery &ndash; Worker Account</h3>
+      <p>Dear <strong>{worker_name}</strong>,</p>
+      <p>You requested your password. Here it is:</p>
+      <div class="password-box">{password}</div>
+      <div class="warning">&#9888;&#65039; Please keep this password safe. Do not share it with anyone. If you did not request this, contact support immediately.</div>
+      <p>Regards,<br><strong>ShramikConnect Team</strong></p>
+    </div>
+    <div class="footer"><p>&copy; 2024 ShramikConnect. All rights reserved.</p></div>
+  </div>
+</body>
+</html>"""
+
+            sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+            mail_data = {
+                "personalizations": [{"to": [{"email": email}]}],
+                "from": {"email": settings.DEFAULT_FROM_EMAIL},
+                "subject": subject,
+                "content": [
+                    {"type": "text/plain", "value": plain_message},
+                    {"type": "text/html",  "value": html_message},
+                ]
+            }
+            sg.client.mail.send.post(request_body=mail_data)
+            logger.info(f"Password sent to worker: {email}")
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Your password has been sent to your email address.'
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid request data.'
+            }, status=400)
+        except Exception as e:
+            logger.error(f"get_password_worker error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'message': f'Failed to send password: {str(e)}'
+            }, status=500)
+
     return render(request, 'worker/get_password_worker.html')
 
 def eligibility_card(request):
@@ -562,10 +856,243 @@ def choose_password_employer(request):
 
 
 def change_password_employer(request):
+    """
+    GET  -> render the form
+    POST (action=send_otp)        -> check contact in Employer DB -> send OTP via email/SMS
+    POST (action=verify_otp)      -> verify OTP
+    POST (action=update_password) -> update password in DB
+    """
+    if request.method == 'POST':
+        try:
+            if request.headers.get('Content-Type') == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST.dict()
+
+            action = data.get('action', '')
+
+            if action == 'send_otp':
+                contact = data.get('contact', '').strip()
+                if not contact:
+                    return JsonResponse({'success': False, 'message': 'Contact is required.'}, status=400)
+
+                email_regex = re.compile(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                phone_regex  = re.compile(r'^[6-9]\d{9}$')
+
+                is_email = bool(email_regex.match(contact))
+                is_phone = bool(phone_regex.match(contact.replace(' ', '').replace('-', '')))
+
+                if not is_email and not is_phone:
+                    return JsonResponse({'success': False, 'message': 'Enter a valid email or 10-digit phone number.'}, status=400)
+
+                if is_email:
+                    try:
+                        employer = Employer.objects.get(email=contact, is_active=True)
+                    except Employer.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'No employer account found with this email.'}, status=404)
+                else:
+                    phone_clean = contact.replace(' ', '').replace('-', '')
+                    try:
+                        employer = Employer.objects.get(mobile=phone_clean, is_active=True)
+                    except Employer.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'No employer account found with this phone number.'}, status=404)
+
+                otp = EmailOTP.generate_otp()
+
+                if is_email:
+                    EmailOTP.objects.create(email=contact, otp=otp)
+                    subject = 'OTP for Password Change - ShramikConnect'
+                    plain_msg = f"Dear {employer.get_full_name()},\n\nYour OTP for password change is: {otp}\n\nValid for 5 minutes. Do not share.\n\nShramikConnect Team"
+                    html_msg = f"""<!DOCTYPE html><html><head><style>body{{font-family:Arial,sans-serif;color:#333}}.container{{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:8px}}.header{{background:#01A060;color:white;padding:16px;text-align:center;border-radius:8px 8px 0 0}}.otp-box{{background:#f0fff8;padding:16px;text-align:center;font-size:28px;font-weight:bold;letter-spacing:6px;border-radius:6px;margin:20px 0;border:2px dashed #01A060}}.footer{{text-align:center;margin-top:20px;font-size:12px;color:#777}}</style></head><body><div class="container"><div class="header"><h2>ShramikConnect</h2></div><div style="padding:24px"><h3>Password Change OTP</h3><p>Dear <strong>{employer.get_full_name()}</strong>,</p><p>Your OTP for password change is:</p><div class="otp-box">{otp}</div><p>Valid for <strong>5 minutes</strong>. Do not share with anyone.</p><p>Regards,<br><strong>ShramikConnect Team</strong></p></div><div class="footer"><p>&copy; 2024 ShramikConnect. All rights reserved.</p></div></div></body></html>"""
+                    sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+                    mail_data = {"personalizations": [{"to": [{"email": contact}]}], "from": {"email": settings.DEFAULT_FROM_EMAIL}, "subject": subject, "content": [{"type": "text/plain", "value": plain_msg}, {"type": "text/html", "value": html_msg}]}
+                    sg.client.mail.send.post(request_body=mail_data)
+                    logger.info(f"Change password OTP sent to employer email: {contact}")
+                    return JsonResponse({'success': True, 'message': 'OTP sent to your email address.', 'contact_type': 'email'})
+                else:
+                    MobileOTP.objects.create(mobile=phone_clean, otp=otp)
+                    import requests as http_requests
+                    url = "https://www.fast2sms.com/dev/bulkV2"
+                    payload = {"message": f"Your ShramikConnect OTP for password change is {otp}. Valid for 5 minutes. Do not share.", "language": "english", "route": "q", "numbers": phone_clean}
+                    headers = {"authorization": settings.FAST2SMS_API_KEY, "Content-Type": "application/json"}
+                    response = http_requests.post(url, json=payload, headers=headers, timeout=10)
+                    result = response.json()
+                    if result.get('return') is True:
+                        logger.info(f"Change password OTP sent to employer phone: {phone_clean}")
+                        return JsonResponse({'success': True, 'message': 'OTP sent to your phone number.', 'contact_type': 'phone'})
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Failed to send SMS OTP. Try email instead.'}, status=500)
+
+            elif action == 'verify_otp':
+                contact      = data.get('contact', '').strip()
+                otp          = data.get('otp', '').strip()
+                contact_type = data.get('contact_type', 'email')
+                if not contact or not otp:
+                    return JsonResponse({'success': False, 'message': 'Contact and OTP are required.'}, status=400)
+                if contact_type == 'email':
+                    latest = EmailOTP.objects.filter(email=contact).order_by('-created_at').first()
+                else:
+                    phone_clean = contact.replace(' ', '').replace('-', '')
+                    latest = MobileOTP.objects.filter(mobile=phone_clean).order_by('-created_at').first()
+                if not latest:
+                    return JsonResponse({'success': False, 'message': 'No OTP found. Please request a new OTP.'}, status=400)
+                if not latest.is_valid():
+                    return JsonResponse({'success': False, 'message': 'OTP has expired. Please request a new OTP.'}, status=400)
+                if latest.otp != otp:
+                    return JsonResponse({'success': False, 'message': 'Invalid OTP. Please try again.'}, status=400)
+                latest.is_verified = True
+                latest.save()
+                return JsonResponse({'success': True, 'message': 'OTP verified successfully!'})
+
+            elif action == 'update_password':
+                contact      = data.get('contact', '').strip()
+                contact_type = data.get('contact_type', 'email')
+                new_pass     = data.get('new_password', '').strip()
+                if not contact or not new_pass:
+                    return JsonResponse({'success': False, 'message': 'Contact and new password are required.'}, status=400)
+                if len(new_pass) < 8:
+                    return JsonResponse({'success': False, 'message': 'Password must be at least 8 characters.'}, status=400)
+                if contact_type == 'email':
+                    verified = EmailOTP.objects.filter(email=contact, is_verified=True).order_by('-created_at').first()
+                    if not verified:
+                        return JsonResponse({'success': False, 'message': 'OTP not verified. Please verify OTP first.'}, status=400)
+                    try:
+                        employer = Employer.objects.get(email=contact, is_active=True)
+                    except Employer.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'Employer not found.'}, status=404)
+                else:
+                    phone_clean = contact.replace(' ', '').replace('-', '')
+                    verified = MobileOTP.objects.filter(mobile=phone_clean, is_verified=True).order_by('-created_at').first()
+                    if not verified:
+                        return JsonResponse({'success': False, 'message': 'OTP not verified. Please verify OTP first.'}, status=400)
+                    try:
+                        employer = Employer.objects.get(mobile=phone_clean, is_active=True)
+                    except Employer.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': 'Employer not found.'}, status=404)
+                employer.password = new_pass
+                employer.save()
+                logger.info(f"Password updated for employer: {employer.email}")
+                return JsonResponse({'success': True, 'message': 'Password updated successfully!'})
+
+            else:
+                return JsonResponse({'success': False, 'message': 'Invalid action.'}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid request data.'}, status=400)
+        except Exception as e:
+            logger.error(f"change_password_employer error: {str(e)}")
+            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'}, status=500)
+
     return render(request, 'employer/change_password_employer.html')
 
 
 def get_password_employer(request):
+    """
+    GET  → render the form
+    POST → check email in Employer DB, if found send password via SendGrid
+    """
+    if request.method == 'POST':
+        try:
+            if request.headers.get('Content-Type') == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST
+
+            email = data.get('email', '').strip().lower()
+
+            if not email:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Email address is required.'
+                }, status=400)
+
+            # Employer DB mein dhundo
+            try:
+                employer = Employer.objects.get(email=email, is_active=True)
+            except Employer.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No employer account found with this email address.'
+                }, status=404)
+
+            # Password email karo via SendGrid
+            employer_name = employer.get_full_name()
+            password      = employer.password
+
+            subject = 'Your ShramikConnect Password'
+
+            plain_message = f"""Dear {employer_name},
+
+You requested your password for ShramikConnect (Employer Account).
+
+Your password is: {password}
+
+Please keep this safe and do not share it with anyone.
+
+If you did not request this, please contact support immediately.
+
+Regards,
+ShramikConnect Team"""
+
+            html_message = f"""<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }}
+    .header {{ background-color: #01A060; color: white; padding: 16px; text-align: center; border-radius: 8px 8px 0 0; }}
+    .content {{ padding: 24px; }}
+    .password-box {{ background-color: #f0fff8; padding: 16px; text-align: center; font-size: 22px; font-weight: bold; letter-spacing: 4px; border-radius: 6px; margin: 20px 0; border: 2px dashed #01A060; }}
+    .warning {{ background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 4px; margin-top: 16px; font-size: 13px; }}
+    .footer {{ text-align: center; margin-top: 20px; font-size: 12px; color: #777; }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h2>ShramikConnect</h2></div>
+    <div class="content">
+      <h3>Password Recovery &ndash; Employer Account</h3>
+      <p>Dear <strong>{employer_name}</strong>,</p>
+      <p>You requested your password. Here it is:</p>
+      <div class="password-box">{password}</div>
+      <div class="warning">&#9888;&#65039; Please keep this password safe. Do not share it with anyone. If you did not request this, contact support immediately.</div>
+      <p>Regards,<br><strong>ShramikConnect Team</strong></p>
+    </div>
+    <div class="footer"><p>&copy; 2024 ShramikConnect. All rights reserved.</p></div>
+  </div>
+</body>
+</html>"""
+
+            sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+            mail_data = {
+                "personalizations": [{"to": [{"email": email}]}],
+                "from": {"email": settings.DEFAULT_FROM_EMAIL},
+                "subject": subject,
+                "content": [
+                    {"type": "text/plain", "value": plain_message},
+                    {"type": "text/html",  "value": html_message},
+                ]
+            }
+            sg.client.mail.send.post(request_body=mail_data)
+            logger.info(f"Password sent to employer: {email}")
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Your password has been sent to your email address.'
+            })
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid request data.'
+            }, status=400)
+        except Exception as e:
+            logger.error(f"get_password_employer error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'message': f'Failed to send password: {str(e)}'
+            }, status=500)
+
     return render(request, 'employer/get_password_employer.html')
 
 
@@ -2065,46 +2592,61 @@ def check_email_exists(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def send_mobile_otp(request):
-    """
-    Send OTP to mobile number
-    Currently using console backend for development
-    """
+    """Send OTP to mobile number via Fast2SMS"""
     try:
         data = json.loads(request.body)
         mobile = data.get('mobile')
-        
+
         if not mobile:
             return JsonResponse({
                 'success': False,
                 'message': 'Mobile number is required'
             })
-        
+
         # Check if mobile already registered
         if Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists():
             return JsonResponse({
                 'success': False,
                 'message': 'This mobile number is already registered. Please login or use a different number.'
             })
-        
-        # Generate OTP
+
+        # Generate OTP and save to DB
         otp = MobileOTP.generate_otp()
-        
-        # Save to database
         MobileOTP.objects.create(mobile=mobile, otp=otp)
-        
-        # For development - log OTP to console
-        print(f"📱 OTP for {mobile}: {otp}")
-        
-        # TODO: Integrate with SMS service like MSG91, Twilio, etc.
-        # For now, we'll just return success and show OTP in response for testing
-        # REMOVE THIS IN PRODUCTION!
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'OTP sent successfully to your mobile',
-            'otp': otp  # Remove in production!
-        })
-        
+
+        # Send via Fast2SMS
+        import requests as http_requests
+        api_key = settings.FAST2SMS_API_KEY
+
+        url = "https://www.fast2sms.com/dev/bulkV2"
+        payload = {
+            "message": f"Your ShramikConnect OTP is {otp}. Valid for 5 minutes. Do not share with anyone.",
+            "language": "english",
+            "route": "q",
+            "numbers": mobile,
+        }
+        headers = {
+            "authorization": api_key,
+            "Content-Type": "application/json"
+        }
+
+        response = http_requests.post(url, json=payload, headers=headers, timeout=10)
+        result = response.json()
+        logger.info(f"Fast2SMS send_otp response: {result}")
+
+        if result.get('return') is True:
+            return JsonResponse({
+                'success': True,
+                'message': 'OTP sent successfully to your mobile'
+            })
+        else:
+            error_msg = result.get('message', ['SMS sending failed'])[0] if isinstance(result.get('message'), list) else result.get('message', 'SMS sending failed')
+            logger.error(f"Fast2SMS error: {result}")
+            return JsonResponse({
+                'success': False,
+                'message': error_msg
+            })
+
     except json.JSONDecodeError:
         return JsonResponse({
             'success': False,
@@ -2189,39 +2731,61 @@ def verify_mobile_otp(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def resend_mobile_otp(request):
-    """Resend mobile OTP"""
+    """Resend mobile OTP via Fast2SMS"""
     try:
         data = json.loads(request.body)
         mobile = data.get('mobile')
-        
+
         if not mobile:
             return JsonResponse({
                 'success': False,
                 'message': 'Mobile number is required'
             })
-        
+
         # Check if mobile already registered
         if Employer.objects.filter(mobile=mobile).exists() or Worker.objects.filter(mobile=mobile).exists():
             return JsonResponse({
                 'success': False,
                 'message': 'This mobile number is already registered. Please login or use a different number.'
             })
-        
-        # Generate new OTP
+
+        # Generate new OTP and save to DB
         otp = MobileOTP.generate_otp()
-        
-        # Save to database
         MobileOTP.objects.create(mobile=mobile, otp=otp)
-        
-        # For development - log OTP to console
-        print(f"📱 New OTP for {mobile}: {otp}")
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'New OTP sent successfully to your mobile',
-            'otp': otp  # Remove in production!
-        })
-        
+
+        # Send via Fast2SMS
+        import requests as http_requests
+        api_key = settings.FAST2SMS_API_KEY
+
+        url = "https://www.fast2sms.com/dev/bulkV2"
+        payload = {
+            "message": f"Your ShramikConnect OTP is {otp}. Valid for 5 minutes. Do not share with anyone.",
+            "language": "english",
+            "route": "q",
+            "numbers": mobile,
+        }
+        headers = {
+            "authorization": api_key,
+            "Content-Type": "application/json"
+        }
+
+        response = http_requests.post(url, json=payload, headers=headers, timeout=10)
+        result = response.json()
+        logger.info(f"Fast2SMS resend_otp response: {result}")
+
+        if result.get('return') is True:
+            return JsonResponse({
+                'success': True,
+                'message': 'New OTP sent successfully to your mobile'
+            })
+        else:
+            error_msg = result.get('message', ['SMS sending failed'])[0] if isinstance(result.get('message'), list) else result.get('message', 'SMS sending failed')
+            logger.error(f"Fast2SMS error: {result}")
+            return JsonResponse({
+                'success': False,
+                'message': error_msg
+            })
+
     except json.JSONDecodeError:
         return JsonResponse({
             'success': False,

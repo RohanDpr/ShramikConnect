@@ -238,20 +238,11 @@ function closeSettingsOnClickOutside(event) {
 
 /**
  * Handle Get Password button click
- * Redirects to employer_get_password.html
+ * Redirects to /get_password_employer/ (Django URL)
  */
 function handleGetPassword() {
-    console.log('Get Password button clicked - Redirecting to employer_get_password.html');
-    
-    // Add click feedback
+    // Animation only - navigation handled by <a> tag in HTML
     getPasswordBtn.style.transform = 'scale(0.98)';
-    
-    // Redirect after short delay
-    setTimeout(() => {
-        window.location.href = 'employer_get_password.html';
-    }, 150);
-    
-    // Reset button style
     setTimeout(() => {
         getPasswordBtn.style.transform = 'scale(1)';
     }, 200);
@@ -259,20 +250,11 @@ function handleGetPassword() {
 
 /**
  * Handle Reset Password button click
- * Redirects to employer_change_password.html
+ * Redirects to /change_password_employer/ (Django URL)
  */
 function handleResetPassword() {
-    console.log('Reset Password button clicked - Redirecting to employer_change_password.html');
-    
-    // Add click feedback
+    // Animation only - navigation handled by <a> tag in HTML
     resetPasswordBtn.style.transform = 'scale(0.98)';
-    
-    // Redirect after short delay
-    setTimeout(() => {
-        window.location.href = 'employer_change_password.html';
-    }, 150);
-    
-    // Reset button style
     setTimeout(() => {
         resetPasswordBtn.style.transform = 'scale(1)';
     }, 200);

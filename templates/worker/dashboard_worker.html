@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
 {% load static %}
-<html lang="en">
-<head>
+
+{% block title %} Worker Dashboard | ShramikConnect {% endblock %}
+
+{% block head %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Dashboard | ShramikConnect</title>
@@ -11,7 +14,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{% static 'images/logo/Logo only.png' %}">
-</head>
+{% endblock %}
+
+{% block content %}
 <body class="light-theme">
     <!-- Notification Container -->
     <div class="notification-wrapper" id="notificationWrapper"></div>
@@ -515,6 +520,10 @@
             <div class="quick-actions">
                 <h3 data-i18n="quick_actions">Quick Actions</h3>
                 <div class="actions-grid">
+                    <button class="action-btn" id="quickActionDashboard">
+                        <i class="fas fa-home"></i>
+                        <span data-i18n="dashboard">Dashboard</span>
+                    </button>
                     <button class="action-btn" id="quickActionFindJobs">
                         <i class="fas fa-search"></i>
                         <span data-i18n="find_jobs">Find Jobs</span>
@@ -917,15 +926,23 @@
             <!-- Social Media Links -->
             <div class="footer-bottom">
                 <div class="social-links">
-                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram">
+                    <a href="https://www.instagram.com/shramikconnect?igsh=MWZxZ2FuOXdkcDJjNA==" class="social-link" aria-label="Instagram" target="_blank">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook">
+                    <a href="https://www.facebook.com/share/1C7zCpyXdQ/" class="social-link" aria-label="Facebook" target="_blank">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                   
+                    <a href="https://youtube.com/@shramikconnect?si=4p-FRw0gFxA-kkvk" class="social-link" aria-label="YouTube" target="_blank">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://x.com/ShramikConnect" class="social-link" aria-label="X (Twitter)" target="_blank">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
                     <a href="/cdn-cgi/l/email-protection#2e5a4b4f43005d465c4f4347454d4140404b4d5a6e49434f4742004d4143" class="social-link" aria-label="Email">
                         <i class="fas fa-envelope"></i>
                     </a>
                 </div>
-            </div
+            </div>        </div>
+    </footer>
+</body>
+{% endblock %}

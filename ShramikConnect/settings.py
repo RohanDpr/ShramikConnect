@@ -16,15 +16,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4_h65^&&4hjgr4oo%+%*j@3kdl8@dbmc=er#4gd$(qaxi$0_85')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG band karo production mein
-DEBUG = "True"
+DEBUG = True
 
 # ALLOWED_HOSTS mein Render domain add karo
 ALLOWED_HOSTS = ['*']  # Ya specific: ['your-app.onrender.com', 'localhost']
 
-# ✅ YEH ADD KARO — CSRF fix ke liye (most likely tera issue yahi hai)
+# CSRF fix ke liye
 CSRF_TRUSTED_ORIGINS = [
-    'https://shramikconnect.onrender.com',  # apna actual Render URL daal
+    'https://shramikconnect.onrender.com',
+    'https://shramikconnect.online',
+    'https://www.shramikconnect.online',
 ]
 
 # HTTPS headers trust karo (Render ke liye zaroori)
@@ -43,7 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,10 +139,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ============================================
 # EMAIL CONFIGURATION - SENDGRID (HTTP API)
 # ============================================
-DEFAULT_FROM_EMAIL = 'team.shramikconnect@gmail.com'
+DEFAULT_FROM_EMAIL = 'noreply@shramikconnect.online'
 
 # SendGrid API Key - .env se locally, Render env se production mein
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
 
 # OTP Settings
 OTP_EXPIRY_MINUTES = 5
+
+# ============================================
+# FAST2SMS CONFIGURATION
+# ============================================
+FAST2SMS_API_KEY = os.environ.get('FAST2SMS_API_KEY', '')
+FAST2SMS_SENDER_ID = os.environ.get('FAST2SMS_SENDER_ID', 'FSTSMS')
