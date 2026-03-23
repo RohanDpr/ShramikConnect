@@ -439,7 +439,7 @@ function selectLanguage(code, name) {
     if (langName) langName.textContent = found ? found.name : name;
     if (langFlag) langFlag.textContent = found ? found.flag : '🌐';
 
-    // Save to localStorage
+    // Save to localStorage — this is what base.html reads on every page
     localStorage.setItem('sc_language', code);
 
     // Rebuild list to show checkmark
@@ -448,34 +448,26 @@ function selectLanguage(code, name) {
     // Close dropdown
     closeLangDropdown();
 
-    // Use Google Translate's doGTranslate function directly
-    // This is the proper way — no reload needed
-    const tryTranslate = () => {
+    // Apply translation instantly — NO reload needed
+    const applyTranslation = () => {
         if (typeof doGTranslate === 'function') {
-            if (code === 'en') {
-                doGTranslate('en|en');
-            } else {
-                doGTranslate('en|' + code);
-            }
-        } else {
-            // doGTranslate not ready yet — set cookie and reload as fallback
-            const val = code === 'en' ? '' : '/en/' + code;
-            if (code === 'en') {
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
-            } else {
-                document.cookie = 'googtrans=' + val + '; path=/';
-                document.cookie = 'googtrans=' + val + '; path=/; domain=' + location.hostname;
-            }
-            setTimeout(() => window.location.reload(), 300);
+            doGTranslate('en|' + (code === 'en' ? 'en' : code));
         }
     };
 
-    // Try immediately, retry after short delay if not ready
+    // Try immediately, then retry once if widget not ready yet
     if (typeof doGTranslate === 'function') {
-        tryTranslate();
+        applyTranslation();
     } else {
-        setTimeout(tryTranslate, 800);
+        let attempts = 0;
+        const wait = setInterval(() => {
+            attempts++;
+            if (typeof doGTranslate === 'function') {
+                applyTranslation();
+                clearInterval(wait);
+            }
+            if (attempts > 25) clearInterval(wait); // stop after 5s
+        }, 200);
     }
 }
 
