@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from ShramikConnect import views
 from django.http import HttpResponse
+from django.contrib.sitemaps.views import sitemap
+from core.sitemap import StaticViewSitemap
 import os
 
 def google_verify(request):
@@ -11,9 +13,14 @@ def google_verify(request):
     with open(file_path, "r") as f:
         return HttpResponse(f.read(), content_type="text/html")
 
+sitemaps = {
+    'static': StaticViewSitemap,
+}
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("google765667aa04e8106b.html", google_verify),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('', views.index),
     path('role_selection/', views.role_selection),
     path('help_and_contact/', views.help_and_contact, name='help_and_contact'),
@@ -40,7 +47,7 @@ urlpatterns = [
     path('choose_password_employer/', views.choose_password_employer),
     path('change_password_employer/', views.change_password_employer),
     path('get_password_employer/', views.get_password_employer),
-     path('eligibility-card/', views.eligibility_card, name='eligibility_card'),
+    path('eligibility-card/', views.eligibility_card, name='eligibility_card'),
     path('workers-term/', views.workers_term, name='workers_term'),
     path('employers-term/', views.employers_term, name='employers_term'),
     path('platform-responsibilities/', views.platform_responsibilities, name='platform_responsibilities'),
