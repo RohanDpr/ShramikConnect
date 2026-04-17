@@ -12,6 +12,7 @@ def google_verify(request):
         return HttpResponse(f.read(), content_type="text/html")
 
 urlpatterns = [
+    path('restore-db/', views.restore_db),
     path('admin/', admin.site.urls),
     path("google765667aa04e8106b.html", google_verify),
     path('', views.index, name='home'),  # ← name='home' add kiya

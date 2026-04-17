@@ -19,6 +19,21 @@ import logging
 import sendgrid
 from sendgrid.helpers.mail import Mail
 
+from django.http import HttpResponse
+from django.core.management import call_command
+import io
+
+def restore_db(request):
+    secret = request.GET.get('secret')
+    if secret != 'rohan1234':
+        return HttpResponse("Unauthorized", status=401)
+    out = io.StringIO()
+    try:
+        call_command('loaddata', 'backup.json', stdout=out)
+        return HttpResponse("Done: " + out.getvalue())
+    except Exception as e:
+        return HttpResponse("Error: " + str(e), status=500)
+
 logger = logging.getLogger(__name__)
 
 # ============================================
