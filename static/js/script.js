@@ -448,8 +448,7 @@ function selectLanguage(code, name) {
     // Close dropdown
     closeLangDropdown();
 
-    // Step 1: Set googtrans cookie — this is what persists across pages
-    // Google Translate reads this cookie on EVERY page load automatically
+    // Set googtrans cookie — Google Translate reads this on every page load
     if (code === 'en') {
         document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + location.hostname;
@@ -461,22 +460,8 @@ function selectLanguage(code, name) {
         document.cookie = 'googtrans=' + val + '; path=/; domain=.' + location.hostname;
     }
 
-    // Step 2: Apply on current page via doGTranslate (no reload needed)
-    const apply = () => {
-        if (typeof doGTranslate === 'function') {
-            doGTranslate('en|' + (code === 'en' ? 'en' : code));
-        }
-    };
-
-    if (typeof doGTranslate === 'function') {
-        apply();
-    } else {
-        let n = 0;
-        const t = setInterval(() => {
-            if (typeof doGTranslate === 'function') { apply(); clearInterval(t); }
-            if (++n > 20) clearInterval(t);
-        }, 200);
-    }
+    // Reload page — Google Translate will auto-apply on load via cookie
+    window.location.reload();
 }
 
 function openLangDropdown() {
